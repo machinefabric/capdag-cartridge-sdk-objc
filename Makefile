@@ -10,7 +10,7 @@ build:
 	@echo "Creating dist directory..."
 	@mkdir -p dist
 	@echo "Building LBVR Plugin SDK static library..."
-	clang -c -o dist/LBVRPluginSDK.o LBVRPluginSDK.m -framework Foundation
+	clang -c -o dist/LBVRPluginSDK.o LBVRPluginSDK.m
 	ar rcs dist/libLBVRPluginSDK.a dist/LBVRPluginSDK.o
 	@echo "Copying header file..."
 	cp LBVRPluginSDK.h dist/
