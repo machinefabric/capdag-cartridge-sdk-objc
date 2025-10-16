@@ -26,17 +26,87 @@
 - (instancetype)initWithName:(NSString *)name 
                      version:(NSString *)version 
            pluginDescription:(NSString *)pluginDescription 
-                  extensions:(NSArray<NSString *> *)extensions 
+                  pluginType:(LBVRPluginType)pluginType
+                    priority:(LBVRPluginPriority)priority
+                  extensions:(nullable NSArray<NSString *> *)extensions
+            serviceEndpoints:(nullable NSArray<NSString *> *)serviceEndpoints
                 capabilities:(LBVRPluginCapabilities *)capabilities {
     self = [super init];
     if (self) {
         _name = [name copy];
         _version = [version copy];
         _pluginDescription = [pluginDescription copy];
-        _extensions = [extensions copy];
+        _pluginType = pluginType;
+        _priority = priority;
+        _extensions = [extensions copy] ?: @[];
+        _serviceEndpoints = [serviceEndpoints copy];
         _capabilities = capabilities;
+        _systemCritical = (priority == LBVRPluginPriorityCritical);
     }
     return self;
+}
+
++ (instancetype)documentHandlerWithName:(NSString *)name
+                                version:(NSString *)version
+                            description:(NSString *)description
+                             extensions:(NSArray<NSString *> *)extensions
+                           capabilities:(LBVRPluginCapabilities *)capabilities {
+    return [[self alloc] initWithName:name
+                              version:version
+                    pluginDescription:description
+                           pluginType:LBVRPluginTypeDocumentHandler
+                             priority:LBVRPluginPriorityOptional
+                           extensions:extensions
+                     serviceEndpoints:nil
+                         capabilities:capabilities];
+}
+
++ (instancetype)systemServiceWithName:(NSString *)name
+                              version:(NSString *)version
+                          description:(NSString *)description
+                      serviceEndpoints:(NSArray<NSString *> *)serviceEndpoints
+                          capabilities:(LBVRPluginCapabilities *)capabilities
+                              priority:(LBVRPluginPriority)priority {
+    return [[self alloc] initWithName:name
+                              version:version
+                    pluginDescription:description
+                           pluginType:LBVRPluginTypeSystemService
+                             priority:priority
+                           extensions:nil
+                     serviceEndpoints:serviceEndpoints
+                         capabilities:capabilities];
+}
+
++ (instancetype)modelServiceWithName:(NSString *)name
+                             version:(NSString *)version
+                         description:(NSString *)description
+                     serviceEndpoints:(NSArray<NSString *> *)serviceEndpoints
+                         capabilities:(LBVRPluginCapabilities *)capabilities
+                             priority:(LBVRPluginPriority)priority {
+    return [[self alloc] initWithName:name
+                              version:version
+                    pluginDescription:description
+                           pluginType:LBVRPluginTypeModelService
+                             priority:priority
+                           extensions:nil
+                     serviceEndpoints:serviceEndpoints
+                         capabilities:capabilities];
+}
+
++ (instancetype)embeddingServiceWithName:(NSString *)name
+                                 version:(NSString *)version
+                             description:(NSString *)description
+                         serviceEndpoints:(NSArray<NSString *> *)serviceEndpoints
+                             capabilities:(LBVRPluginCapabilities *)capabilities
+                                 priority:(LBVRPluginPriority)priority {
+    return [[self alloc] initWithName:name
+                              version:version
+                    pluginDescription:description
+                           pluginType:LBVRPluginTypeEmbeddingService
+                             priority:priority
+                           extensions:nil
+                     serviceEndpoints:serviceEndpoints
+                         capabilities:capabilities];
 }
 
 @end
@@ -503,17 +573,57 @@
         @"name": pluginInfo.name,
         @"version": pluginInfo.version,
         @"description": pluginInfo.pluginDescription,
-        @"extensions": pluginInfo.extensions,
+        @"plugin_type": [self pluginTypeToString:pluginInfo.pluginType],
+        @"priority": [self pluginPriorityToString:pluginInfo.priority],
+        @"system_critical": @(pluginInfo.systemCritical),
         @"capabilities": @{
             @"capabilities": pluginInfo.capabilities.capabilities
         }
     } mutableCopy];
+    
+    // Add extensions for document handlers
+    if (pluginInfo.pluginType == LBVRPluginTypeDocumentHandler && pluginInfo.extensions.count > 0) {
+        dict[@"extensions"] = pluginInfo.extensions;
+    }
+    
+    // Add service endpoints for service plugins
+    if (pluginInfo.serviceEndpoints) {
+        dict[@"service_endpoints"] = pluginInfo.serviceEndpoints;
+    }
     
     if (pluginInfo.author) {
         dict[@"author"] = pluginInfo.author;
     }
     
     return [self dictionaryToJSONString:dict];
+}
+
++ (NSString *)pluginTypeToString:(LBVRPluginType)pluginType {
+    switch (pluginType) {
+        case LBVRPluginTypeDocumentHandler:
+            return @"document_handler";
+        case LBVRPluginTypeModelService:
+            return @"model_service";
+        case LBVRPluginTypeEmbeddingService:
+            return @"embedding_service";
+        case LBVRPluginTypeSystemService:
+            return @"system_service";
+        default:
+            return @"unknown";
+    }
+}
+
++ (NSString *)pluginPriorityToString:(LBVRPluginPriority)priority {
+    switch (priority) {
+        case LBVRPluginPriorityOptional:
+            return @"optional";
+        case LBVRPluginPriorityRecommended:
+            return @"recommended";
+        case LBVRPluginPriorityCritical:
+            return @"critical";
+        default:
+            return @"optional";
+    }
 }
 
 // MARK: - Private Helper Methods

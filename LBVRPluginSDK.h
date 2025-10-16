@@ -16,20 +16,71 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithCapabilities:(NSArray<NSString *> *)capabilities;
 @end
 
+// MARK: - Plugin Types and Priorities
+
+typedef NS_ENUM(NSInteger, LBVRPluginType) {
+    LBVRPluginTypeDocumentHandler = 0,  // Handles file processing
+    LBVRPluginTypeModelService,         // Handles LLM model management
+    LBVRPluginTypeEmbeddingService,     // Handles text embeddings
+    LBVRPluginTypeSystemService,        // General system services
+};
+
+typedef NS_ENUM(NSInteger, LBVRPluginPriority) {
+    LBVRPluginPriorityOptional = 0,     // Can be disabled/removed
+    LBVRPluginPriorityRecommended,      // Important but not critical
+    LBVRPluginPriorityCritical,         // System-critical, cannot be disabled
+};
+
 // MARK: - Plugin Info
 
 @interface LBVRPluginInfo : NSObject
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *version;
 @property (nonatomic, strong) NSString *pluginDescription;
-@property (nonatomic, strong) NSArray<NSString *> *extensions;
+@property (nonatomic, assign) LBVRPluginType pluginType;
+@property (nonatomic, assign) LBVRPluginPriority priority;
+@property (nonatomic, strong) NSArray<NSString *> *extensions;  // For document handlers
+@property (nonatomic, strong, nullable) NSArray<NSString *> *serviceEndpoints;  // For service plugins
 @property (nonatomic, strong) LBVRPluginCapabilities *capabilities;
 @property (nonatomic, strong, nullable) NSString *author;
+@property (nonatomic, assign) BOOL systemCritical;  // Legacy compatibility
+
 - (instancetype)initWithName:(NSString *)name 
                      version:(NSString *)version 
            pluginDescription:(NSString *)pluginDescription 
-                  extensions:(NSArray<NSString *> *)extensions 
+                  pluginType:(LBVRPluginType)pluginType
+                    priority:(LBVRPluginPriority)priority
+                  extensions:(nullable NSArray<NSString *> *)extensions
+            serviceEndpoints:(nullable NSArray<NSString *> *)serviceEndpoints
                 capabilities:(LBVRPluginCapabilities *)capabilities;
+
+// Convenience initializers for specific plugin types
++ (instancetype)documentHandlerWithName:(NSString *)name
+                                version:(NSString *)version
+                            description:(NSString *)description
+                             extensions:(NSArray<NSString *> *)extensions
+                           capabilities:(LBVRPluginCapabilities *)capabilities;
+
++ (instancetype)systemServiceWithName:(NSString *)name
+                              version:(NSString *)version
+                          description:(NSString *)description
+                      serviceEndpoints:(NSArray<NSString *> *)serviceEndpoints
+                          capabilities:(LBVRPluginCapabilities *)capabilities
+                              priority:(LBVRPluginPriority)priority;
+
++ (instancetype)modelServiceWithName:(NSString *)name
+                             version:(NSString *)version
+                         description:(NSString *)description
+                     serviceEndpoints:(NSArray<NSString *> *)serviceEndpoints
+                         capabilities:(LBVRPluginCapabilities *)capabilities
+                             priority:(LBVRPluginPriority)priority;
+
++ (instancetype)embeddingServiceWithName:(NSString *)name
+                                 version:(NSString *)version
+                             description:(NSString *)description
+                         serviceEndpoints:(NSArray<NSString *> *)serviceEndpoints
+                             capabilities:(LBVRPluginCapabilities *)capabilities
+                                 priority:(LBVRPluginPriority)priority;
 @end
 
 // MARK: - Document Metadata (conforms to file-metadata.json schema)
@@ -186,14 +237,27 @@ NS_ASSUME_NONNULL_BEGIN
                      isValid:(BOOL)isValid;
 @end
 
-// MARK: - Document Handler Protocol (conforms to handler-interface.json schema)
+// MARK: - Plugin Protocols
 
-@protocol LBVRDocumentHandler <NSObject>
-
+// Base protocol for all plugins
+@protocol LBVRPlugin <NSObject>
 @required
-// Basic handler information
 - (NSString *)name;
 - (NSString *)version;
+- (LBVRPluginType)pluginType;
+- (LBVRPluginPriority)priority;
+- (LBVRPluginCapabilities *)getCapabilities;
+
+@optional
+- (LBVRPluginInfo *)getPluginInfo;
+@end
+
+// MARK: - Document Handler Protocol (conforms to handler-interface.json schema)
+
+@protocol LBVRDocumentHandler <LBVRPlugin>
+
+@required
+// File handling
 - (NSArray<NSString *> *)supportedExtensions;
 
 // Core functionality
@@ -207,7 +271,58 @@ NS_ASSUME_NONNULL_BEGIN
 @optional
 // Optional methods with defaults
 - (BOOL)canHandle:(NSString *)filePath; // Default: checks file extension against supportedExtensions
-- (LBVRPluginCapabilities *)getCapabilities; // Default: standard capabilities
+
+@end
+
+// MARK: - Model Service Protocol
+
+@protocol LBVRModelService <LBVRPlugin>
+
+@required
+// Model management
+- (void)listAvailableModels:(void (^)(NSArray<NSString *> * _Nullable models, NSError * _Nullable error))completion;
+- (void)downloadModel:(NSString *)modelName completion:(void (^)(BOOL success, NSError * _Nullable error))completion;
+- (void)loadModel:(NSString *)modelName completion:(void (^)(BOOL success, NSError * _Nullable error))completion;
+- (void)unloadModel:(NSString *)modelName completion:(void (^)(BOOL success, NSError * _Nullable error))completion;
+- (void)getModelStatus:(NSString *)modelName completion:(void (^)(NSString * _Nullable status, NSError * _Nullable error))completion;
+
+@optional
+// Model operations
+- (void)deleteModel:(NSString *)modelName completion:(void (^)(BOOL success, NSError * _Nullable error))completion;
+- (void)getModelInfo:(NSString *)modelName completion:(void (^)(NSDictionary * _Nullable info, NSError * _Nullable error))completion;
+
+@end
+
+// MARK: - Embedding Service Protocol
+
+@protocol LBVREmbeddingService <LBVRPlugin>
+
+@required
+// Embedding generation
+- (void)generateEmbeddings:(NSArray<NSString *> *)texts completion:(void (^)(NSArray<NSArray<NSNumber *> *> * _Nullable embeddings, NSError * _Nullable error))completion;
+- (void)getEmbeddingDimensions:(void (^)(NSInteger dimensions, NSError * _Nullable error))completion;
+
+@optional
+// Advanced embedding operations
+- (void)generateContextualEmbeddings:(NSString *)text context:(NSString *)context completion:(void (^)(NSArray<NSNumber *> * _Nullable embedding, NSError * _Nullable error))completion;
+- (void)computeSimilarity:(NSArray<NSNumber *> *)embedding1 embedding2:(NSArray<NSNumber *> *)embedding2 completion:(void (^)(double similarity, NSError * _Nullable error))completion;
+
+@end
+
+// MARK: - System Service Protocol
+
+@protocol LBVRSystemService <LBVRPlugin>
+
+@required
+// Service lifecycle
+- (void)startService:(void (^)(BOOL success, NSError * _Nullable error))completion;
+- (void)stopService:(void (^)(BOOL success, NSError * _Nullable error))completion;
+- (void)getServiceStatus:(void (^)(NSString * _Nullable status, NSError * _Nullable error))completion;
+
+@optional
+// Service management
+- (void)restartService:(void (^)(BOOL success, NSError * _Nullable error))completion;
+- (void)getServiceHealth:(void (^)(NSDictionary * _Nullable health, NSError * _Nullable error))completion;
 
 @end
 
