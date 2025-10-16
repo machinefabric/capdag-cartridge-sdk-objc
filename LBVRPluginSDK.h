@@ -16,6 +16,22 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithCapabilities:(NSArray<NSString *> *)capabilities;
 @end
 
+// MARK: - Plugin Info
+
+@interface LBVRPluginInfo : NSObject
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *version;
+@property (nonatomic, strong) NSString *pluginDescription;
+@property (nonatomic, strong) NSArray<NSString *> *extensions;
+@property (nonatomic, strong) LBVRPluginCapabilities *capabilities;
+@property (nonatomic, strong, nullable) NSString *author;
+- (instancetype)initWithName:(NSString *)name 
+                     version:(NSString *)version 
+           pluginDescription:(NSString *)pluginDescription 
+                  extensions:(NSArray<NSString *> *)extensions 
+                capabilities:(LBVRPluginCapabilities *)capabilities;
+@end
+
 // MARK: - Document Metadata (conforms to file-metadata.json schema)
 
 @interface LBVRDocumentMetadata : NSObject
@@ -214,6 +230,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString * _Nullable)serializeOutline:(LBVRDocumentOutline *)outline;
 + (NSString * _Nullable)serializePages:(LBVRDocumentPages *)pages;
 + (NSString * _Nullable)serializePluginOutput:(LBVRPluginOutput *)output;
++ (NSString * _Nullable)serializePluginInfo:(LBVRPluginInfo *)pluginInfo;
 
 @end
 

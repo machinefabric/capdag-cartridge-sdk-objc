@@ -19,6 +19,28 @@
 
 @end
 
+// MARK: - Plugin Info
+
+@implementation LBVRPluginInfo
+
+- (instancetype)initWithName:(NSString *)name 
+                     version:(NSString *)version 
+           pluginDescription:(NSString *)pluginDescription 
+                  extensions:(NSArray<NSString *> *)extensions 
+                capabilities:(LBVRPluginCapabilities *)capabilities {
+    self = [super init];
+    if (self) {
+        _name = [name copy];
+        _version = [version copy];
+        _pluginDescription = [pluginDescription copy];
+        _extensions = [extensions copy];
+        _capabilities = capabilities;
+    }
+    return self;
+}
+
+@end
+
 // MARK: - Document Metadata
 
 @implementation LBVRDocumentMetadata
@@ -471,6 +493,24 @@
     
     if (output.thumbnailData) {
         dict[@"thumbnailData"] = [output.thumbnailData base64EncodedStringWithOptions:0];
+    }
+    
+    return [self dictionaryToJSONString:dict];
+}
+
++ (NSString *)serializePluginInfo:(LBVRPluginInfo *)pluginInfo {
+    NSMutableDictionary *dict = [@{
+        @"name": pluginInfo.name,
+        @"version": pluginInfo.version,
+        @"description": pluginInfo.pluginDescription,
+        @"extensions": pluginInfo.extensions,
+        @"capabilities": @{
+            @"capabilities": pluginInfo.capabilities.capabilities
+        }
+    } mutableCopy];
+    
+    if (pluginInfo.author) {
+        dict[@"author"] = pluginInfo.author;
     }
     
     return [self dictionaryToJSONString:dict];
