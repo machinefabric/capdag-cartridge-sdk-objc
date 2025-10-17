@@ -583,6 +583,19 @@
 
 @end
 
+@implementation LBVRDocumentParagraph
+
+- (instancetype)initWithParagraphNumber:(NSUInteger)paragraphNumber textContent:(NSString *)textContent {
+    self = [super init];
+    if (self) {
+        _paragraphNumber = paragraphNumber;
+        _textContent = [textContent copy];
+    }
+    return self;
+}
+
+@end
+
 @implementation LBVRDocumentPage
 
 - (instancetype)initWithPageNumber:(NSUInteger)pageNumber {
