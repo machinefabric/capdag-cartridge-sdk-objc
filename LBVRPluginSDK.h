@@ -14,16 +14,12 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LBVRPluginCapabilities : NSObject
 @property (nonatomic, strong) NSArray<NSString *> *capabilities;
 - (instancetype)initWithCapabilities:(NSArray<NSString *> *)capabilities;
+- (BOOL)canHandleFileType:(NSString *)fileType;
+- (BOOL)canPerformOperation:(NSString *)operation onFileType:(NSString *)fileType;
+- (NSString * _Nullable)getMostSpecificCapability:(NSString *)operation forFileType:(NSString *)fileType;
 @end
 
-// MARK: - Plugin Types and Priorities
-
-typedef NS_ENUM(NSInteger, LBVRPluginType) {
-    LBVRPluginTypeDocumentHandler = 0,  // Handles file processing
-    LBVRPluginTypeModelService,         // Handles LLM model management
-    LBVRPluginTypeEmbeddingService,     // Handles text embeddings
-    LBVRPluginTypeSystemService,        // General system services
-};
+// MARK: - Plugin Priorities
 
 typedef NS_ENUM(NSInteger, LBVRPluginPriority) {
     LBVRPluginPriorityOptional = 0,     // Can be disabled/removed
@@ -37,50 +33,21 @@ typedef NS_ENUM(NSInteger, LBVRPluginPriority) {
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *version;
 @property (nonatomic, strong) NSString *pluginDescription;
-@property (nonatomic, assign) LBVRPluginType pluginType;
 @property (nonatomic, assign) LBVRPluginPriority priority;
-@property (nonatomic, strong) NSArray<NSString *> *extensions;  // For document handlers
-@property (nonatomic, strong, nullable) NSArray<NSString *> *serviceEndpoints;  // For service plugins
 @property (nonatomic, strong) LBVRPluginCapabilities *capabilities;
 @property (nonatomic, strong, nullable) NSString *author;
-@property (nonatomic, assign) BOOL systemCritical;  // Legacy compatibility
 
 - (instancetype)initWithName:(NSString *)name 
                      version:(NSString *)version 
            pluginDescription:(NSString *)pluginDescription 
-                  pluginType:(LBVRPluginType)pluginType
                     priority:(LBVRPluginPriority)priority
-                  extensions:(nullable NSArray<NSString *> *)extensions
-            serviceEndpoints:(nullable NSArray<NSString *> *)serviceEndpoints
                 capabilities:(LBVRPluginCapabilities *)capabilities;
 
-// Convenience initializers for specific plugin types
-+ (instancetype)documentHandlerWithName:(NSString *)name
-                                version:(NSString *)version
-                            description:(NSString *)description
-                             extensions:(NSArray<NSString *> *)extensions
-                           capabilities:(LBVRPluginCapabilities *)capabilities;
-
-+ (instancetype)systemServiceWithName:(NSString *)name
-                              version:(NSString *)version
-                          description:(NSString *)description
-                      serviceEndpoints:(NSArray<NSString *> *)serviceEndpoints
-                          capabilities:(LBVRPluginCapabilities *)capabilities
-                              priority:(LBVRPluginPriority)priority;
-
-+ (instancetype)modelServiceWithName:(NSString *)name
-                             version:(NSString *)version
-                         description:(NSString *)description
-                     serviceEndpoints:(NSArray<NSString *> *)serviceEndpoints
-                         capabilities:(LBVRPluginCapabilities *)capabilities
-                             priority:(LBVRPluginPriority)priority;
-
-+ (instancetype)embeddingServiceWithName:(NSString *)name
-                                 version:(NSString *)version
-                             description:(NSString *)description
-                         serviceEndpoints:(NSArray<NSString *> *)serviceEndpoints
-                             capabilities:(LBVRPluginCapabilities *)capabilities
-                                 priority:(LBVRPluginPriority)priority;
++ (instancetype)pluginWithName:(NSString *)name
+                       version:(NSString *)version
+                   description:(NSString *)description
+                  capabilities:(LBVRPluginCapabilities *)capabilities
+                      priority:(LBVRPluginPriority)priority;
 @end
 
 // MARK: - Document Metadata (conforms to file-metadata.json schema)
@@ -244,7 +211,6 @@ typedef NS_ENUM(NSInteger, LBVRPluginPriority) {
 @required
 - (NSString *)name;
 - (NSString *)version;
-- (LBVRPluginType)pluginType;
 - (LBVRPluginPriority)priority;
 - (LBVRPluginCapabilities *)getCapabilities;
 
@@ -257,9 +223,6 @@ typedef NS_ENUM(NSInteger, LBVRPluginPriority) {
 @protocol LBVRDocumentHandler <LBVRPlugin>
 
 @required
-// File handling
-- (NSArray<NSString *> *)supportedExtensions;
-
 // Core functionality
 - (void)extractMetadata:(NSString *)filePath completion:(void (^)(LBVRDocumentMetadata * _Nullable metadata, NSError * _Nullable error))completion;
 - (void)extractOutline:(NSString *)filePath completion:(void (^)(LBVRDocumentOutline * _Nullable outline, NSError * _Nullable error))completion;
@@ -270,7 +233,7 @@ typedef NS_ENUM(NSInteger, LBVRPluginPriority) {
 
 @optional
 // Optional methods with defaults
-- (BOOL)canHandle:(NSString *)filePath; // Default: checks file extension against supportedExtensions
+- (BOOL)canHandle:(NSString *)filePath; // Default: checks capabilities against file type
 
 @end
 
@@ -331,8 +294,9 @@ typedef NS_ENUM(NSInteger, LBVRPluginPriority) {
 @interface LBVRPluginManager : NSObject
 
 + (instancetype)sharedManager;
-- (void)registerHandler:(id<LBVRDocumentHandler>)handler forFileExtensions:(NSArray<NSString *> *)extensions;
+- (void)registerHandler:(id<LBVRDocumentHandler>)handler;
 - (id<LBVRDocumentHandler> _Nullable)handlerForFilePath:(NSString *)filePath;
+- (id<LBVRDocumentHandler> _Nullable)bestHandlerForOperation:(NSString *)operation fileType:(NSString *)fileType;
 - (LBVRPluginOutput *)processDocument:(NSString *)filePath;
 
 @end

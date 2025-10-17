@@ -17,6 +17,72 @@
     return self;
 }
 
+- (BOOL)canHandleFileType:(NSString *)fileType {
+    // Check for exact match with file type (e.g., "extract_metadata:pdf")
+    for (NSString *capability in self.capabilities) {
+        if ([capability containsString:@":"]) {
+            NSArray<NSString *> *parts = [capability componentsSeparatedByString:@":"];
+            if (parts.count == 2) {
+                NSString *operation = parts[0];
+                NSString *filetype = parts[1];
+                if ([filetype isEqualToString:fileType] && [self isExtractOperation:operation]) {
+                    return YES;
+                }
+            }
+        }
+    }
+    
+    // Check for wildcard match (e.g., "extract_metadata:*")
+    for (NSString *capability in self.capabilities) {
+        if ([capability containsString:@":"]) {
+            NSArray<NSString *> *parts = [capability componentsSeparatedByString:@":"];
+            if (parts.count == 2) {
+                NSString *operation = parts[0];
+                NSString *filetype = parts[1];
+                if ([filetype isEqualToString:@"*"] && [self isExtractOperation:operation]) {
+                    return YES;
+                }
+            }
+        }
+    }
+    
+    return NO;
+}
+
+- (BOOL)canPerformOperation:(NSString *)operation onFileType:(NSString *)fileType {
+    return [self getMostSpecificCapability:operation forFileType:fileType] != nil;
+}
+
+- (NSString * _Nullable)getMostSpecificCapability:(NSString *)operation forFileType:(NSString *)fileType {
+    // First look for exact file type match
+    NSString *specific = [NSString stringWithFormat:@"%@:%@", operation, fileType];
+    if ([self.capabilities containsObject:specific]) {
+        return specific;
+    }
+    
+    // Then look for wildcard match
+    NSString *wildcard = [NSString stringWithFormat:@"%@:*", operation];
+    if ([self.capabilities containsObject:wildcard]) {
+        return wildcard;
+    }
+    
+    // Finally check for operation without file type specifier (legacy support)
+    if ([self.capabilities containsObject:operation]) {
+        return operation;
+    }
+    
+    return nil;
+}
+
+- (BOOL)isExtractOperation:(NSString *)operation {
+    return [operation isEqualToString:@"extract_metadata"] ||
+           [operation isEqualToString:@"extract_outline"] ||
+           [operation isEqualToString:@"extract_pages"] ||
+           [operation isEqualToString:@"extract_text"] ||
+           [operation isEqualToString:@"validate_file"] ||
+           [operation isEqualToString:@"generate_thumbnail"];
+}
+
 @end
 
 // MARK: - Plugin Info
@@ -26,87 +92,30 @@
 - (instancetype)initWithName:(NSString *)name 
                      version:(NSString *)version 
            pluginDescription:(NSString *)pluginDescription 
-                  pluginType:(LBVRPluginType)pluginType
                     priority:(LBVRPluginPriority)priority
-                  extensions:(nullable NSArray<NSString *> *)extensions
-            serviceEndpoints:(nullable NSArray<NSString *> *)serviceEndpoints
                 capabilities:(LBVRPluginCapabilities *)capabilities {
     self = [super init];
     if (self) {
         _name = [name copy];
         _version = [version copy];
         _pluginDescription = [pluginDescription copy];
-        _pluginType = pluginType;
         _priority = priority;
-        _extensions = [extensions copy] ?: @[];
-        _serviceEndpoints = [serviceEndpoints copy];
         _capabilities = capabilities;
-        _systemCritical = (priority == LBVRPluginPriorityCritical);
     }
     return self;
 }
 
-+ (instancetype)documentHandlerWithName:(NSString *)name
-                                version:(NSString *)version
-                            description:(NSString *)description
-                             extensions:(NSArray<NSString *> *)extensions
-                           capabilities:(LBVRPluginCapabilities *)capabilities {
-    return [[self alloc] initWithName:name
-                              version:version
-                    pluginDescription:description
-                           pluginType:LBVRPluginTypeDocumentHandler
-                             priority:LBVRPluginPriorityOptional
-                           extensions:extensions
-                     serviceEndpoints:nil
-                         capabilities:capabilities];
-}
-
-+ (instancetype)systemServiceWithName:(NSString *)name
-                              version:(NSString *)version
-                          description:(NSString *)description
-                      serviceEndpoints:(NSArray<NSString *> *)serviceEndpoints
-                          capabilities:(LBVRPluginCapabilities *)capabilities
-                              priority:(LBVRPluginPriority)priority {
-    return [[self alloc] initWithName:name
-                              version:version
-                    pluginDescription:description
-                           pluginType:LBVRPluginTypeSystemService
-                             priority:priority
-                           extensions:nil
-                     serviceEndpoints:serviceEndpoints
-                         capabilities:capabilities];
-}
-
-+ (instancetype)modelServiceWithName:(NSString *)name
-                             version:(NSString *)version
-                         description:(NSString *)description
-                     serviceEndpoints:(NSArray<NSString *> *)serviceEndpoints
-                         capabilities:(LBVRPluginCapabilities *)capabilities
-                             priority:(LBVRPluginPriority)priority {
-    return [[self alloc] initWithName:name
-                              version:version
-                    pluginDescription:description
-                           pluginType:LBVRPluginTypeModelService
-                             priority:priority
-                           extensions:nil
-                     serviceEndpoints:serviceEndpoints
-                         capabilities:capabilities];
-}
-
-+ (instancetype)embeddingServiceWithName:(NSString *)name
-                                 version:(NSString *)version
-                             description:(NSString *)description
-                         serviceEndpoints:(NSArray<NSString *> *)serviceEndpoints
-                             capabilities:(LBVRPluginCapabilities *)capabilities
-                                 priority:(LBVRPluginPriority)priority {
-    return [[self alloc] initWithName:name
-                              version:version
-                    pluginDescription:description
-                           pluginType:LBVRPluginTypeEmbeddingService
-                             priority:priority
-                           extensions:nil
-                     serviceEndpoints:serviceEndpoints
-                         capabilities:capabilities];
++ (instancetype)pluginWithName:(NSString *)name
+                       version:(NSString *)version
+                   description:(NSString *)description
+                  capabilities:(LBVRPluginCapabilities *)capabilities
+                      priority:(LBVRPluginPriority)priority {
+    LBVRPluginInfo *plugin = [[self alloc] initWithName:name
+                                                 version:version
+                                       pluginDescription:description
+                                                priority:priority
+                                            capabilities:capabilities];
+    return plugin;
 }
 
 @end
@@ -327,7 +336,7 @@
 // MARK: - Plugin Manager
 
 @implementation LBVRPluginManager {
-    NSMutableDictionary<NSString *, id<LBVRDocumentHandler>> *_handlers;
+    NSMutableArray<id<LBVRDocumentHandler>> *_handlers;
 }
 
 + (instancetype)sharedManager {
@@ -342,21 +351,54 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _handlers = [[NSMutableDictionary alloc] init];
+        _handlers = [[NSMutableArray alloc] init];
     }
     return self;
 }
 
-- (void)registerHandler:(id<LBVRDocumentHandler>)handler forFileExtensions:(NSArray<NSString *> *)extensions {
-    for (NSString *extension in extensions) {
-        NSString *lowercaseExtension = [extension lowercaseString];
-        _handlers[lowercaseExtension] = handler;
-    }
+- (void)registerHandler:(id<LBVRDocumentHandler>)handler {
+    [_handlers addObject:handler];
 }
 
 - (id<LBVRDocumentHandler>)handlerForFilePath:(NSString *)filePath {
     NSString *extension = [[filePath pathExtension] lowercaseString];
-    return _handlers[extension];
+    
+    for (id<LBVRDocumentHandler> handler in _handlers) {
+        LBVRPluginCapabilities *capabilities = [handler getCapabilities];
+        if ([capabilities canHandleFileType:extension]) {
+            return handler;
+        }
+    }
+    
+    return nil;
+}
+
+- (id<LBVRDocumentHandler>)bestHandlerForOperation:(NSString *)operation fileType:(NSString *)fileType {
+    id<LBVRDocumentHandler> bestHandler = nil;
+    NSInteger bestSpecificity = -1;
+    
+    for (id<LBVRDocumentHandler> handler in _handlers) {
+        LBVRPluginCapabilities *capabilities = [handler getCapabilities];
+        NSString *capability = [capabilities getMostSpecificCapability:operation forFileType:fileType];
+        
+        if (capability) {
+            NSInteger specificity = 0;
+            if ([capability containsString:[NSString stringWithFormat:@":%@", fileType]]) {
+                specificity = 2; // Exact file type match
+            } else if ([capability containsString:@":*"]) {
+                specificity = 1; // Wildcard match
+            } else {
+                specificity = 0; // Legacy operation-only match
+            }
+            
+            if (specificity > bestSpecificity) {
+                bestHandler = handler;
+                bestSpecificity = specificity;
+            }
+        }
+    }
+    
+    return bestHandler;
 }
 
 - (LBVRPluginOutput *)processDocument:(NSString *)filePath {
@@ -573,23 +615,11 @@
         @"name": pluginInfo.name,
         @"version": pluginInfo.version,
         @"description": pluginInfo.pluginDescription,
-        @"plugin_type": [self pluginTypeToString:pluginInfo.pluginType],
         @"priority": [self pluginPriorityToString:pluginInfo.priority],
-        @"system_critical": @(pluginInfo.systemCritical),
         @"capabilities": @{
             @"capabilities": pluginInfo.capabilities.capabilities
         }
     } mutableCopy];
-    
-    // Add extensions for document handlers
-    if (pluginInfo.pluginType == LBVRPluginTypeDocumentHandler && pluginInfo.extensions.count > 0) {
-        dict[@"extensions"] = pluginInfo.extensions;
-    }
-    
-    // Add service endpoints for service plugins
-    if (pluginInfo.serviceEndpoints) {
-        dict[@"service_endpoints"] = pluginInfo.serviceEndpoints;
-    }
     
     if (pluginInfo.author) {
         dict[@"author"] = pluginInfo.author;
@@ -598,20 +628,6 @@
     return [self dictionaryToJSONString:dict];
 }
 
-+ (NSString *)pluginTypeToString:(LBVRPluginType)pluginType {
-    switch (pluginType) {
-        case LBVRPluginTypeDocumentHandler:
-            return @"document_handler";
-        case LBVRPluginTypeModelService:
-            return @"model_service";
-        case LBVRPluginTypeEmbeddingService:
-            return @"embedding_service";
-        case LBVRPluginTypeSystemService:
-            return @"system_service";
-        default:
-            return @"unknown";
-    }
-}
 
 + (NSString *)pluginPriorityToString:(LBVRPluginPriority)priority {
     switch (priority) {
