@@ -467,6 +467,23 @@
 
 @end
 
+// MARK: - Extraction Info
+
+@implementation LBVRExtractionInfo
+
+- (instancetype)initWithExtractorName:(NSString *)extractorName extractorVersion:(NSString *)extractorVersion {
+    self = [super init];
+    if (self) {
+        _extractorName = [extractorName copy];
+        _extractorVersion = [extractorVersion copy];
+        _extractedAt = [NSDate date];
+        _warnings = @[];
+    }
+    return self;
+}
+
+@end
+
 // MARK: - Document Metadata (schemas remain the same)
 
 @implementation LBVRDocumentMetadata
@@ -643,19 +660,266 @@
 + (NSString *)serializeToJSON:(id)object {
     if (!object) return nil;
     
+    // Convert custom objects to dictionary representation
+    id jsonObject = [self convertToJSONObject:object];
+    if (!jsonObject) return nil;
+    
     NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:&error];
-    if (error) return nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonObject options:NSJSONWritingPrettyPrinted error:&error];
+    if (error) {
+        fprintf(stderr, "Error: JSON serialization failed: %s\n", error.localizedDescription.UTF8String);
+        return nil;
+    }
     
     return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+}
+
++ (id)convertToJSONObject:(id)object {
+    if (!object) return nil;
+    
+    // Handle basic JSON-serializable types
+    if ([object isKindOfClass:[NSString class]] ||
+        [object isKindOfClass:[NSNumber class]] ||
+        [object isKindOfClass:[NSNull class]]) {
+        return object;
+    }
+    
+    // Handle NSDate objects that might have slipped through
+    if ([object isKindOfClass:[NSDate class]]) {
+        return [self dateToString:(NSDate *)object];
+    }
+    
+    if ([object isKindOfClass:[NSArray class]]) {
+        NSMutableArray *result = [[NSMutableArray alloc] init];
+        for (id item in (NSArray *)object) {
+            id convertedItem = [self convertToJSONObject:item];
+            if (convertedItem) {
+                [result addObject:convertedItem];
+            }
+        }
+        return result;
+    }
+    
+    if ([object isKindOfClass:[NSDictionary class]]) {
+        NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
+        for (id key in [(NSDictionary *)object allKeys]) {
+            id value = [(NSDictionary *)object objectForKey:key];
+            id convertedValue = [self convertToJSONObject:value];
+            if (convertedValue) {
+                result[key] = convertedValue;
+            }
+        }
+        return result;
+    }
+    
+    // Handle custom objects
+    if ([object isKindOfClass:[LBVRDocumentMetadata class]]) {
+        return [self documentMetadataToDict:(LBVRDocumentMetadata *)object];
+    }
+    
+    if ([object isKindOfClass:[LBVRDocumentOutline class]]) {
+        return [self documentOutlineToDict:(LBVRDocumentOutline *)object];
+    }
+    
+    if ([object isKindOfClass:[LBVRDocumentPages class]]) {
+        return [self documentPagesToDict:(LBVRDocumentPages *)object];
+    }
+    
+    if ([object isKindOfClass:[LBVRTocEntry class]]) {
+        return [self tocEntryToDict:(LBVRTocEntry *)object];
+    }
+    
+    if ([object isKindOfClass:[LBVRDocumentPage class]]) {
+        return [self documentPageToDict:(LBVRDocumentPage *)object];
+    }
+    
+    if ([object isKindOfClass:[LBVRDocumentParagraph class]]) {
+        return [self documentParagraphToDict:(LBVRDocumentParagraph *)object];
+    }
+    
+    if ([object isKindOfClass:[LBVRExtractionInfo class]]) {
+        return [self extractionInfoToDict:(LBVRExtractionInfo *)object];
+    }
+    
+    // For unknown types, try to convert safely
+    if ([object respondsToSelector:@selector(description)]) {
+        @try {
+            NSString *desc = [object description];
+            return desc ? desc : @"<unknown>";
+        } @catch (NSException *exception) {
+            return @"<error>";
+        }
+    }
+    
+    return @"<null>";
+}
+
++ (NSDictionary *)documentMetadataToDict:(LBVRDocumentMetadata *)metadata {
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    
+    if (metadata.filePath) dict[@"filePath"] = metadata.filePath;
+    if (metadata.filePath) dict[@"fileName"] = [metadata.filePath lastPathComponent];
+    dict[@"fileSizeBytes"] = @(metadata.fileSizeBytes);
+    dict[@"contentLength"] = @(metadata.contentLength);
+    if (metadata.documentType) dict[@"documentType"] = metadata.documentType;
+    if (metadata.mimeType) dict[@"mimeType"] = metadata.mimeType;
+    if (metadata.encoding) dict[@"encoding"] = metadata.encoding;
+    if (metadata.title) dict[@"title"] = metadata.title;
+    if (metadata.authors && metadata.authors.count > 0) {
+        dict[@"authors"] = [self convertToJSONObject:metadata.authors];
+    }
+    if (metadata.contributors && metadata.contributors.count > 0) {
+        dict[@"contributors"] = [self convertToJSONObject:metadata.contributors];
+    }
+    if (metadata.subject) dict[@"subject"] = metadata.subject;
+    if (metadata.identifier) dict[@"identifier"] = metadata.identifier;
+    if (metadata.creator) dict[@"creator"] = metadata.creator;
+    if (metadata.producer) dict[@"producer"] = metadata.producer;
+    if (metadata.publisher) dict[@"publisher"] = metadata.publisher;
+    if (metadata.creationDate) dict[@"creationDate"] = metadata.creationDate;
+    if (metadata.modificationDate) dict[@"modificationDate"] = metadata.modificationDate;
+    if (metadata.publicationDate) dict[@"publicationDate"] = [self dateToString:metadata.publicationDate];
+    if (metadata.wordCount) dict[@"wordCount"] = metadata.wordCount;
+    if (metadata.characterCount) dict[@"characterCount"] = metadata.characterCount;
+    if (metadata.pageCount) dict[@"pageCount"] = metadata.pageCount;
+    if (metadata.chapterCount) dict[@"chapterCount"] = metadata.chapterCount;
+    if (metadata.language) dict[@"language"] = metadata.language;
+    if (metadata.formatVersion) dict[@"formatVersion"] = metadata.formatVersion;
+    if (metadata.pdfVersion) dict[@"pdfVersion"] = metadata.pdfVersion;
+    if (metadata.epubVersion) dict[@"epubVersion"] = metadata.epubVersion;
+    dict[@"hasForms"] = @(metadata.hasForms);
+    dict[@"isEncrypted"] = @(metadata.isEncrypted);
+    dict[@"attachmentCount"] = @(metadata.attachmentCount);
+    dict[@"isLinearized"] = @(metadata.isLinearized);
+    if (metadata.extendedMetadata && metadata.extendedMetadata.count > 0) {
+        dict[@"extendedMetadata"] = [self convertToJSONObject:metadata.extendedMetadata];
+    }
+    
+    return dict;
+}
+
++ (NSDictionary *)documentOutlineToDict:(LBVRDocumentOutline *)outline {
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    
+    if (outline.sourceFile) dict[@"sourceFile"] = outline.sourceFile;
+    if (outline.documentType) dict[@"documentType"] = outline.documentType;
+    dict[@"totalPages"] = @(outline.totalPages);
+    dict[@"hasOutline"] = @(outline.hasOutline);
+    if (outline.title) dict[@"title"] = outline.title;
+    
+    if (outline.tocEntries && outline.tocEntries.count > 0) {
+        NSMutableArray *entriesArray = [[NSMutableArray alloc] init];
+        for (LBVRTocEntry *entry in outline.tocEntries) {
+            [entriesArray addObject:[self tocEntryToDict:entry]];
+        }
+        dict[@"tocEntries"] = entriesArray;
+    }
+    
+    if (outline.extractionInfo) {
+        dict[@"extractionInfo"] = [self extractionInfoToDict:outline.extractionInfo];
+    }
+    
+    return dict;
+}
+
++ (NSDictionary *)documentPagesToDict:(LBVRDocumentPages *)pages {
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    
+    if (pages.sourceFile) dict[@"sourceFile"] = pages.sourceFile;
+    if (pages.documentType) dict[@"documentType"] = pages.documentType;
+    dict[@"totalPages"] = @(pages.totalPages);
+    if (pages.title) dict[@"title"] = pages.title;
+    
+    if (pages.pages && pages.pages.count > 0) {
+        NSMutableArray *pagesArray = [[NSMutableArray alloc] init];
+        for (LBVRDocumentPage *page in pages.pages) {
+            [pagesArray addObject:[self documentPageToDict:page]];
+        }
+        dict[@"pages"] = pagesArray;
+    }
+    
+    if (pages.extractionInfo) {
+        dict[@"extractionInfo"] = [self extractionInfoToDict:pages.extractionInfo];
+    }
+    
+    return dict;
+}
+
++ (NSDictionary *)tocEntryToDict:(LBVRTocEntry *)entry {
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    
+    if (entry.title) dict[@"title"] = entry.title;
+    dict[@"level"] = @(entry.level);
+    if (entry.page > 0) dict[@"page"] = @(entry.page);
+    if (entry.sourceRef) dict[@"sourceRef"] = entry.sourceRef;
+    
+    if (entry.children && entry.children.count > 0) {
+        NSMutableArray *childrenArray = [[NSMutableArray alloc] init];
+        for (LBVRTocEntry *child in entry.children) {
+            [childrenArray addObject:[self tocEntryToDict:child]];
+        }
+        dict[@"children"] = childrenArray;
+    }
+    
+    return dict;
+}
+
++ (NSDictionary *)documentPageToDict:(LBVRDocumentPage *)page {
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    
+    dict[@"pageNumber"] = @(page.pageNumber);
+    if (page.sourceRef) dict[@"sourceRef"] = page.sourceRef;
+    
+    if (page.paragraphs && page.paragraphs.count > 0) {
+        NSMutableArray *paragraphsArray = [[NSMutableArray alloc] init];
+        for (LBVRDocumentParagraph *paragraph in page.paragraphs) {
+            [paragraphsArray addObject:[self documentParagraphToDict:paragraph]];
+        }
+        dict[@"paragraphs"] = paragraphsArray;
+    }
+    
+    return dict;
+}
+
++ (NSDictionary *)documentParagraphToDict:(LBVRDocumentParagraph *)paragraph {
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    
+    dict[@"paragraphNumber"] = @(paragraph.paragraphNumber);
+    if (paragraph.textContent) dict[@"textContent"] = paragraph.textContent;
+    if (paragraph.sourceRef) dict[@"sourceRef"] = paragraph.sourceRef;
+    if (paragraph.wordCount) dict[@"wordCount"] = paragraph.wordCount;
+    if (paragraph.characterCount) dict[@"characterCount"] = paragraph.characterCount;
+    
+    return dict;
+}
+
++ (NSDictionary *)extractionInfoToDict:(LBVRExtractionInfo *)info {
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    
+    if (info.extractorName) dict[@"extractorName"] = info.extractorName;
+    if (info.extractorVersion) dict[@"extractorVersion"] = info.extractorVersion;
+    if (info.extractedAt) dict[@"extractedAt"] = [self dateToString:info.extractedAt];
+    if (info.warnings) dict[@"warnings"] = info.warnings;
+    
+    return dict;
+}
+
++ (NSString *)dateToString:(NSDate *)date {
+    if (!date) return nil;
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    formatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    formatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    return [formatter stringFromDate:date];
 }
 
 + (NSString *)serializePluginInfo:(LBVRPluginInfo *)pluginInfo {
     if (!pluginInfo) return nil;
     
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    dict[@"name"] = pluginInfo.name ?: @"";
-    dict[@"version"] = pluginInfo.version ?: @"";
+    
+    dict[@"name"] = pluginInfo.name ?: @"unknown";
+    dict[@"version"] = pluginInfo.version ?: @"unknown";
     dict[@"description"] = pluginInfo.pluginDescription ?: @"";
     
     NSString *priorityString;
@@ -675,14 +939,30 @@
     }
     dict[@"priority"] = priorityString;
     
-    if (pluginInfo.author) dict[@"author"] = pluginInfo.author;
-    if (pluginInfo.capabilities) {
-        dict[@"capabilities"] = @{@"capabilities": pluginInfo.capabilities.capabilities};
+    if (pluginInfo.author) {
+        dict[@"author"] = pluginInfo.author;
     }
     
-    NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
-    if (error) return nil;
+    // Handle capabilities safely
+    NSArray *capabilitiesArray = @[];
+    if (pluginInfo.capabilities && pluginInfo.capabilities.capabilities) {
+        // Create a safe copy with only string objects
+        NSMutableArray *safeCapabilities = [[NSMutableArray alloc] init];
+        for (id obj in pluginInfo.capabilities.capabilities) {
+            if ([obj isKindOfClass:[NSString class]]) {
+                [safeCapabilities addObject:obj];
+            }
+        }
+        capabilitiesArray = safeCapabilities;
+    }
+    dict[@"capabilities"] = capabilitiesArray;
+    
+    NSError *jsonError = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&jsonError];
+    if (jsonError) {
+        fprintf(stderr, "Error: JSON serialization failed: %s\n", jsonError.localizedDescription.UTF8String);
+        return nil;
+    }
     
     return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
