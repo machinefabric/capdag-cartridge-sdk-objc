@@ -167,7 +167,6 @@
         for (id arg in args) {
             [cmdArgs addObject:[NSString stringWithFormat:@"%@", arg]];
         }
-        [cmdArgs addObject:@"--json"];
         
         // Execute the plugin
         NSTask *task = [[NSTask alloc] init];
