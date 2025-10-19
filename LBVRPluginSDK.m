@@ -34,12 +34,10 @@
 
 - (void)registerPlugin:(NSString *)name
             binaryPath:(NSString *)binaryPath
-          capabilities:(NSArray<NSString *> *)capabilities
-              priority:(NSUInteger)priority {
+          capabilities:(NSArray<NSString *> *)capabilities {
     
     LBVRPluginEntry *entry = [[LBVRPluginEntry alloc] initWithBinaryPath:binaryPath
-                                                            capabilities:capabilities
-                                                                priority:priority];
+                                                            capabilities:capabilities];
     
     // Update capability index
     for (NSString *capability in capabilities) {
@@ -131,7 +129,7 @@
 }
 
 - (NSInteger)calculateCapabilityScore:(LBVRPluginEntry *)plugin forCapability:(NSString *)capability {
-    NSInteger score = plugin.priority * 100; // Priority weight
+    NSInteger score = 0;
     
     // Add specificity score
     for (NSString *cap in plugin.capabilities) {
@@ -302,13 +300,11 @@
 @implementation LBVRPluginEntry
 
 - (instancetype)initWithBinaryPath:(NSString *)binaryPath
-                      capabilities:(NSArray<NSString *> *)capabilities
-                          priority:(NSUInteger)priority {
+                      capabilities:(NSArray<NSString *> *)capabilities {
     self = [super init];
     if (self) {
         _binaryPath = [binaryPath copy];
         _capabilities = [capabilities copy];
-        _priority = priority;
     }
     return self;
 }
@@ -340,15 +336,13 @@
 - (instancetype)initWithName:(NSString *)name
                      version:(NSString *)version
            pluginDescription:(NSString *)pluginDescription
-                capabilities:(NSArray<NSString *> *)capabilities
-                    priority:(LBVRPluginPriority)priority {
+                capabilities:(NSArray<NSString *> *)capabilities {
     self = [super init];
     if (self) {
         _name = [name copy];
         _version = [version copy];
         _pluginDescription = [pluginDescription copy];
         _capabilities = [[LBVRPluginCapabilities alloc] initWithCapabilities:capabilities];
-        _priority = priority;
     }
     return self;
 }
@@ -356,13 +350,11 @@
 + (instancetype)pluginWithName:(NSString *)name
                        version:(NSString *)version
                    description:(NSString *)description
-                  capabilities:(NSArray<NSString *> *)capabilities
-                      priority:(LBVRPluginPriority)priority {
+                  capabilities:(NSArray<NSString *> *)capabilities {
     return [[self alloc] initWithName:name
                               version:version
                     pluginDescription:description
-                         capabilities:capabilities
-                             priority:priority];
+                         capabilities:capabilities];
 }
 
 - (LBVRPluginInfo *)withAuthor:(NSString *)author {
@@ -920,23 +912,6 @@
     dict[@"name"] = pluginInfo.name ?: @"unknown";
     dict[@"version"] = pluginInfo.version ?: @"unknown";
     dict[@"description"] = pluginInfo.pluginDescription ?: @"";
-    
-    NSString *priorityString;
-    switch (pluginInfo.priority) {
-        case LBVRPluginPriorityOptional:
-            priorityString = @"optional";
-            break;
-        case LBVRPluginPriorityRecommended:
-            priorityString = @"recommended";
-            break;
-        case LBVRPluginPriorityCritical:
-            priorityString = @"critical";
-            break;
-        default:
-            priorityString = @"optional";
-            break;
-    }
-    dict[@"priority"] = priorityString;
     
     if (pluginInfo.author) {
         dict[@"author"] = pluginInfo.author;

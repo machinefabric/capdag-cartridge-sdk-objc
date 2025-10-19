@@ -20,8 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedRegistry;
 - (void)registerPlugin:(NSString *)name
             binaryPath:(NSString *)binaryPath
-          capabilities:(NSArray<NSString *> *)capabilities
-              priority:(NSUInteger)priority;
+          capabilities:(NSArray<NSString *> *)capabilities;
 
 - (LBVRCapabilityCaller * _Nullable)can:(NSString *)capability error:(NSError **)error;
 - (NSArray<NSString *> *)listCapabilities;
@@ -63,11 +62,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) NSString *binaryPath;
 @property (nonatomic, strong) NSArray<NSString *> *capabilities;
-@property (nonatomic, assign) NSUInteger priority; // 0=optional, 1=recommended, 2=critical
 
 - (instancetype)initWithBinaryPath:(NSString *)binaryPath
-                      capabilities:(NSArray<NSString *> *)capabilities
-                          priority:(NSUInteger)priority;
+                      capabilities:(NSArray<NSString *> *)capabilities;
 
 @end
 
@@ -79,35 +76,24 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)can:(NSString *)capability;
 @end
 
-// MARK: - Plugin Priorities
-
-typedef NS_ENUM(NSInteger, LBVRPluginPriority) {
-    LBVRPluginPriorityOptional = 0,     // Can be disabled/removed
-    LBVRPluginPriorityRecommended,      // Important but not critical
-    LBVRPluginPriorityCritical,         // System-critical, cannot be disabled
-};
-
 // MARK: - Plugin Info (for --plugin-info output)
 
 @interface LBVRPluginInfo : NSObject
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *version;
 @property (nonatomic, strong) NSString *pluginDescription;
-@property (nonatomic, assign) LBVRPluginPriority priority;
 @property (nonatomic, strong) LBVRPluginCapabilities *capabilities;
 @property (nonatomic, strong, nullable) NSString *author;
 
 - (instancetype)initWithName:(NSString *)name 
                      version:(NSString *)version 
            pluginDescription:(NSString *)pluginDescription 
-                capabilities:(NSArray<NSString *> *)capabilities
-                    priority:(LBVRPluginPriority)priority;
+                capabilities:(NSArray<NSString *> *)capabilities;
 
 + (instancetype)pluginWithName:(NSString *)name
                        version:(NSString *)version
                    description:(NSString *)description
-                  capabilities:(NSArray<NSString *> *)capabilities
-                      priority:(LBVRPluginPriority)priority;
+                  capabilities:(NSArray<NSString *> *)capabilities;
 
 - (LBVRPluginInfo *)withAuthor:(NSString *)author;
 @end
