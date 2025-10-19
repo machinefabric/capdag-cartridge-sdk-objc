@@ -399,7 +399,7 @@
     return [NSString stringWithFormat:@"--%@", operation];
 }
 
-+ (NSArray<NSString *> *)buildCommandArgs:(NSString *)capability args:(NSArray *)args includeJSON:(BOOL)includeJSON {
++ (NSArray<NSString *> *)buildCommandArgs:(NSString *)capability args:(NSArray *)args {
     NSMutableArray<NSString *> *cmdArgs = [[NSMutableArray alloc] init];
     
     [cmdArgs addObject:[self capabilityToFlag:capability]];
@@ -408,9 +408,7 @@
         [cmdArgs addObject:[NSString stringWithFormat:@"%@", arg]];
     }
     
-    if (includeJSON) {
-        [cmdArgs addObject:@"--json"];
-    }
+    // Plugins output JSON by default
     
     return [cmdArgs copy];
 }

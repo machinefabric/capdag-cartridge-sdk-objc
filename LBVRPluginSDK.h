@@ -275,7 +275,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LBVRCLIHelper : NSObject
 
 + (NSString *)capabilityToFlag:(NSString *)capability;
-+ (NSArray<NSString *> *)buildCommandArgs:(NSString *)capability args:(NSArray *)args includeJSON:(BOOL)includeJSON;
++ (NSArray<NSString *> *)buildCommandArgs:(NSString *)capability args:(NSArray *)args;
 + (void)executePlugin:(NSString *)binaryPath 
                  args:(NSArray<NSString *> *)args
            completion:(void (^)(NSData * _Nullable output, NSError * _Nullable error))completion;
