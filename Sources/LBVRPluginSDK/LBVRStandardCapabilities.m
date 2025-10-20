@@ -33,7 +33,7 @@
         argumentWithName:@"file_path"
         type:CSArgumentTypeString
         description:@"Path to the document file to process"
-        command:nil
+        cliFlag:nil
         position:@0
         validation:filePathValidation
         defaultValue:nil];
@@ -52,7 +52,7 @@
         argumentWithName:@"output"
         type:CSArgumentTypeString
         description:@"Write output to specified file instead of stdout"
-        command:@"output"
+        cliFlag:@"output"
         position:nil
         validation:outputValidation
         defaultValue:nil];
@@ -101,7 +101,7 @@
         argumentWithName:@"file_path"
         type:CSArgumentTypeString
         description:@"Path to the document file to process"
-        command:nil
+        cliFlag:nil
         position:@0
         validation:filePathValidation
         defaultValue:nil];
@@ -120,7 +120,7 @@
         argumentWithName:@"width"
         type:CSArgumentTypeInteger
         description:@"Width of the thumbnail in pixels"
-        command:@"width"
+        cliFlag:@"width"
         position:nil
         validation:widthValidation
         defaultValue:@200];
@@ -139,7 +139,7 @@
         argumentWithName:@"height"
         type:CSArgumentTypeInteger
         description:@"Height of the thumbnail in pixels"
-        command:@"height"
+        cliFlag:@"height"
         position:nil
         validation:heightValidation
         defaultValue:@300];
@@ -158,7 +158,7 @@
         argumentWithName:@"output"
         type:CSArgumentTypeString
         description:@"Write thumbnail to specified file instead of stdout"
-        command:@"output"
+        cliFlag:@"output"
         position:nil
         validation:outputValidation
         defaultValue:nil];
@@ -177,7 +177,7 @@
         argumentWithName:@"page"
         type:CSArgumentTypeInteger
         description:@"Page number to generate thumbnail from (1-based, default: 1)"
-        command:@"page"
+        cliFlag:@"page"
         position:nil
         validation:pageValidation
         defaultValue:@1];
@@ -226,7 +226,7 @@
         argumentWithName:@"file_path"
         type:CSArgumentTypeString
         description:@"Path to the document file to process"
-        command:nil
+        cliFlag:nil
         position:@0
         validation:filePathValidation
         defaultValue:nil];
@@ -245,7 +245,7 @@
         argumentWithName:@"max_depth"
         type:CSArgumentTypeInteger
         description:@"Maximum outline depth to extract (1-10)"
-        command:@"max-depth"
+        cliFlag:@"max-depth"
         position:nil
         validation:maxDepthValidation
         defaultValue:nil];
@@ -256,7 +256,7 @@
         argumentWithName:@"include_page_numbers"
         type:CSArgumentTypeBoolean
         description:@"Include page numbers in the outline (default: true)"
-        command:@"include-page-numbers"
+        cliFlag:@"include-page-numbers"
         position:nil
         validation:nil
         defaultValue:@YES];
@@ -275,7 +275,7 @@
         argumentWithName:@"output"
         type:CSArgumentTypeString
         description:@"Write output to specified file instead of stdout"
-        command:@"output"
+        cliFlag:@"output"
         position:nil
         validation:outputValidation
         defaultValue:nil];
@@ -324,7 +324,7 @@
         argumentWithName:@"file_path"
         type:CSArgumentTypeString
         description:@"Path to the document file to process"
-        command:nil
+        cliFlag:nil
         position:@0
         validation:filePathValidation
         defaultValue:nil];
@@ -343,7 +343,7 @@
         argumentWithName:@"output"
         type:CSArgumentTypeString
         description:@"Write output to specified file instead of stdout"
-        command:@"output"
+        cliFlag:@"output"
         position:nil
         validation:outputValidation
         defaultValue:nil];
