@@ -34,17 +34,30 @@ build-plugin-sdk: build-capdef
 	# Copy capability SDK headers
 	@cp -r $(CAPABILITY_SDK_DIR)/Sources/CapDef/include/* $(DIST_DIR)/
 	
-	# Compile our plugin SDK with capability SDK integration
-	clang -c -o $(BUILD_DIR)/LBVRPluginSDK.o LBVRPluginSDK.m \
+	# Compile our plugin SDK with capability SDK integration (now from Sources directory)
+	/usr/bin/clang -c -o $(BUILD_DIR)/LBVRPluginSDK.o Sources/LBVRPluginSDK/LBVRPluginSDK.m \
 		-I$(DIST_DIR) \
 		-I$(CAPABILITY_SDK_DIR)/Sources/CapDef/include \
-		-fobjc-arc -fmodules
+		-ISources/LBVRPluginSDK/include \
+		-fobjc-arc -fno-modules
 	
-	# Create static library
-	ar rcs $(DIST_DIR)/libLBVRPluginSDK.a $(BUILD_DIR)/LBVRPluginSDK.o
+	/usr/bin/clang -c -o $(BUILD_DIR)/LBVRStandardCapabilities.o Sources/LBVRPluginSDK/LBVRStandardCapabilities.m \
+		-I$(DIST_DIR) \
+		-I$(CAPABILITY_SDK_DIR)/Sources/CapDef/include \
+		-ISources/LBVRPluginSDK/include \
+		-fobjc-arc -fno-modules
+	
+	/usr/bin/clang -c -o $(BUILD_DIR)/CSPluginCapabilities.o Sources/LBVRPluginSDK/CSPluginCapabilities.m \
+		-I$(DIST_DIR) \
+		-I$(CAPABILITY_SDK_DIR)/Sources/CapDef/include \
+		-ISources/LBVRPluginSDK/include \
+		-fobjc-arc -fno-modules
+	
+	# Create static library with all object files
+	ar rcs $(DIST_DIR)/libLBVRPluginSDK.a $(BUILD_DIR)/*.o
 	
 	# Copy plugin SDK headers
-	@cp LBVRPluginSDK.h $(DIST_DIR)/
+	@cp Sources/LBVRPluginSDK/include/*.h $(DIST_DIR)/
 	@echo "✅ LBVR Plugin SDK built successfully with capability SDK integration in $(DIST_DIR)/"
 
 .PHONY: clean

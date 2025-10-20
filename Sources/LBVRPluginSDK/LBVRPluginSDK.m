@@ -5,7 +5,7 @@
 //  Unified capability-based plugin interface with standardized command-line calling
 //
 
-#import "LBVRPluginSDK.h"
+#import "include/LBVRPluginSDK.h"
 
 // MARK: - Unified Plugin Registry
 
@@ -311,24 +311,6 @@
 
 @end
 
-// MARK: - Plugin Capabilities
-
-@implementation LBVRPluginCapabilities
-
-- (instancetype)initWithCapabilities:(NSArray<NSString *> *)capabilities {
-    self = [super init];
-    if (self) {
-        _capabilities = [capabilities copy];
-    }
-    return self;
-}
-
-- (BOOL)can:(NSString *)capability {
-    return [self.capabilities containsObject:capability];
-}
-
-@end
-
 // MARK: - Plugin Info
 
 @implementation LBVRPluginInfo
@@ -336,13 +318,13 @@
 - (instancetype)initWithName:(NSString *)name
                      version:(NSString *)version
            pluginDescription:(NSString *)pluginDescription
-                capabilities:(NSArray<NSString *> *)capabilities {
+                capabilities:(CSPluginCapabilities *)capabilities {
     self = [super init];
     if (self) {
         _name = [name copy];
         _version = [version copy];
         _pluginDescription = [pluginDescription copy];
-        _capabilities = [[LBVRPluginCapabilities alloc] initWithCapabilities:capabilities];
+        _capabilities = capabilities;
     }
     return self;
 }
@@ -350,7 +332,7 @@
 + (instancetype)pluginWithName:(NSString *)name
                        version:(NSString *)version
                    description:(NSString *)description
-                  capabilities:(NSArray<NSString *> *)capabilities {
+                  capabilities:(CSPluginCapabilities *)capabilities {
     return [[self alloc] initWithName:name
                               version:version
                     pluginDescription:description
@@ -962,5 +944,24 @@
     return [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:error];
 }
 
+@end
+
+// MARK: - Processing Result Implementation
+
+@implementation LBVRProcessingResult
+
++ (instancetype)successWithData:(id)data {
+    LBVRProcessingResult *result = [[LBVRProcessingResult alloc] init];
+    result.success = YES;
+    result.data = data;
+    return result;
+}
+
++ (instancetype)failureWithError:(NSString *)error {
+    LBVRProcessingResult *result = [[LBVRProcessingResult alloc] init];
+    result.success = NO;
+    result.error = error;
+    return result;
+}
 
 @end

@@ -7,6 +7,8 @@
 
 #import <Foundation/Foundation.h>
 #import "CapDef.h"
+#import "CSPluginCapabilities.h"
+#import "LBVRStandardCapabilities.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -242,6 +244,69 @@ NS_ASSUME_NONNULL_BEGIN
                         size:(unsigned long long)size 
                 documentType:(NSString *)documentType 
                      isValid:(BOOL)isValid;
+@end
+
+// MARK: - Document Handler Protocol
+
+@class LBVRProcessingResult;
+
+/**
+ * Document handler protocol that defines the contract for document processing plugins
+ */
+@protocol LBVRDocumentHandler <NSObject>
+
+/**
+ * Get plugin information including capabilities
+ * @return Plugin information
+ */
+- (LBVRPluginInfo *)getPluginInfo;
+
+/**
+ * Extract metadata from a document
+ * @param filePath Path to the document file
+ * @return Processing result with metadata
+ */
+- (LBVRProcessingResult *)extractMetadata:(NSString *)filePath;
+
+/**
+ * Extract outline/table of contents from a document
+ * @param filePath Path to the document file
+ * @return Processing result with outline
+ */
+- (LBVRProcessingResult *)extractOutline:(NSString *)filePath;
+
+/**
+ * Extract pages with text content from a document
+ * @param filePath Path to the document file
+ * @return Processing result with document pages
+ */
+- (LBVRProcessingResult *)extractPages:(NSString *)filePath;
+
+/**
+ * Generate thumbnail image from a document
+ * @param filePath Path to the document file
+ * @param width Thumbnail width in pixels
+ * @param height Thumbnail height in pixels
+ * @param page Page number to generate thumbnail from (1-based)
+ * @return Processing result with thumbnail data
+ */
+- (LBVRProcessingResult *)generateThumbnail:(NSString *)filePath width:(NSInteger)width height:(NSInteger)height page:(NSInteger)page;
+
+@end
+
+// MARK: - Processing Result
+
+@interface LBVRProcessingResult : NSObject
+
+@property (nonatomic, assign) BOOL success;
+@property (nonatomic, strong, nullable) id data;
+@property (nonatomic, strong, nullable) NSString *error;
+@property (nonatomic, strong, nullable) NSNumber *processingTimeMs;
+@property (nonatomic, strong, nullable) LBVRFileInfo *fileInfo;
+
++ (instancetype)successWithData:(id)data;
++ (instancetype)failureWithError:(NSString *)error;
+
 @end
 
 // MARK: - Standardized Capabilities
