@@ -16,9 +16,7 @@
                                      userInfo:nil];
     }
     
-    CSCommandInterface *commandInterface = [CSCommandInterface 
-        interfaceWithCliFlag:@"--extract-metadata"
-        usagePattern:@"plugin_binary --extract-metadata <file_path> [--output <output_file>]"];
+    NSString *command = @"extract-metadata";
     
     CSCapabilityArguments *arguments = [CSCapabilityArguments arguments];
     
@@ -35,7 +33,7 @@
         argumentWithName:@"file_path"
         type:CSArgumentTypeString
         description:@"Path to the document file to process"
-        cliFlag:nil
+        command:nil
         position:@0
         validation:filePathValidation
         defaultValue:nil];
@@ -54,7 +52,7 @@
         argumentWithName:@"output"
         type:CSArgumentTypeString
         description:@"Write output to specified file instead of stdout"
-        cliFlag:@"--output"
+        command:@"output"
         position:nil
         validation:outputValidation
         defaultValue:nil];
@@ -72,7 +70,7 @@
         version:@"1.0.0"
         description:@"Extract document metadata including title, author, creation date, file size, and other properties"
         metadata:@{}
-        commandInterface:commandInterface
+        command:command
         arguments:arguments
         output:output];
 }
@@ -86,9 +84,7 @@
                                      userInfo:nil];
     }
     
-    CSCommandInterface *commandInterface = [CSCommandInterface 
-        interfaceWithCliFlag:@"--generate-thumbnail"
-        usagePattern:@"plugin_binary --generate-thumbnail <file_path> [--width <width>] [--height <height>] [--output <output_file>] [--page <page>]"];
+    NSString *command = @"generate-thumbnail";
     
     CSCapabilityArguments *arguments = [CSCapabilityArguments arguments];
     
@@ -105,7 +101,7 @@
         argumentWithName:@"file_path"
         type:CSArgumentTypeString
         description:@"Path to the document file to process"
-        cliFlag:nil
+        command:nil
         position:@0
         validation:filePathValidation
         defaultValue:nil];
@@ -124,7 +120,7 @@
         argumentWithName:@"width"
         type:CSArgumentTypeInteger
         description:@"Width of the thumbnail in pixels"
-        cliFlag:@"--width"
+        command:@"width"
         position:nil
         validation:widthValidation
         defaultValue:@200];
@@ -143,7 +139,7 @@
         argumentWithName:@"height"
         type:CSArgumentTypeInteger
         description:@"Height of the thumbnail in pixels"
-        cliFlag:@"--height"
+        command:@"height"
         position:nil
         validation:heightValidation
         defaultValue:@300];
@@ -162,7 +158,7 @@
         argumentWithName:@"output"
         type:CSArgumentTypeString
         description:@"Write thumbnail to specified file instead of stdout"
-        cliFlag:@"--output"
+        command:@"output"
         position:nil
         validation:outputValidation
         defaultValue:nil];
@@ -181,7 +177,7 @@
         argumentWithName:@"page"
         type:CSArgumentTypeInteger
         description:@"Page number to generate thumbnail from (1-based, default: 1)"
-        cliFlag:@"--page"
+        command:@"page"
         position:nil
         validation:pageValidation
         defaultValue:@1];
@@ -199,7 +195,7 @@
         version:@"1.0.0"
         description:@"Generate a thumbnail image preview of the document"
         metadata:@{}
-        commandInterface:commandInterface
+        command:command
         arguments:arguments
         output:output];
 }
@@ -213,9 +209,7 @@
                                      userInfo:nil];
     }
     
-    CSCommandInterface *commandInterface = [CSCommandInterface 
-        interfaceWithCliFlag:@"--extract-outline"
-        usagePattern:@"plugin_binary --extract-outline <file_path> [--max-depth <depth>] [--include-page-numbers] [--output <output_file>]"];
+    NSString *command = @"extract-outline";
     
     CSCapabilityArguments *arguments = [CSCapabilityArguments arguments];
     
@@ -232,7 +226,7 @@
         argumentWithName:@"file_path"
         type:CSArgumentTypeString
         description:@"Path to the document file to process"
-        cliFlag:nil
+        command:nil
         position:@0
         validation:filePathValidation
         defaultValue:nil];
@@ -251,7 +245,7 @@
         argumentWithName:@"max_depth"
         type:CSArgumentTypeInteger
         description:@"Maximum outline depth to extract (1-10)"
-        cliFlag:@"--max-depth"
+        command:@"max-depth"
         position:nil
         validation:maxDepthValidation
         defaultValue:nil];
@@ -262,7 +256,7 @@
         argumentWithName:@"include_page_numbers"
         type:CSArgumentTypeBoolean
         description:@"Include page numbers in the outline (default: true)"
-        cliFlag:@"--include-page-numbers"
+        command:@"include-page-numbers"
         position:nil
         validation:nil
         defaultValue:@YES];
@@ -281,7 +275,7 @@
         argumentWithName:@"output"
         type:CSArgumentTypeString
         description:@"Write output to specified file instead of stdout"
-        cliFlag:@"--output"
+        command:@"output"
         position:nil
         validation:outputValidation
         defaultValue:nil];
@@ -299,7 +293,7 @@
         version:@"1.0.0"
         description:@"Extract document outline/table of contents with hierarchical structure"
         metadata:@{}
-        commandInterface:commandInterface
+        command:command
         arguments:arguments
         output:output];
 }
@@ -313,9 +307,7 @@
                                      userInfo:nil];
     }
     
-    CSCommandInterface *commandInterface = [CSCommandInterface 
-        interfaceWithCliFlag:@"--extract-pages"
-        usagePattern:@"plugin_binary --extract-pages <file_path> [--output <output_file>]"];
+    NSString *command = @"extract-pages";
     
     CSCapabilityArguments *arguments = [CSCapabilityArguments arguments];
     
@@ -332,7 +324,7 @@
         argumentWithName:@"file_path"
         type:CSArgumentTypeString
         description:@"Path to the document file to process"
-        cliFlag:nil
+        command:nil
         position:@0
         validation:filePathValidation
         defaultValue:nil];
@@ -351,7 +343,7 @@
         argumentWithName:@"output"
         type:CSArgumentTypeString
         description:@"Write output to specified file instead of stdout"
-        cliFlag:@"--output"
+        command:@"output"
         position:nil
         validation:outputValidation
         defaultValue:nil];
@@ -369,7 +361,7 @@
         version:@"1.0.0"
         description:@"Extract document pages with text content organized by pages and paragraphs"
         metadata:@{}
-        commandInterface:commandInterface
+        command:command
         arguments:arguments
         output:output];
 }

@@ -158,10 +158,10 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Convert capability to CLI flag
         NSString *operation = [self.capability componentsSeparatedByString:@":"][0];
-        NSString *cliFlag = [NSString stringWithFormat:@"--%@", operation];
+        NSString *command = [NSString stringWithFormat:@"--%@", operation];
         
         // Build command arguments
-        NSMutableArray<NSString *> *cmdArgs = [[NSMutableArray alloc] initWithObjects:cliFlag, nil];
+        NSMutableArray<NSString *> *cmdArgs = [[NSMutableArray alloc] initWithObjects:command, nil];
         for (id arg in args) {
             [cmdArgs addObject:[NSString stringWithFormat:@"%@", arg]];
         }
@@ -390,7 +390,7 @@
         [cmdArgs addObject:[NSString stringWithFormat:@"%@", arg]];
     }
     
-    // Plugins output JSON by default
+    
     
     return [cmdArgs copy];
 }
