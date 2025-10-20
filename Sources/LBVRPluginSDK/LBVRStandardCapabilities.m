@@ -33,7 +33,7 @@
         argumentWithName:@"file_path"
         type:CSArgumentTypeString
         description:@"Path to the document file to process"
-        cliFlag:nil
+        cliFlag:@"file_path"
         position:@0
         validation:filePathValidation
         defaultValue:nil];
@@ -52,7 +52,7 @@
         argumentWithName:@"output"
         type:CSArgumentTypeString
         description:@"Write output to specified file instead of stdout"
-        cliFlag:@"output"
+        cliFlag:@"--output"
         position:nil
         validation:outputValidation
         defaultValue:nil];
@@ -101,7 +101,7 @@
         argumentWithName:@"file_path"
         type:CSArgumentTypeString
         description:@"Path to the document file to process"
-        cliFlag:nil
+        cliFlag:@"file_path"
         position:@0
         validation:filePathValidation
         defaultValue:nil];
@@ -120,7 +120,7 @@
         argumentWithName:@"width"
         type:CSArgumentTypeInteger
         description:@"Width of the thumbnail in pixels"
-        cliFlag:@"width"
+        cliFlag:@"--width"
         position:nil
         validation:widthValidation
         defaultValue:@200];
@@ -139,7 +139,7 @@
         argumentWithName:@"height"
         type:CSArgumentTypeInteger
         description:@"Height of the thumbnail in pixels"
-        cliFlag:@"height"
+        cliFlag:@"--height"
         position:nil
         validation:heightValidation
         defaultValue:@300];
@@ -158,7 +158,7 @@
         argumentWithName:@"output"
         type:CSArgumentTypeString
         description:@"Write thumbnail to specified file instead of stdout"
-        cliFlag:@"output"
+        cliFlag:@"--output"
         position:nil
         validation:outputValidation
         defaultValue:nil];
@@ -177,7 +177,7 @@
         argumentWithName:@"page"
         type:CSArgumentTypeInteger
         description:@"Page number to generate thumbnail from (1-based, default: 1)"
-        cliFlag:@"page"
+        cliFlag:@"--page"
         position:nil
         validation:pageValidation
         defaultValue:@1];
@@ -226,7 +226,7 @@
         argumentWithName:@"file_path"
         type:CSArgumentTypeString
         description:@"Path to the document file to process"
-        cliFlag:nil
+        cliFlag:@"file_path"
         position:@0
         validation:filePathValidation
         defaultValue:nil];
@@ -245,7 +245,7 @@
         argumentWithName:@"max_depth"
         type:CSArgumentTypeInteger
         description:@"Maximum outline depth to extract (1-10)"
-        cliFlag:@"max-depth"
+        cliFlag:@"--max-depth"
         position:nil
         validation:maxDepthValidation
         defaultValue:nil];
@@ -256,7 +256,7 @@
         argumentWithName:@"include_page_numbers"
         type:CSArgumentTypeBoolean
         description:@"Include page numbers in the outline (default: true)"
-        cliFlag:@"include-page-numbers"
+        cliFlag:@"--include-page-numbers"
         position:nil
         validation:nil
         defaultValue:@YES];
@@ -275,7 +275,7 @@
         argumentWithName:@"output"
         type:CSArgumentTypeString
         description:@"Write output to specified file instead of stdout"
-        cliFlag:@"output"
+        cliFlag:@"--output"
         position:nil
         validation:outputValidation
         defaultValue:nil];
@@ -324,7 +324,7 @@
         argumentWithName:@"file_path"
         type:CSArgumentTypeString
         description:@"Path to the document file to process"
-        cliFlag:nil
+        cliFlag:@"file_path"
         position:@0
         validation:filePathValidation
         defaultValue:nil];
@@ -343,11 +343,30 @@
         argumentWithName:@"output"
         type:CSArgumentTypeString
         description:@"Write output to specified file instead of stdout"
-        cliFlag:@"output"
+        cliFlag:@"--output"
         position:nil
         validation:outputValidation
         defaultValue:nil];
     [arguments addOptionalArgument:outputArg];
+    
+    // Optional page_range argument
+    CSArgumentValidation *pageRangeValidation = [CSArgumentValidation 
+        validationWithMin:nil
+        max:nil
+        minLength:nil
+        maxLength:nil
+        pattern:@"^\\d+(-\\d*)?$"
+        allowedValues:nil];
+    
+    CSCapabilityArgument *pageRangeArg = [CSCapabilityArgument 
+        argumentWithName:@"page_range"
+        type:CSArgumentTypeString
+        description:@"Page range to extract (e.g., '1-5' or '10-')"
+        cliFlag:@"--page-range"
+        position:nil
+        validation:pageRangeValidation
+        defaultValue:nil];
+    [arguments addOptionalArgument:pageRangeArg];
     
     CSCapabilityOutput *output = [CSCapabilityOutput 
         outputWithType:CSOutputTypeObject
