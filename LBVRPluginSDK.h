@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CapabilitySDK.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -68,13 +69,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-// MARK: - Plugin Capabilities
-
-@interface LBVRPluginCapabilities : NSObject
-@property (nonatomic, strong) NSArray<NSString *> *capabilities;
-- (instancetype)initWithCapabilities:(NSArray<NSString *> *)capabilities;
-- (BOOL)can:(NSString *)capability;
-@end
+// MARK: - Plugin Capabilities (now using formal capability SDK)
+// Use CSPluginCapabilities from CapabilitySDK instead of the old string-based system
 
 // MARK: - Plugin Info (for --plugin-info output)
 
@@ -82,18 +78,18 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *version;
 @property (nonatomic, strong) NSString *pluginDescription;
-@property (nonatomic, strong) LBVRPluginCapabilities *capabilities;
+@property (nonatomic, strong) CSPluginCapabilities *capabilities;  // Now using formal capability SDK
 @property (nonatomic, strong, nullable) NSString *author;
 
 - (instancetype)initWithName:(NSString *)name 
                      version:(NSString *)version 
            pluginDescription:(NSString *)pluginDescription 
-                capabilities:(NSArray<NSString *> *)capabilities;
+                capabilities:(CSPluginCapabilities *)capabilities;
 
 + (instancetype)pluginWithName:(NSString *)name
                        version:(NSString *)version
                    description:(NSString *)description
-                  capabilities:(NSArray<NSString *> *)capabilities;
+                capabilities:(CSPluginCapabilities *)capabilities;
 
 - (LBVRPluginInfo *)withAuthor:(NSString *)author;
 @end
