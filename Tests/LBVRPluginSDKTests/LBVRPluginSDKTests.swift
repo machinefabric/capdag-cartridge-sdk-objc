@@ -16,9 +16,9 @@ final class LBVRPluginSDKTests: XCTestCase {
         XCTAssertNotNil(extractOutline)
         XCTAssertEqual(extractOutline.version, "1.0.0")
         
-        let extractText = LBVRStandardCapabilities.extractTextCapability()
-        XCTAssertNotNil(extractText)
-        XCTAssertEqual(extractText.version, "1.0.0")
+        let extractPages = LBVRStandardCapabilities.extractPagesCapability()
+        XCTAssertNotNil(extractPages)
+        XCTAssertEqual(extractPages.version, "1.0.0")
     }
     
     func testPluginCapabilities() throws {
