@@ -1,15 +1,15 @@
 # Makefile for LBVR Plugin SDK Objective-C
-# This SDK now depends on capability-sdk-objc for formal capability management
+# This SDK now depends on capdef-objc for formal capability management
 
 # Directories
-CAPABILITY_SDK_DIR = ../capability-sdk-objc
+CAPABILITY_SDK_DIR = ../capdef-objc
 BUILD_DIR = build
 DIST_DIR = dist
 
 help:
 	@echo "Usage: make <target>\n\n\
 	  build\t\tBuild the LBVR Plugin SDK with capability SDK integration\n\
-	  build-capability-sdk\tBuild only the capability SDK\n\
+	  build-capdef\tBuild only the capability SDK\n\
 	  clean\t\tRemove built artifacts\n\
 	  install\tInstall the library to system paths\n\
 	  test\t\tRun tests for both SDKs\n\
@@ -18,15 +18,15 @@ help:
 
 # Build both the capability SDK and the plugin SDK
 .PHONY: build
-build: build-capability-sdk build-plugin-sdk
+build: build-capdef build-plugin-sdk
 
-.PHONY: build-capability-sdk
-build-capability-sdk:
-	@echo "Building capability-sdk-objc..."
+.PHONY: build-capdef
+build-capdef:
+	@echo "Building capdef-objc..."
 	cd $(CAPABILITY_SDK_DIR) && swift build -c release
 
 .PHONY: build-plugin-sdk
-build-plugin-sdk: build-capability-sdk
+build-plugin-sdk: build-capdef
 	@echo "Building lbvr-plugin-sdk-objc..."
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(DIST_DIR)
