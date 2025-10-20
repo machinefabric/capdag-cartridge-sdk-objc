@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CapabilitySDK.h"
+#import "CapDef.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 // MARK: - Plugin Capabilities (now using formal capability SDK)
-// Use CSPluginCapabilities from CapabilitySDK instead of the old string-based system
+// Use CSPluginCapabilities from CapDef instead of the old string-based system
 
 // MARK: - Plugin Info (for --plugin-info output)
 

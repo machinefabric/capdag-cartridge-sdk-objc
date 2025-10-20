@@ -32,12 +32,12 @@ build-plugin-sdk: build-capdef
 	@mkdir -p $(DIST_DIR)
 	
 	# Copy capability SDK headers
-	@cp -r $(CAPABILITY_SDK_DIR)/Sources/CapabilitySDK/include/* $(DIST_DIR)/
+	@cp -r $(CAPABILITY_SDK_DIR)/Sources/CapDef/include/* $(DIST_DIR)/
 	
 	# Compile our plugin SDK with capability SDK integration
 	clang -c -o $(BUILD_DIR)/LBVRPluginSDK.o LBVRPluginSDK.m \
 		-I$(DIST_DIR) \
-		-I$(CAPABILITY_SDK_DIR)/Sources/CapabilitySDK/include \
+		-I$(CAPABILITY_SDK_DIR)/Sources/CapDef/include \
 		-fobjc-arc -fmodules
 	
 	# Create static library
@@ -71,7 +71,7 @@ example:
 	@echo "Example plugin integration with formal capability SDK:"
 	@echo ""
 	@echo "1. Add both SDKs to your project:"
-	@echo "   #import \"CapabilitySDK.h\""
+	@echo "   #import \"CapDef.h\""
 	@echo "   #import \"LBVRPluginSDK.h\""
 	@echo ""
 	@echo "2. Create formal capability definitions:"
