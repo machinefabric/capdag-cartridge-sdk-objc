@@ -311,9 +311,9 @@
 
 @end
 
-// MARK: - Plugin Info
+// MARK: - Plugin Manifest
 
-@implementation LBVRPluginInfo
+@implementation LBVRPluginManifest
 
 - (instancetype)initWithName:(NSString *)name
                      version:(NSString *)version
@@ -339,7 +339,7 @@
                          capabilities:capabilities];
 }
 
-- (LBVRPluginInfo *)withAuthor:(NSString *)author {
+- (LBVRPluginManifest *)withAuthor:(NSString *)author {
     self.author = [author copy];
     return self;
 }
@@ -884,30 +884,86 @@
     return [formatter stringFromDate:date];
 }
 
-+ (NSString *)serializePluginInfo:(LBVRPluginInfo *)pluginInfo {
-    if (!pluginInfo) return nil;
++ (NSString *)serializePluginManifest:(LBVRPluginManifest *)pluginManifest {
+    if (!pluginManifest) return nil;
     
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     
-    dict[@"name"] = pluginInfo.name ?: @"unknown";
-    dict[@"version"] = pluginInfo.version ?: @"unknown";
-    dict[@"description"] = pluginInfo.pluginDescription ?: @"";
+    dict[@"name"] = pluginManifest.name ?: @"unknown";
+    dict[@"version"] = pluginManifest.version ?: @"unknown";
+    dict[@"description"] = pluginManifest.pluginDescription ?: @"";
     
-    if (pluginInfo.author) {
-        dict[@"author"] = pluginInfo.author;
+    if (pluginManifest.author) {
+        dict[@"author"] = pluginManifest.author;
     }
     
-    // Handle capabilities safely
-    NSArray *capabilitiesArray = @[];
-    if (pluginInfo.capabilities && pluginInfo.capabilities.capabilities) {
-        // Create a safe copy with only string objects
-        NSMutableArray *safeCapabilities = [[NSMutableArray alloc] init];
-        for (id obj in pluginInfo.capabilities.capabilities) {
-            if ([obj isKindOfClass:[NSString class]]) {
-                [safeCapabilities addObject:obj];
+    // Handle capabilities - expecting CSCapability objects only
+    NSMutableArray *capabilitiesArray = [[NSMutableArray alloc] init];
+    if (pluginManifest.capabilities && pluginManifest.capabilities.capabilities) {
+        for (CSCapability *capability in pluginManifest.capabilities.capabilities) {
+            NSMutableDictionary *capabilityDict = [[NSMutableDictionary alloc] init];
+            
+            // Basic capability info
+            capabilityDict[@"id"] = [capability idString];
+            capabilityDict[@"version"] = capability.version;
+            capabilityDict[@"command"] = capability.command;
+            capabilityDict[@"description"] = capability.capabilityDescription;
+            
+            // Add metadata (including file types)
+            if (capability.metadata && capability.metadata.count > 0) {
+                capabilityDict[@"metadata"] = capability.metadata;
             }
+            
+            // Add arguments info
+            if (capability.arguments && !capability.arguments.isEmpty) {
+                NSMutableDictionary *argumentsDict = [[NSMutableDictionary alloc] init];
+                if (capability.arguments.required.count > 0) {
+                    NSMutableArray *requiredArgs = [[NSMutableArray alloc] init];
+                    for (CSCapabilityArgument *arg in capability.arguments.required) {
+                        [requiredArgs addObject:@{
+                            @"name": arg.name,
+                            @"type": @(arg.type),
+                            @"description": arg.argumentDescription,
+                            @"cli_flag": arg.cliFlag
+                        }];
+                    }
+                    argumentsDict[@"required"] = requiredArgs;
+                }
+                if (capability.arguments.optional.count > 0) {
+                    NSMutableArray *optionalArgs = [[NSMutableArray alloc] init];
+                    for (CSCapabilityArgument *arg in capability.arguments.optional) {
+                        NSMutableDictionary *argDict = [@{
+                            @"name": arg.name,
+                            @"type": @(arg.type),
+                            @"description": arg.argumentDescription,
+                            @"cli_flag": arg.cliFlag
+                        } mutableCopy];
+                        if (arg.defaultValue) {
+                            argDict[@"default"] = arg.defaultValue;
+                        }
+                        [optionalArgs addObject:argDict];
+                    }
+                    argumentsDict[@"optional"] = optionalArgs;
+                }
+                capabilityDict[@"arguments"] = argumentsDict;
+            }
+            
+            // Add output info
+            if (capability.output) {
+                NSMutableDictionary *outputDict = [[NSMutableDictionary alloc] init];
+                outputDict[@"type"] = @(capability.output.type);
+                outputDict[@"description"] = capability.output.outputDescription;
+                if (capability.output.contentType) {
+                    outputDict[@"content_type"] = capability.output.contentType;
+                }
+                if (capability.output.schemaRef) {
+                    outputDict[@"schema_ref"] = capability.output.schemaRef;
+                }
+                capabilityDict[@"output"] = outputDict;
+            }
+            
+            [capabilitiesArray addObject:capabilityDict];
         }
-        capabilitiesArray = safeCapabilities;
     }
     dict[@"capabilities"] = capabilitiesArray;
     

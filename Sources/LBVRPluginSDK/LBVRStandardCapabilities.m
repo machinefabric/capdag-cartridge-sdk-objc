@@ -420,4 +420,77 @@
     return nil;
 }
 
++ (CSCapability *)extractMetadataCapabilitySubbedWith:(NSArray<NSString *> *)fileTypes {
+    CSCapability *baseCapability = [self extractMetadataCapability];
+    
+    NSMutableDictionary<NSString *, NSString *> *metadata = [baseCapability.metadata mutableCopy];
+    metadata[@"file_types"] = [fileTypes componentsJoinedByString:@","];
+    
+    return [CSCapability 
+        capabilityWithId:baseCapability.capabilityId
+        version:baseCapability.version
+        description:baseCapability.capabilityDescription
+        metadata:metadata
+        command:baseCapability.command
+        arguments:baseCapability.arguments
+        output:baseCapability.output];
+}
+
++ (CSCapability *)generateThumbnailCapabilitySubbedWith:(NSArray<NSString *> *)fileTypes {
+    CSCapability *baseCapability = [self generateThumbnailCapability];
+    
+    NSMutableDictionary<NSString *, NSString *> *metadata = [baseCapability.metadata mutableCopy];
+    metadata[@"file_types"] = [fileTypes componentsJoinedByString:@","];
+    
+    return [CSCapability 
+        capabilityWithId:baseCapability.capabilityId
+        version:baseCapability.version
+        description:baseCapability.capabilityDescription
+        metadata:metadata
+        command:baseCapability.command
+        arguments:baseCapability.arguments
+        output:baseCapability.output];
+}
+
++ (CSCapability *)extractOutlineCapabilitySubbedWith:(NSArray<NSString *> *)fileTypes {
+    CSCapability *baseCapability = [self extractOutlineCapability];
+    
+    NSMutableDictionary<NSString *, NSString *> *metadata = [baseCapability.metadata mutableCopy];
+    metadata[@"file_types"] = [fileTypes componentsJoinedByString:@","];
+    
+    return [CSCapability 
+        capabilityWithId:baseCapability.capabilityId
+        version:baseCapability.version
+        description:baseCapability.capabilityDescription
+        metadata:metadata
+        command:baseCapability.command
+        arguments:baseCapability.arguments
+        output:baseCapability.output];
+}
+
++ (CSCapability *)extractPagesCapabilitySubbedWith:(NSArray<NSString *> *)fileTypes {
+    CSCapability *baseCapability = [self extractPagesCapability];
+    
+    NSMutableDictionary<NSString *, NSString *> *metadata = [baseCapability.metadata mutableCopy];
+    metadata[@"file_types"] = [fileTypes componentsJoinedByString:@","];
+    
+    return [CSCapability 
+        capabilityWithId:baseCapability.capabilityId
+        version:baseCapability.version
+        description:baseCapability.capabilityDescription
+        metadata:metadata
+        command:baseCapability.command
+        arguments:baseCapability.arguments
+        output:baseCapability.output];
+}
+
++ (NSArray<CSCapability *> *)allStandardCapabilitiesSubbedWith:(NSArray<NSString *> *)fileTypes {
+    return @[
+        [self extractMetadataCapabilitySubbedWith:fileTypes],
+        [self generateThumbnailCapabilitySubbedWith:fileTypes],
+        [self extractOutlineCapabilitySubbedWith:fileTypes],
+        [self extractPagesCapabilitySubbedWith:fileTypes]
+    ];
+}
+
 @end

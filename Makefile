@@ -53,8 +53,8 @@ build-plugin-sdk: build-capdef
 		-ISources/LBVRPluginSDK/include \
 		-fobjc-arc -fno-modules
 	
-	# Create static library with all object files
-	ar rcs $(DIST_DIR)/libLBVRPluginSDK.a $(BUILD_DIR)/*.o
+	# Create static library with all object files including CapDef
+	ar rcs $(DIST_DIR)/libLBVRPluginSDK.a $(BUILD_DIR)/*.o $(CAPABILITY_SDK_DIR)/.build/release/CapDef.build/*.o
 	
 	# Copy plugin SDK headers
 	@cp Sources/LBVRPluginSDK/include/*.h $(DIST_DIR)/
@@ -96,8 +96,8 @@ example:
 	@echo "   CSPluginCapabilities *capabilities = [CSPluginCapabilities new];"
 	@echo "   [capabilities addCapability:capability];"
 	@echo ""
-	@echo "4. Create plugin info with formal capabilities:"
-	@echo "   LBVRPluginInfo *pluginInfo = [[LBVRPluginInfo alloc]"
+	@echo "4. Create plugin manifest with formal capabilities:"
+	@echo "   LBVRPluginManifest *pluginManifest = [[LBVRPluginManifest alloc]"
 	@echo "       initWithName:@\"MyPlugin\""
 	@echo "       version:@\"1.0.0\""
 	@echo "       pluginDescription:@\"Example plugin\""

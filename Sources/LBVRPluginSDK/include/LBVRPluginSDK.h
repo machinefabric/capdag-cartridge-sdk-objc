@@ -74,9 +74,9 @@ NS_ASSUME_NONNULL_BEGIN
 // MARK: - Plugin Capabilities (now using formal capability SDK)
 // Use CSPluginCapabilities from CapDef instead of the old string-based system
 
-// MARK: - Plugin Info (for --plugin-info output)
+// MARK: - Plugin Manifest (for --manifest output)
 
-@interface LBVRPluginInfo : NSObject
+@interface LBVRPluginManifest : NSObject
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *version;
 @property (nonatomic, strong) NSString *pluginDescription;
@@ -93,7 +93,7 @@ NS_ASSUME_NONNULL_BEGIN
                    description:(NSString *)description
                 capabilities:(CSPluginCapabilities *)capabilities;
 
-- (LBVRPluginInfo *)withAuthor:(NSString *)author;
+- (LBVRPluginManifest *)withAuthor:(NSString *)author;
 @end
 
 // MARK: - Document Metadata (conforms to file-metadata.json schema)
@@ -256,10 +256,10 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol LBVRDocumentHandler <NSObject>
 
 /**
- * Get plugin information including capabilities
- * @return Plugin information
+ * Get plugin manifest including capabilities
+ * @return Plugin manifest
  */
-- (LBVRPluginInfo *)getPluginInfo;
+- (LBVRPluginManifest *)getPluginManifest;
 
 /**
  * Extract metadata from a document
@@ -325,7 +325,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LBVRJSONSerializer : NSObject
 
-+ (NSString * _Nullable)serializePluginInfo:(LBVRPluginInfo *)pluginInfo;
++ (NSString * _Nullable)serializePluginManifest:(LBVRPluginManifest *)pluginManifest;
 + (NSString * _Nullable)serializeToJSON:(id)object;
 + (id _Nullable)deserializeFromJSON:(NSString *)jsonString error:(NSError **)error;
 

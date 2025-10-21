@@ -60,6 +60,41 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (nullable CSCapability *)standardCapabilityWithId:(NSString *)idString;
 
+/**
+ * Create extract-metadata capability subbed with file types
+ * @param fileTypes Array of supported file extensions (e.g., @[@"html", @"htm"])
+ * @return Extract-metadata capability subbed with file type metadata
+ */
++ (CSCapability *)extractMetadataCapabilitySubbedWith:(NSArray<NSString *> *)fileTypes;
+
+/**
+ * Create generate-thumbnail capability subbed with file types
+ * @param fileTypes Array of supported file extensions (e.g., @[@"md", @"markdown"])
+ * @return Generate-thumbnail capability subbed with file type metadata
+ */
++ (CSCapability *)generateThumbnailCapabilitySubbedWith:(NSArray<NSString *> *)fileTypes;
+
+/**
+ * Create extract-outline capability subbed with file types
+ * @param fileTypes Array of supported file extensions (e.g., @[@"pdf"])
+ * @return Extract-outline capability subbed with file type metadata
+ */
++ (CSCapability *)extractOutlineCapabilitySubbedWith:(NSArray<NSString *> *)fileTypes;
+
+/**
+ * Create extract-pages capability subbed with file types
+ * @param fileTypes Array of supported file extensions (e.g., @[@"txt"])
+ * @return Extract-pages capability subbed with file type metadata
+ */
++ (CSCapability *)extractPagesCapabilitySubbedWith:(NSArray<NSString *> *)fileTypes;
+
+/**
+ * Get all standard capabilities subbed with file types
+ * @param fileTypes Array of supported file extensions
+ * @return Array of all standard capabilities subbed with file type metadata
+ */
++ (NSArray<CSCapability *> *)allStandardCapabilitiesSubbedWith:(NSArray<NSString *> *)fileTypes;
+
 @end
 
 NS_ASSUME_NONNULL_END
