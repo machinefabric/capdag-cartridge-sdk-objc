@@ -884,6 +884,48 @@
     return [formatter stringFromDate:date];
 }
 
++ (NSString *)argumentTypeStringFromEnum:(CSArgumentType)type {
+    switch (type) {
+        case CSArgumentTypeString:
+            return @"string";
+        case CSArgumentTypeInteger:
+            return @"integer";
+        case CSArgumentTypeNumber:
+            return @"number";
+        case CSArgumentTypeBoolean:
+            return @"boolean";
+        case CSArgumentTypeArray:
+            return @"array";
+        case CSArgumentTypeObject:
+            return @"object";
+        case CSArgumentTypeBinary:
+            return @"binary";
+        default:
+            return @"string";
+    }
+}
+
++ (NSString *)outputTypeStringFromEnum:(CSOutputType)type {
+    switch (type) {
+        case CSOutputTypeString:
+            return @"string";
+        case CSOutputTypeInteger:
+            return @"integer";
+        case CSOutputTypeNumber:
+            return @"number";
+        case CSOutputTypeBoolean:
+            return @"boolean";
+        case CSOutputTypeArray:
+            return @"array";
+        case CSOutputTypeObject:
+            return @"object";
+        case CSOutputTypeBinary:
+            return @"binary";
+        default:
+            return @"object";
+    }
+}
+
 + (NSString *)serializePluginManifest:(LBVRPluginManifest *)pluginManifest {
     if (!pluginManifest) return nil;
     
@@ -920,12 +962,16 @@
                 if (capability.arguments.required.count > 0) {
                     NSMutableArray *requiredArgs = [[NSMutableArray alloc] init];
                     for (CSCapabilityArgument *arg in capability.arguments.required) {
-                        [requiredArgs addObject:@{
+                        NSMutableDictionary *argDict = [@{
                             @"name": arg.name,
-                            @"type": @(arg.type),
+                            @"type": [self argumentTypeStringFromEnum:arg.type],
                             @"description": arg.argumentDescription,
                             @"cli_flag": arg.cliFlag
-                        }];
+                        } mutableCopy];
+                        if (arg.position) {
+                            argDict[@"position"] = arg.position;
+                        }
+                        [requiredArgs addObject:argDict];
                     }
                     argumentsDict[@"required"] = requiredArgs;
                 }
@@ -934,7 +980,7 @@
                     for (CSCapabilityArgument *arg in capability.arguments.optional) {
                         NSMutableDictionary *argDict = [@{
                             @"name": arg.name,
-                            @"type": @(arg.type),
+                            @"type": [self argumentTypeStringFromEnum:arg.type],
                             @"description": arg.argumentDescription,
                             @"cli_flag": arg.cliFlag
                         } mutableCopy];
@@ -951,7 +997,7 @@
             // Add output info
             if (capability.output) {
                 NSMutableDictionary *outputDict = [[NSMutableDictionary alloc] init];
-                outputDict[@"type"] = @(capability.output.type);
+                outputDict[@"type"] = [self outputTypeStringFromEnum:capability.output.type];
                 outputDict[@"description"] = capability.output.outputDescription;
                 if (capability.output.contentType) {
                     outputDict[@"content_type"] = capability.output.contentType;
@@ -965,7 +1011,8 @@
             [capabilitiesArray addObject:capabilityDict];
         }
     }
-    dict[@"capabilities"] = capabilitiesArray;
+    // Wrap capabilities array in capabilities object to match reference implementation
+    dict[@"capabilities"] = @{@"capabilities": capabilitiesArray};
     
     NSError *jsonError = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&jsonError];

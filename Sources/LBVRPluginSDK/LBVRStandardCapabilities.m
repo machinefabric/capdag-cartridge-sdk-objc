@@ -423,74 +423,158 @@
 + (CSCapability *)extractMetadataCapabilitySubbedWith:(NSArray<NSString *> *)fileTypes {
     CSCapability *baseCapability = [self extractMetadataCapability];
     
-    NSMutableDictionary<NSString *, NSString *> *metadata = [baseCapability.metadata mutableCopy];
-    metadata[@"file_types"] = [fileTypes componentsJoinedByString:@","];
+    NSMutableArray<CSCapability *> *capabilities = [NSMutableArray array];
     
-    return [CSCapability 
-        capabilityWithId:baseCapability.capabilityId
-        version:baseCapability.version
-        description:baseCapability.capabilityDescription
-        metadata:metadata
-        command:baseCapability.command
-        arguments:baseCapability.arguments
-        output:baseCapability.output];
+    for (NSString *fileType in fileTypes) {
+        NSError *error;
+        NSString *newIdString = [NSString stringWithFormat:@"document:extract:metadata:%@", fileType];
+        CSCapabilityId *newId = [CSCapabilityId fromString:newIdString error:&error];
+        if (!newId) {
+            @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
+                                           reason:[NSString stringWithFormat:@"Failed to create capability ID for %@", newIdString]
+                                         userInfo:nil];
+        }
+        
+        CSCapability *capability = [CSCapability 
+            capabilityWithId:newId
+            version:baseCapability.version
+            description:baseCapability.capabilityDescription
+            metadata:baseCapability.metadata
+            command:baseCapability.command
+            arguments:baseCapability.arguments
+            output:baseCapability.output];
+        [capabilities addObject:capability];
+    }
+    
+    // Return first capability for single file type, or throw if multiple
+    if (capabilities.count == 1) {
+        return capabilities[0];
+    } else {
+        @throw [NSException exceptionWithName:@"MultipleFileTypes" 
+                                       reason:@"extractMetadataCapabilitySubbedWith should only be called with a single file type"
+                                     userInfo:nil];
+    }
 }
 
 + (CSCapability *)generateThumbnailCapabilitySubbedWith:(NSArray<NSString *> *)fileTypes {
     CSCapability *baseCapability = [self generateThumbnailCapability];
     
-    NSMutableDictionary<NSString *, NSString *> *metadata = [baseCapability.metadata mutableCopy];
-    metadata[@"file_types"] = [fileTypes componentsJoinedByString:@","];
+    NSMutableArray<CSCapability *> *capabilities = [NSMutableArray array];
     
-    return [CSCapability 
-        capabilityWithId:baseCapability.capabilityId
-        version:baseCapability.version
-        description:baseCapability.capabilityDescription
-        metadata:metadata
-        command:baseCapability.command
-        arguments:baseCapability.arguments
-        output:baseCapability.output];
+    for (NSString *fileType in fileTypes) {
+        NSError *error;
+        NSString *newIdString = [NSString stringWithFormat:@"document:generate:thumbnail:%@", fileType];
+        CSCapabilityId *newId = [CSCapabilityId fromString:newIdString error:&error];
+        if (!newId) {
+            @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
+                                           reason:[NSString stringWithFormat:@"Failed to create capability ID for %@", newIdString]
+                                         userInfo:nil];
+        }
+        
+        CSCapability *capability = [CSCapability 
+            capabilityWithId:newId
+            version:baseCapability.version
+            description:baseCapability.capabilityDescription
+            metadata:baseCapability.metadata
+            command:baseCapability.command
+            arguments:baseCapability.arguments
+            output:baseCapability.output];
+        [capabilities addObject:capability];
+    }
+    
+    // Return first capability for single file type, or throw if multiple
+    if (capabilities.count == 1) {
+        return capabilities[0];
+    } else {
+        @throw [NSException exceptionWithName:@"MultipleFileTypes" 
+                                       reason:@"generateThumbnailCapabilitySubbedWith should only be called with a single file type"
+                                     userInfo:nil];
+    }
 }
 
 + (CSCapability *)extractOutlineCapabilitySubbedWith:(NSArray<NSString *> *)fileTypes {
     CSCapability *baseCapability = [self extractOutlineCapability];
     
-    NSMutableDictionary<NSString *, NSString *> *metadata = [baseCapability.metadata mutableCopy];
-    metadata[@"file_types"] = [fileTypes componentsJoinedByString:@","];
+    NSMutableArray<CSCapability *> *capabilities = [NSMutableArray array];
     
-    return [CSCapability 
-        capabilityWithId:baseCapability.capabilityId
-        version:baseCapability.version
-        description:baseCapability.capabilityDescription
-        metadata:metadata
-        command:baseCapability.command
-        arguments:baseCapability.arguments
-        output:baseCapability.output];
+    for (NSString *fileType in fileTypes) {
+        NSError *error;
+        NSString *newIdString = [NSString stringWithFormat:@"document:extract:outline:%@", fileType];
+        CSCapabilityId *newId = [CSCapabilityId fromString:newIdString error:&error];
+        if (!newId) {
+            @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
+                                           reason:[NSString stringWithFormat:@"Failed to create capability ID for %@", newIdString]
+                                         userInfo:nil];
+        }
+        
+        CSCapability *capability = [CSCapability 
+            capabilityWithId:newId
+            version:baseCapability.version
+            description:baseCapability.capabilityDescription
+            metadata:baseCapability.metadata
+            command:baseCapability.command
+            arguments:baseCapability.arguments
+            output:baseCapability.output];
+        [capabilities addObject:capability];
+    }
+    
+    // Return first capability for single file type, or throw if multiple
+    if (capabilities.count == 1) {
+        return capabilities[0];
+    } else {
+        @throw [NSException exceptionWithName:@"MultipleFileTypes" 
+                                       reason:@"extractOutlineCapabilitySubbedWith should only be called with a single file type"
+                                     userInfo:nil];
+    }
 }
 
 + (CSCapability *)extractPagesCapabilitySubbedWith:(NSArray<NSString *> *)fileTypes {
     CSCapability *baseCapability = [self extractPagesCapability];
     
-    NSMutableDictionary<NSString *, NSString *> *metadata = [baseCapability.metadata mutableCopy];
-    metadata[@"file_types"] = [fileTypes componentsJoinedByString:@","];
+    NSMutableArray<CSCapability *> *capabilities = [NSMutableArray array];
     
-    return [CSCapability 
-        capabilityWithId:baseCapability.capabilityId
-        version:baseCapability.version
-        description:baseCapability.capabilityDescription
-        metadata:metadata
-        command:baseCapability.command
-        arguments:baseCapability.arguments
-        output:baseCapability.output];
+    for (NSString *fileType in fileTypes) {
+        NSError *error;
+        NSString *newIdString = [NSString stringWithFormat:@"document:extract:pages:%@", fileType];
+        CSCapabilityId *newId = [CSCapabilityId fromString:newIdString error:&error];
+        if (!newId) {
+            @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
+                                           reason:[NSString stringWithFormat:@"Failed to create capability ID for %@", newIdString]
+                                         userInfo:nil];
+        }
+        
+        CSCapability *capability = [CSCapability 
+            capabilityWithId:newId
+            version:baseCapability.version
+            description:baseCapability.capabilityDescription
+            metadata:baseCapability.metadata
+            command:baseCapability.command
+            arguments:baseCapability.arguments
+            output:baseCapability.output];
+        [capabilities addObject:capability];
+    }
+    
+    // Return first capability for single file type, or throw if multiple
+    if (capabilities.count == 1) {
+        return capabilities[0];
+    } else {
+        @throw [NSException exceptionWithName:@"MultipleFileTypes" 
+                                       reason:@"extractPagesCapabilitySubbedWith should only be called with a single file type"
+                                     userInfo:nil];
+    }
 }
 
 + (NSArray<CSCapability *> *)allStandardCapabilitiesSubbedWith:(NSArray<NSString *> *)fileTypes {
-    return @[
-        [self extractMetadataCapabilitySubbedWith:fileTypes],
-        [self generateThumbnailCapabilitySubbedWith:fileTypes],
-        [self extractOutlineCapabilitySubbedWith:fileTypes],
-        [self extractPagesCapabilitySubbedWith:fileTypes]
-    ];
+    NSMutableArray<CSCapability *> *allCapabilities = [NSMutableArray array];
+    
+    for (NSString *fileType in fileTypes) {
+        [allCapabilities addObject:[self extractMetadataCapabilitySubbedWith:@[fileType]]];
+        [allCapabilities addObject:[self generateThumbnailCapabilitySubbedWith:@[fileType]]];
+        [allCapabilities addObject:[self extractOutlineCapabilitySubbedWith:@[fileType]]];
+        [allCapabilities addObject:[self extractPagesCapabilitySubbedWith:@[fileType]]];
+    }
+    
+    return allCapabilities;
 }
 
 @end
