@@ -146,6 +146,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 // EPUB-specific
 @property (nonatomic, strong, nullable) NSString *epubVersion;
+@property (nonatomic, strong, nullable) NSString *rights;
+@property (nonatomic, assign) BOOL hasDrm;
+@property (nonatomic, strong, nullable) NSString *thumbnailPath;
+
+// Keywords (similar to authors/contributors)
+@property (nonatomic, strong) NSMutableArray<NSString *> *keywords;
 
 - (instancetype)initWithFilePath:(NSString *)filePath 
                    fileSizeBytes:(unsigned long long)fileSizeBytes 
@@ -154,6 +160,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)addAuthor:(NSString *)author;
 - (void)addContributor:(NSString *)contributor;
+- (void)addKeyword:(NSString *)keyword;
 @end
 
 // MARK: - Document Outline (conforms to document-outline.json schema)

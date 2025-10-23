@@ -471,11 +471,13 @@
         _documentType = [documentType copy];
         _authors = [[NSMutableArray alloc] init];
         _contributors = [[NSMutableArray alloc] init];
+        _keywords = [[NSMutableArray alloc] init];
         _extendedMetadata = [[NSMutableDictionary alloc] init];
         _hasForms = NO;
         _isEncrypted = NO;
         _attachmentCount = 0;
         _isLinearized = NO;
+        _hasDrm = NO;
     }
     return self;
 }
@@ -486,6 +488,10 @@
 
 - (void)addContributor:(NSString *)contributor {
     [_contributors addObject:[contributor copy]];
+}
+
+- (void)addKeyword:(NSString *)keyword {
+    [_keywords addObject:[keyword copy]];
 }
 
 @end
@@ -736,12 +742,10 @@
     if (metadata.mimeType) dict[@"mime_type"] = metadata.mimeType;
     if (metadata.encoding) dict[@"encoding"] = metadata.encoding;
     if (metadata.title) dict[@"title"] = metadata.title;
-    if (metadata.authors && metadata.authors.count > 0) {
-        dict[@"authors"] = [self convertToJSONObject:metadata.authors];
-    }
-    if (metadata.contributors && metadata.contributors.count > 0) {
-        dict[@"contributors"] = [self convertToJSONObject:metadata.contributors];
-    }
+    // Always include these arrays, even if empty, for Rust SDK compatibility
+    dict[@"authors"] = metadata.authors ? [self convertToJSONObject:metadata.authors] : @[];
+    dict[@"contributors"] = metadata.contributors ? [self convertToJSONObject:metadata.contributors] : @[];
+    dict[@"keywords"] = metadata.keywords ? [self convertToJSONObject:metadata.keywords] : @[];
     if (metadata.subject) dict[@"subject"] = metadata.subject;
     if (metadata.identifier) dict[@"identifier"] = metadata.identifier;
     if (metadata.creator) dict[@"creator"] = metadata.creator;
@@ -758,13 +762,15 @@
     if (metadata.formatVersion) dict[@"format_version"] = metadata.formatVersion;
     if (metadata.pdfVersion) dict[@"pdf_version"] = metadata.pdfVersion;
     if (metadata.epubVersion) dict[@"epub_version"] = metadata.epubVersion;
+    if (metadata.rights) dict[@"rights"] = metadata.rights;
+    if (metadata.thumbnailPath) dict[@"thumbnail_path"] = metadata.thumbnailPath;
     dict[@"has_forms"] = @(metadata.hasForms);
     dict[@"is_encrypted"] = @(metadata.isEncrypted);
     dict[@"attachment_count"] = @(metadata.attachmentCount);
     dict[@"is_linearized"] = @(metadata.isLinearized);
-    if (metadata.extendedMetadata && metadata.extendedMetadata.count > 0) {
-        dict[@"extended_metadata"] = [self convertToJSONObject:metadata.extendedMetadata];
-    }
+    dict[@"has_drm"] = @(metadata.hasDrm);
+    // Always include extended_metadata, even if empty, for Rust SDK compatibility
+    dict[@"extended_metadata"] = metadata.extendedMetadata ? [self convertToJSONObject:metadata.extendedMetadata] : @{};
     
     return dict;
 }
