@@ -77,7 +77,7 @@
 
 + (CSCapability *)generateThumbnailCapability {
     NSError *error;
-    CSCapabilityId *capabilityId = [CSCapabilityId fromString:@"document:generate:thumbnail" error:&error];
+    CSCapabilityId *capabilityId = [CSCapabilityId fromString:@"bin:document:generate:thumbnail" error:&error];
     if (!capabilityId) {
         @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
                                        reason:@"Failed to create capability ID for generate-thumbnail"
@@ -410,7 +410,7 @@
 + (nullable CSCapability *)standardCapabilityWithId:(NSString *)idString {
     if ([idString isEqualToString:@"document:extract:metadata"]) {
         return [self extractMetadataCapability];
-    } else if ([idString isEqualToString:@"document:generate:thumbnail"]) {
+    } else if ([idString isEqualToString:@"bin:document:generate:thumbnail"]) {
         return [self generateThumbnailCapability];
     } else if ([idString isEqualToString:@"document:extract:outline"]) {
         return [self extractOutlineCapability];
@@ -463,7 +463,7 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newIdString = [NSString stringWithFormat:@"document:generate:thumbnail:%@", fileType];
+        NSString *newIdString = [NSString stringWithFormat:@"bin:document:generate:thumbnail:%@", fileType];
         CSCapabilityId *newId = [CSCapabilityId fromString:newIdString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
