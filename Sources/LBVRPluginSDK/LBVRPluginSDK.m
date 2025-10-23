@@ -728,12 +728,12 @@
 + (NSDictionary *)documentMetadataToDict:(LBVRDocumentMetadata *)metadata {
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     
-    if (metadata.filePath) dict[@"filePath"] = metadata.filePath;
-    if (metadata.filePath) dict[@"fileName"] = [metadata.filePath lastPathComponent];
-    dict[@"fileSizeBytes"] = @(metadata.fileSizeBytes);
-    dict[@"contentLength"] = @(metadata.contentLength);
-    if (metadata.documentType) dict[@"documentType"] = metadata.documentType;
-    if (metadata.mimeType) dict[@"mimeType"] = metadata.mimeType;
+    if (metadata.filePath) dict[@"file_path"] = metadata.filePath;
+    if (metadata.filePath) dict[@"file_name"] = [metadata.filePath lastPathComponent];
+    dict[@"file_size_bytes"] = @(metadata.fileSizeBytes);
+    dict[@"content_length"] = @(metadata.contentLength);
+    if (metadata.documentType) dict[@"document_type"] = metadata.documentType;
+    if (metadata.mimeType) dict[@"mime_type"] = metadata.mimeType;
     if (metadata.encoding) dict[@"encoding"] = metadata.encoding;
     if (metadata.title) dict[@"title"] = metadata.title;
     if (metadata.authors && metadata.authors.count > 0) {
@@ -747,23 +747,23 @@
     if (metadata.creator) dict[@"creator"] = metadata.creator;
     if (metadata.producer) dict[@"producer"] = metadata.producer;
     if (metadata.publisher) dict[@"publisher"] = metadata.publisher;
-    if (metadata.creationDate) dict[@"creationDate"] = metadata.creationDate;
-    if (metadata.modificationDate) dict[@"modificationDate"] = metadata.modificationDate;
-    if (metadata.publicationDate) dict[@"publicationDate"] = [self dateToString:metadata.publicationDate];
-    if (metadata.wordCount) dict[@"wordCount"] = metadata.wordCount;
-    if (metadata.characterCount) dict[@"characterCount"] = metadata.characterCount;
-    if (metadata.pageCount) dict[@"pageCount"] = metadata.pageCount;
-    if (metadata.chapterCount) dict[@"chapterCount"] = metadata.chapterCount;
+    if (metadata.creationDate) dict[@"creation_date"] = metadata.creationDate;
+    if (metadata.modificationDate) dict[@"modification_date"] = metadata.modificationDate;
+    if (metadata.publicationDate) dict[@"publication_date"] = [self dateToString:metadata.publicationDate];
+    if (metadata.wordCount) dict[@"word_count"] = metadata.wordCount;
+    if (metadata.characterCount) dict[@"character_count"] = metadata.characterCount;
+    if (metadata.pageCount) dict[@"page_count"] = metadata.pageCount;
+    if (metadata.chapterCount) dict[@"chapter_count"] = metadata.chapterCount;
     if (metadata.language) dict[@"language"] = metadata.language;
-    if (metadata.formatVersion) dict[@"formatVersion"] = metadata.formatVersion;
-    if (metadata.pdfVersion) dict[@"pdfVersion"] = metadata.pdfVersion;
-    if (metadata.epubVersion) dict[@"epubVersion"] = metadata.epubVersion;
-    dict[@"hasForms"] = @(metadata.hasForms);
-    dict[@"isEncrypted"] = @(metadata.isEncrypted);
-    dict[@"attachmentCount"] = @(metadata.attachmentCount);
-    dict[@"isLinearized"] = @(metadata.isLinearized);
+    if (metadata.formatVersion) dict[@"format_version"] = metadata.formatVersion;
+    if (metadata.pdfVersion) dict[@"pdf_version"] = metadata.pdfVersion;
+    if (metadata.epubVersion) dict[@"epub_version"] = metadata.epubVersion;
+    dict[@"has_forms"] = @(metadata.hasForms);
+    dict[@"is_encrypted"] = @(metadata.isEncrypted);
+    dict[@"attachment_count"] = @(metadata.attachmentCount);
+    dict[@"is_linearized"] = @(metadata.isLinearized);
     if (metadata.extendedMetadata && metadata.extendedMetadata.count > 0) {
-        dict[@"extendedMetadata"] = [self convertToJSONObject:metadata.extendedMetadata];
+        dict[@"extended_metadata"] = [self convertToJSONObject:metadata.extendedMetadata];
     }
     
     return dict;
