@@ -53,7 +53,7 @@
     return NO;
 }
 
-- (NSArray<NSString *> *)capabilityIdentifiers {
+- (NSArray<NSString *> *)capabilityKeys {
     NSMutableArray<NSString *> *identifiers = [NSMutableArray array];
     for (CSCapability *capability in self.mutableCapabilities) {
         [identifiers addObject:[capability idString]];
@@ -63,11 +63,11 @@
 
 - (nullable CSCapability *)findCapabilityWithIdentifier:(NSString *)identifier {
     NSError *error;
-    CSCapabilityId *searchId = [CSCapabilityId fromString:identifier error:&error];
+    CSCapabilityKey *searchId = [CSCapabilityKey fromString:identifier error:&error];
     if (!searchId) return nil;
     
     for (CSCapability *capability in self.mutableCapabilities) {
-        if ([capability.capabilityId isEqual:searchId]) {
+        if ([capability.capabilityKey isEqual:searchId]) {
             return capability;
         }
     }
@@ -76,19 +76,19 @@
 
 - (nullable CSCapability *)findBestCapabilityForRequest:(NSString *)request {
     NSError *error;
-    CSCapabilityId *requestId = [CSCapabilityId fromString:request error:&error];
+    CSCapabilityKey *requestId = [CSCapabilityKey fromString:request error:&error];
     if (!requestId) return nil;
     
-    NSMutableArray<CSCapabilityId *> *capabilityIds = [NSMutableArray array];
+    NSMutableArray<CSCapabilityKey *> *capabilityKeys = [NSMutableArray array];
     for (CSCapability *capability in self.mutableCapabilities) {
-        [capabilityIds addObject:capability.capabilityId];
+        [capabilityKeys addObject:capability.capabilityKey];
     }
     
-    CSCapabilityId *bestId = [CSCapabilityMatcher findBestMatchInCapabilities:capabilityIds forRequest:requestId];
+    CSCapabilityKey *bestId = [CSCapabilityMatcher findBestMatchInCapabilities:capabilityKeys forRequest:requestId];
     if (!bestId) return nil;
     
     for (CSCapability *capability in self.mutableCapabilities) {
-        if ([capability.capabilityId isEqual:bestId]) {
+        if ([capability.capabilityKey isEqual:bestId]) {
             return capability;
         }
     }

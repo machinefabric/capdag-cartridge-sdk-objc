@@ -9,8 +9,8 @@
 
 + (CSCapability *)extractMetadataCapability {
     NSError *error;
-    CSCapabilityId *capabilityId = [CSCapabilityId fromString:@"document:extract:metadata" error:&error];
-    if (!capabilityId) {
+    CSCapabilityKey *capabilityKey = [CSCapabilityKey fromString:@"document:extract:metadata" error:&error];
+    if (!capabilityKey) {
         @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
                                        reason:@"Failed to create capability ID for extract-metadata"
                                      userInfo:nil];
@@ -66,7 +66,7 @@
         description:@"Structured metadata including file properties, document properties, and format-specific metadata"];
     
     return [CSCapability 
-        capabilityWithId:capabilityId
+        capabilityWithId:capabilityKey
         version:@"1.0.0"
         description:@"Extract document metadata including title, author, creation date, file size, and other properties"
         metadata:@{}
@@ -77,8 +77,8 @@
 
 + (CSCapability *)generateThumbnailCapability {
     NSError *error;
-    CSCapabilityId *capabilityId = [CSCapabilityId fromString:@"bin:document:generate:thumbnail" error:&error];
-    if (!capabilityId) {
+    CSCapabilityKey *capabilityKey = [CSCapabilityKey fromString:@"bin:document:generate:thumbnail" error:&error];
+    if (!capabilityKey) {
         @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
                                        reason:@"Failed to create capability ID for generate-thumbnail"
                                      userInfo:nil];
@@ -191,7 +191,7 @@
         description:@"PNG image data representing a thumbnail of the document"];
     
     return [CSCapability 
-        capabilityWithId:capabilityId
+        capabilityWithId:capabilityKey
         version:@"1.0.0"
         description:@"Generate a thumbnail image preview of the document"
         metadata:@{}
@@ -202,8 +202,8 @@
 
 + (CSCapability *)extractOutlineCapability {
     NSError *error;
-    CSCapabilityId *capabilityId = [CSCapabilityId fromString:@"document:extract:outline" error:&error];
-    if (!capabilityId) {
+    CSCapabilityKey *capabilityKey = [CSCapabilityKey fromString:@"document:extract:outline" error:&error];
+    if (!capabilityKey) {
         @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
                                        reason:@"Failed to create capability ID for extract-outline"
                                      userInfo:nil];
@@ -289,7 +289,7 @@
         description:@"Hierarchical document outline with section titles and optional page numbers"];
     
     return [CSCapability 
-        capabilityWithId:capabilityId
+        capabilityWithId:capabilityKey
         version:@"1.0.0"
         description:@"Extract document outline/table of contents with hierarchical structure"
         metadata:@{}
@@ -300,8 +300,8 @@
 
 + (CSCapability *)extractPagesCapability {
     NSError *error;
-    CSCapabilityId *capabilityId = [CSCapabilityId fromString:@"document:extract:pages" error:&error];
-    if (!capabilityId) {
+    CSCapabilityKey *capabilityKey = [CSCapabilityKey fromString:@"document:extract:pages" error:&error];
+    if (!capabilityKey) {
         @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
                                        reason:@"Failed to create capability ID for extract-pages"
                                      userInfo:nil];
@@ -376,7 +376,7 @@
         description:@"Document pages with text content organized by pages and paragraphs"];
     
     return [CSCapability 
-        capabilityWithId:capabilityId
+        capabilityWithId:capabilityKey
         version:@"1.0.0"
         description:@"Extract document pages with text content organized by pages and paragraphs"
         metadata:@{}
@@ -428,7 +428,7 @@
     for (NSString *fileType in fileTypes) {
         NSError *error;
         NSString *newIdString = [NSString stringWithFormat:@"document:extract:metadata:%@", fileType];
-        CSCapabilityId *newId = [CSCapabilityId fromString:newIdString error:&error];
+        CSCapabilityKey *newId = [CSCapabilityKey fromString:newIdString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
                                            reason:[NSString stringWithFormat:@"Failed to create capability ID for %@", newIdString]
@@ -464,7 +464,7 @@
     for (NSString *fileType in fileTypes) {
         NSError *error;
         NSString *newIdString = [NSString stringWithFormat:@"bin:document:generate:thumbnail:%@", fileType];
-        CSCapabilityId *newId = [CSCapabilityId fromString:newIdString error:&error];
+        CSCapabilityKey *newId = [CSCapabilityKey fromString:newIdString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
                                            reason:[NSString stringWithFormat:@"Failed to create capability ID for %@", newIdString]
@@ -500,7 +500,7 @@
     for (NSString *fileType in fileTypes) {
         NSError *error;
         NSString *newIdString = [NSString stringWithFormat:@"document:extract:outline:%@", fileType];
-        CSCapabilityId *newId = [CSCapabilityId fromString:newIdString error:&error];
+        CSCapabilityKey *newId = [CSCapabilityKey fromString:newIdString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
                                            reason:[NSString stringWithFormat:@"Failed to create capability ID for %@", newIdString]
@@ -536,7 +536,7 @@
     for (NSString *fileType in fileTypes) {
         NSError *error;
         NSString *newIdString = [NSString stringWithFormat:@"document:extract:pages:%@", fileType];
-        CSCapabilityId *newId = [CSCapabilityId fromString:newIdString error:&error];
+        CSCapabilityKey *newId = [CSCapabilityKey fromString:newIdString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
                                            reason:[NSString stringWithFormat:@"Failed to create capability ID for %@", newIdString]

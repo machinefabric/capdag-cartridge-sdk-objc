@@ -89,7 +89,7 @@ example:
 	@echo ""
 	@echo "2. Create formal capability definitions:"
 	@echo "   NSError *error;"
-	@echo "   CSCapabilityId *capId = [CSCapabilityId fromString:@\"extract-metadata:pdf\" error:&error];"
+	@echo "   CSCapabilityKey *capId = [CSCapabilityKey fromString:@\"extract-metadata:pdf\" error:&error];"
 	@echo "   CSCapability *capability = [CSCapability capabilityWithId:capId version:@\"1.0.0\"];"
 	@echo ""
 	@echo "3. Build plugin capabilities collection:"

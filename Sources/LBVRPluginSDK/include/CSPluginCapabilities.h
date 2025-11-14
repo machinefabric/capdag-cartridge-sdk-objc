@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
  * Get all capability identifiers as strings
  * @return Array of capability identifier strings
  */
-- (NSArray<NSString *> *)capabilityIdentifiers;
+- (NSArray<NSString *> *)capabilityKeys;
 
 /**
  * Find a capability by identifier
