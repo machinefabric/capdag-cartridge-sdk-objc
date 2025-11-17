@@ -9,7 +9,7 @@
 
 + (CSCapability *)extractMetadataCapability {
     NSError *error;
-    CSCapabilityKey *capabilityKey = [CSCapabilityKey fromString:@"document:extract:metadata" error:&error];
+    CSCapabilityKey *capabilityKey = [CSCapabilityKey fromString:@"action=extract;target=metadata;type=document" error:&error];
     if (!capabilityKey) {
         @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
                                        reason:@"Failed to create capability ID for extract-metadata"
@@ -77,7 +77,7 @@
 
 + (CSCapability *)generateThumbnailCapability {
     NSError *error;
-    CSCapabilityKey *capabilityKey = [CSCapabilityKey fromString:@"bin:document:generate:thumbnail" error:&error];
+    CSCapabilityKey *capabilityKey = [CSCapabilityKey fromString:@"action=generate;output=binary;target=thumbnail;type=document" error:&error];
     if (!capabilityKey) {
         @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
                                        reason:@"Failed to create capability ID for generate-thumbnail"
@@ -202,7 +202,7 @@
 
 + (CSCapability *)extractOutlineCapability {
     NSError *error;
-    CSCapabilityKey *capabilityKey = [CSCapabilityKey fromString:@"document:extract:outline" error:&error];
+    CSCapabilityKey *capabilityKey = [CSCapabilityKey fromString:@"action=extract;target=outline;type=document" error:&error];
     if (!capabilityKey) {
         @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
                                        reason:@"Failed to create capability ID for extract-outline"
@@ -300,7 +300,7 @@
 
 + (CSCapability *)extractPagesCapability {
     NSError *error;
-    CSCapabilityKey *capabilityKey = [CSCapabilityKey fromString:@"document:extract:pages" error:&error];
+    CSCapabilityKey *capabilityKey = [CSCapabilityKey fromString:@"action=extract;target=pages;type=document" error:&error];
     if (!capabilityKey) {
         @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
                                        reason:@"Failed to create capability ID for extract-pages"
@@ -408,13 +408,13 @@
 }
 
 + (nullable CSCapability *)standardCapabilityWithId:(NSString *)idString {
-    if ([idString isEqualToString:@"document:extract:metadata"]) {
+    if ([idString isEqualToString:@"action=extract;target=metadata;type=document"]) {
         return [self extractMetadataCapability];
-    } else if ([idString isEqualToString:@"bin:document:generate:thumbnail"]) {
+    } else if ([idString isEqualToString:@"action=generate;output=binary;target=thumbnail;type=document"]) {
         return [self generateThumbnailCapability];
-    } else if ([idString isEqualToString:@"document:extract:outline"]) {
+    } else if ([idString isEqualToString:@"action=extract;target=outline;type=document"]) {
         return [self extractOutlineCapability];
-    } else if ([idString isEqualToString:@"document:extract:pages"]) {
+    } else if ([idString isEqualToString:@"action=extract;target=pages;type=document"]) {
         return [self extractPagesCapability];
     }
     return nil;
@@ -427,7 +427,7 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newIdString = [NSString stringWithFormat:@"document:extract:metadata:%@", fileType];
+        NSString *newIdString = [NSString stringWithFormat:@"action=extract;format=%@;target=metadata;type=document", fileType];
         CSCapabilityKey *newId = [CSCapabilityKey fromString:newIdString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
@@ -463,7 +463,7 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newIdString = [NSString stringWithFormat:@"bin:document:generate:thumbnail:%@", fileType];
+        NSString *newIdString = [NSString stringWithFormat:@"action=generate;format=%@;output=binary;target=thumbnail;type=document", fileType];
         CSCapabilityKey *newId = [CSCapabilityKey fromString:newIdString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
@@ -499,7 +499,7 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newIdString = [NSString stringWithFormat:@"document:extract:outline:%@", fileType];
+        NSString *newIdString = [NSString stringWithFormat:@"action=extract;format=%@;target=outline;type=document", fileType];
         CSCapabilityKey *newId = [CSCapabilityKey fromString:newIdString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
@@ -535,7 +535,7 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newIdString = [NSString stringWithFormat:@"document:extract:pages:%@", fileType];
+        NSString *newIdString = [NSString stringWithFormat:@"action=extract;format=%@;target=pages;type=document", fileType];
         CSCapabilityKey *newId = [CSCapabilityKey fromString:newIdString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
