@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * Get a standard capability by capability ID string
- * @param idString The capability ID string (e.g., "document:extract:metadata")
+ * @param idString The capability ID string (e.g., "action=extract;target=metadata;type=document")
  * @return The capability or nil if not found
  */
 + (nullable CSCapability *)standardCapabilityWithId:(NSString *)idString;
