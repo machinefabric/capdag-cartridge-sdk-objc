@@ -76,27 +76,18 @@ NS_ASSUME_NONNULL_BEGIN
 // Use CSPluginCapabilities from CapDef instead of the old string-based system
 
 // MARK: - Plugin Manifest (for --manifest output)
+// Re-export CSCapabilityManifest as LBVRPluginManifest for backward compatibility
 
-@interface LBVRPluginManifest : NSObject
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSString *version;
-@property (nonatomic, strong) NSString *pluginDescription;
-@property (nonatomic, strong) CSPluginCapabilities *capabilities;  // Now using formal capability SDK
-@property (nonatomic, strong, nullable) NSString *author;
+typedef CSCapabilityManifest LBVRPluginManifest;
 
-- (instancetype)initWithName:(NSString *)name 
-                     version:(NSString *)version 
-           pluginDescription:(NSString *)pluginDescription 
-                capabilities:(CSPluginCapabilities *)capabilities;
+// Convenience constructors for plugins
+@interface CSCapabilityManifest (LBVRPluginSDK)
 
 + (instancetype)pluginWithName:(NSString *)name
                        version:(NSString *)version
                    description:(NSString *)description
-                capabilities:(CSPluginCapabilities *)capabilities;
+                  capabilities:(NSArray<CSCapability *> *)capabilities;
 
-+ (instancetype)manifestWithDictionary:(NSDictionary * _Nonnull)dictionary error:(NSError * _Nullable * _Nullable)error NS_SWIFT_NAME(init(dictionary:error:));
-
-- (LBVRPluginManifest *)withAuthor:(NSString *)author;
 @end
 
 // MARK: - Document Metadata (conforms to file-metadata.json schema)

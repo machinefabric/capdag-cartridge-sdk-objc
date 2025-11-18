@@ -311,71 +311,18 @@
 
 @end
 
-// MARK: - Plugin Manifest
+// MARK: - Plugin Manifest Category
 
-@implementation LBVRPluginManifest
-
-- (instancetype)initWithName:(NSString *)name
-                     version:(NSString *)version
-           pluginDescription:(NSString *)pluginDescription
-                capabilities:(CSPluginCapabilities *)capabilities {
-    self = [super init];
-    if (self) {
-        _name = [name copy];
-        _version = [version copy];
-        _pluginDescription = [pluginDescription copy];
-        _capabilities = capabilities;
-    }
-    return self;
-}
+@implementation CSCapabilityManifest (LBVRPluginSDK)
 
 + (instancetype)pluginWithName:(NSString *)name
                        version:(NSString *)version
                    description:(NSString *)description
-                  capabilities:(CSPluginCapabilities *)capabilities {
-    return [[self alloc] initWithName:name
-                              version:version
-                    pluginDescription:description
-                         capabilities:capabilities];
-}
-
-+ (instancetype)manifestWithDictionary:(NSDictionary *)dictionary error:(NSError **)error {
-    NSString *name = dictionary[@"name"];
-    NSString *version = dictionary[@"version"];
-    NSString *description = dictionary[@"description"];
-    NSDictionary *capabilitiesDict = dictionary[@"capabilities"];
-    
-    if (!name || !version || !description || !capabilitiesDict) {
-        if (error) {
-            *error = [NSError errorWithDomain:@"LBVRPluginManifestError"
-                                         code:1007
-                                     userInfo:@{NSLocalizedDescriptionKey: @"Missing required manifest fields: name, version, description, or capabilities"}];
-        }
-        return nil;
-    }
-    
-    CSPluginCapabilities *capabilities = [CSPluginCapabilities capabilitiesWithDictionary:capabilitiesDict error:error];
-    if (!capabilities) {
-        return nil;
-    }
-    
-    LBVRPluginManifest *manifest = [[self alloc] initWithName:name
-                                                       version:version
-                                             pluginDescription:description
-                                                  capabilities:capabilities];
-    
-    // Optional fields
-    NSString *author = dictionary[@"author"];
-    if (author) {
-        manifest.author = author;
-    }
-    
-    return manifest;
-}
-
-- (LBVRPluginManifest *)withAuthor:(NSString *)author {
-    self.author = [author copy];
-    return self;
+                  capabilities:(NSArray<CSCapability *> *)capabilities {
+    return [CSCapabilityManifest manifestWithName:name
+                                           version:version
+                                       description:description
+                                      capabilities:capabilities];
 }
 
 @end
@@ -973,7 +920,7 @@
     
     dict[@"name"] = pluginManifest.name ?: @"unknown";
     dict[@"version"] = pluginManifest.version ?: @"unknown";
-    dict[@"description"] = pluginManifest.pluginDescription ?: @"";
+    dict[@"description"] = pluginManifest.manifestDescription ?: @"";
     
     if (pluginManifest.author) {
         dict[@"author"] = pluginManifest.author;
@@ -981,8 +928,8 @@
     
     // Handle capabilities - expecting CSCapability objects only
     NSMutableArray *capabilitiesArray = [[NSMutableArray alloc] init];
-    if (pluginManifest.capabilities && pluginManifest.capabilities.capabilities) {
-        for (CSCapability *capability in pluginManifest.capabilities.capabilities) {
+    if (pluginManifest.capabilities) {
+        for (CSCapability *capability in pluginManifest.capabilities) {
             NSMutableDictionary *capabilityDict = [[NSMutableDictionary alloc] init];
             
             // Basic capability info
