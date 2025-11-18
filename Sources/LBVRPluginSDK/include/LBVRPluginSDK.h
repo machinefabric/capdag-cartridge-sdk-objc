@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "CapDef.h"
 #import "CSPluginCapabilities.h"
+#import "CSStandardCapabilities.h"
 #import "LBVRStandardCapabilities.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -312,7 +313,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) LBVRFileInfo *fileInfo;
 
 + (instancetype)successWithData:(id)data;
-+ (instancetype)failureWithError:(NSString *)error;
++ (instancetype)failureWithError:(NSString *)error NS_SWIFT_NAME(failure(withError:));
 
 @end
 

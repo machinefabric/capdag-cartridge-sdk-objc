@@ -72,7 +72,8 @@
         metadata:@{}
         command:command
         arguments:arguments
-        output:output];
+        output:output
+        acceptsStdin:YES];
 }
 
 + (CSCapability *)generateThumbnailCapability {
@@ -197,7 +198,8 @@
         metadata:@{}
         command:command
         arguments:arguments
-        output:output];
+        output:output
+        acceptsStdin:YES];
 }
 
 + (CSCapability *)extractOutlineCapability {
@@ -295,7 +297,8 @@
         metadata:@{}
         command:command
         arguments:arguments
-        output:output];
+        output:output
+        acceptsStdin:YES];
 }
 
 + (CSCapability *)extractPagesCapability {
@@ -382,7 +385,8 @@
         metadata:@{}
         command:command
         arguments:arguments
-        output:output];
+        output:output
+        acceptsStdin:YES];
 }
 
 + (NSArray<CSCapability *> *)allStandardCapabilities {
@@ -442,7 +446,8 @@
             metadata:baseCapability.metadata
             command:baseCapability.command
             arguments:baseCapability.arguments
-            output:baseCapability.output];
+            output:baseCapability.output
+            acceptsStdin:baseCapability.acceptsStdin];
         [capabilities addObject:capability];
     }
     
@@ -478,7 +483,8 @@
             metadata:baseCapability.metadata
             command:baseCapability.command
             arguments:baseCapability.arguments
-            output:baseCapability.output];
+            output:baseCapability.output
+            acceptsStdin:baseCapability.acceptsStdin];
         [capabilities addObject:capability];
     }
     
@@ -514,7 +520,8 @@
             metadata:baseCapability.metadata
             command:baseCapability.command
             arguments:baseCapability.arguments
-            output:baseCapability.output];
+            output:baseCapability.output
+            acceptsStdin:baseCapability.acceptsStdin];
         [capabilities addObject:capability];
     }
     
@@ -550,7 +557,8 @@
             metadata:baseCapability.metadata
             command:baseCapability.command
             arguments:baseCapability.arguments
-            output:baseCapability.output];
+            output:baseCapability.output
+            acceptsStdin:baseCapability.acceptsStdin];
         [capabilities addObject:capability];
     }
     
