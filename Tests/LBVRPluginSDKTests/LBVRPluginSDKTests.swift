@@ -2,35 +2,35 @@ import XCTest
 @testable import LBVRPluginSDK
 
 final class LBVRPluginSDKTests: XCTestCase {
-    func testStandardCapabilities() throws {
-        // Test that standard capabilities can be created
-        let extractMetadata = LBVRStandardCapabilities.extractMetadataCapability()
+    func testStandardCaps() throws {
+        // Test that standard caps can be created
+        let extractMetadata = LBVRStandardCaps.extractMetadataCap()
         XCTAssertNotNil(extractMetadata)
         XCTAssertEqual(extractMetadata.version, "1.0.0")
         
-        let generateThumbnail = LBVRStandardCapabilities.generateThumbnailCapability()
+        let generateThumbnail = LBVRStandardCaps.generateThumbnailCap()
         XCTAssertNotNil(generateThumbnail)
         XCTAssertEqual(generateThumbnail.version, "1.0.0")
         
-        let extractOutline = LBVRStandardCapabilities.extractOutlineCapability()
+        let extractOutline = LBVRStandardCaps.extractOutlineCap()
         XCTAssertNotNil(extractOutline)
         XCTAssertEqual(extractOutline.version, "1.0.0")
         
-        let extractPages = LBVRStandardCapabilities.extractPagesCapability()
+        let extractPages = LBVRStandardCaps.extractPagesCap()
         XCTAssertNotNil(extractPages)
         XCTAssertEqual(extractPages.version, "1.0.0")
     }
     
-    func testPluginCapabilities() throws {
-        // Test that plugin capabilities collection works
-        let capabilities = CSPluginCapabilities()
-        XCTAssertNotNil(capabilities)
-        XCTAssertTrue(capabilities.isEmpty())
+    func testPluginCaps() throws {
+        // Test that plugin caps collection works
+        let caps = CSPluginCaps()
+        XCTAssertNotNil(caps)
+        XCTAssertTrue(caps.isEmpty())
         
-        let extractMetadata = LBVRStandardCapabilities.extractMetadataCapability()
-        capabilities.addCapability(extractMetadata)
-        XCTAssertFalse(capabilities.isEmpty())
-        XCTAssertEqual(capabilities.count(), 1)
+        let extractMetadata = LBVRStandardCaps.extractMetadataCap()
+        caps.addCap(extractMetadata)
+        XCTAssertFalse(caps.isEmpty())
+        XCTAssertEqual(caps.count(), 1)
     }
     
     func testProcessingResult() throws {

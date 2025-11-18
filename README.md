@@ -205,7 +205,7 @@ All document handlers must implement the `LBVRDocumentHandler` protocol:
 ```objc
 // Default implementations provided
 - (BOOL)canHandle:(NSString *)filePath;
-- (LBVRPluginCapabilities *)getCapabilities;
+- (LBVRPluginCaps *)getCaps;
 ```
 
 ## Schema Compliance

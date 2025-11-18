@@ -1,24 +1,24 @@
 //
-//  LBVRStandardCapabilities.m
-//  Standard capability definitions implementation
+//  LBVRStandardCaps.m
+//  Standard cap definitions implementation
 //
 
-#import "include/LBVRStandardCapabilities.h"
+#import "include/LBVRStandardCaps.h"
 
-@implementation LBVRStandardCapabilities
+@implementation LBVRStandardCaps
 
-+ (CSCapability *)extractMetadataCapability {
++ (CSCap *)extractMetadataCap {
     NSError *error;
-    CSCapabilityKey *capabilityKey = [CSCapabilityKey fromString:@"action=extract;target=metadata;type=document" error:&error];
-    if (!capabilityKey) {
-        @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
-                                       reason:@"Failed to create capability ID for extract-metadata"
+    CSCapCard *capCard = [CSCapCard fromString:@"action=extract;target=metadata;type=document" error:&error];
+    if (!capCard) {
+        @throw [NSException exceptionWithName:@"InvalidCapID" 
+                                       reason:@"Failed to create cap ID for extract-metadata"
                                      userInfo:nil];
     }
     
     NSString *command = @"extract-metadata";
     
-    CSCapabilityArguments *arguments = [CSCapabilityArguments arguments];
+    CSCapArguments *arguments = [CSCapArguments arguments];
     
     // Required file_path argument
     CSArgumentValidation *filePathValidation = [CSArgumentValidation 
@@ -29,7 +29,7 @@
         pattern:@"^[^\\0]+$"
         allowedValues:nil];
     
-    CSCapabilityArgument *filePathArg = [CSCapabilityArgument 
+    CSCapArgument *filePathArg = [CSCapArgument 
         argumentWithName:@"file_path"
         type:CSArgumentTypeString
         description:@"Path to the document file to process"
@@ -48,7 +48,7 @@
         pattern:@"^[^\\0]+$"
         allowedValues:nil];
     
-    CSCapabilityArgument *outputArg = [CSCapabilityArgument 
+    CSCapArgument *outputArg = [CSCapArgument 
         argumentWithName:@"output"
         type:CSArgumentTypeString
         description:@"Write output to specified file instead of stdout"
@@ -58,15 +58,15 @@
         defaultValue:nil];
     [arguments addOptionalArgument:outputArg];
     
-    CSCapabilityOutput *output = [CSCapabilityOutput 
+    CSCapOutput *output = [CSCapOutput 
         outputWithType:CSOutputTypeObject
         schemaRef:@"file-metadata.json"
         contentType:@"application/json"
         validation:nil
         description:@"Structured metadata including file properties, document properties, and format-specific metadata"];
     
-    return [CSCapability 
-        capabilityWithId:capabilityKey
+    return [CSCap 
+        capWithId:capCard
         version:@"1.0.0"
         description:@"Extract document metadata including title, author, creation date, file size, and other properties"
         metadata:@{}
@@ -76,18 +76,18 @@
         acceptsStdin:YES];
 }
 
-+ (CSCapability *)generateThumbnailCapability {
++ (CSCap *)generateThumbnailCap {
     NSError *error;
-    CSCapabilityKey *capabilityKey = [CSCapabilityKey fromString:@"action=generate;output=binary;target=thumbnail;type=document" error:&error];
-    if (!capabilityKey) {
-        @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
-                                       reason:@"Failed to create capability ID for generate-thumbnail"
+    CSCapCard *capCard = [CSCapCard fromString:@"action=generate;output=binary;target=thumbnail;type=document" error:&error];
+    if (!capCard) {
+        @throw [NSException exceptionWithName:@"InvalidCapID" 
+                                       reason:@"Failed to create cap ID for generate-thumbnail"
                                      userInfo:nil];
     }
     
     NSString *command = @"generate-thumbnail";
     
-    CSCapabilityArguments *arguments = [CSCapabilityArguments arguments];
+    CSCapArguments *arguments = [CSCapArguments arguments];
     
     // Required file_path argument
     CSArgumentValidation *filePathValidation = [CSArgumentValidation 
@@ -98,7 +98,7 @@
         pattern:@"^[^\\0]+$"
         allowedValues:nil];
     
-    CSCapabilityArgument *filePathArg = [CSCapabilityArgument 
+    CSCapArgument *filePathArg = [CSCapArgument 
         argumentWithName:@"file_path"
         type:CSArgumentTypeString
         description:@"Path to the document file to process"
@@ -117,7 +117,7 @@
         pattern:nil
         allowedValues:nil];
     
-    CSCapabilityArgument *widthArg = [CSCapabilityArgument 
+    CSCapArgument *widthArg = [CSCapArgument 
         argumentWithName:@"width"
         type:CSArgumentTypeInteger
         description:@"Width of the thumbnail in pixels"
@@ -136,7 +136,7 @@
         pattern:nil
         allowedValues:nil];
     
-    CSCapabilityArgument *heightArg = [CSCapabilityArgument 
+    CSCapArgument *heightArg = [CSCapArgument 
         argumentWithName:@"height"
         type:CSArgumentTypeInteger
         description:@"Height of the thumbnail in pixels"
@@ -155,7 +155,7 @@
         pattern:@"\\.(png|jpg|jpeg)$"
         allowedValues:nil];
     
-    CSCapabilityArgument *outputArg = [CSCapabilityArgument 
+    CSCapArgument *outputArg = [CSCapArgument 
         argumentWithName:@"output"
         type:CSArgumentTypeString
         description:@"Write thumbnail to specified file instead of stdout"
@@ -174,7 +174,7 @@
         pattern:nil
         allowedValues:nil];
     
-    CSCapabilityArgument *pageArg = [CSCapabilityArgument 
+    CSCapArgument *pageArg = [CSCapArgument 
         argumentWithName:@"page"
         type:CSArgumentTypeInteger
         description:@"Page number to generate thumbnail from (1-based, default: 1)"
@@ -184,15 +184,15 @@
         defaultValue:@1];
     [arguments addOptionalArgument:pageArg];
     
-    CSCapabilityOutput *output = [CSCapabilityOutput 
+    CSCapOutput *output = [CSCapOutput 
         outputWithType:CSOutputTypeBinary
         schemaRef:nil
         contentType:@"image/png"
         validation:nil
         description:@"PNG image data representing a thumbnail of the document"];
     
-    return [CSCapability 
-        capabilityWithId:capabilityKey
+    return [CSCap 
+        capWithId:capCard
         version:@"1.0.0"
         description:@"Generate a thumbnail image preview of the document"
         metadata:@{}
@@ -202,18 +202,18 @@
         acceptsStdin:YES];
 }
 
-+ (CSCapability *)extractOutlineCapability {
++ (CSCap *)extractOutlineCap {
     NSError *error;
-    CSCapabilityKey *capabilityKey = [CSCapabilityKey fromString:@"action=extract;target=outline;type=document" error:&error];
-    if (!capabilityKey) {
-        @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
-                                       reason:@"Failed to create capability ID for extract-outline"
+    CSCapCard *capCard = [CSCapCard fromString:@"action=extract;target=outline;type=document" error:&error];
+    if (!capCard) {
+        @throw [NSException exceptionWithName:@"InvalidCapID" 
+                                       reason:@"Failed to create cap ID for extract-outline"
                                      userInfo:nil];
     }
     
     NSString *command = @"extract-outline";
     
-    CSCapabilityArguments *arguments = [CSCapabilityArguments arguments];
+    CSCapArguments *arguments = [CSCapArguments arguments];
     
     // Required file_path argument
     CSArgumentValidation *filePathValidation = [CSArgumentValidation 
@@ -224,7 +224,7 @@
         pattern:@"^[^\\0]+$"
         allowedValues:nil];
     
-    CSCapabilityArgument *filePathArg = [CSCapabilityArgument 
+    CSCapArgument *filePathArg = [CSCapArgument 
         argumentWithName:@"file_path"
         type:CSArgumentTypeString
         description:@"Path to the document file to process"
@@ -243,7 +243,7 @@
         pattern:nil
         allowedValues:nil];
     
-    CSCapabilityArgument *maxDepthArg = [CSCapabilityArgument 
+    CSCapArgument *maxDepthArg = [CSCapArgument 
         argumentWithName:@"max_depth"
         type:CSArgumentTypeInteger
         description:@"Maximum outline depth to extract (1-10)"
@@ -254,7 +254,7 @@
     [arguments addOptionalArgument:maxDepthArg];
     
     // Optional include_page_numbers argument
-    CSCapabilityArgument *includePageNumbersArg = [CSCapabilityArgument 
+    CSCapArgument *includePageNumbersArg = [CSCapArgument 
         argumentWithName:@"include_page_numbers"
         type:CSArgumentTypeBoolean
         description:@"Include page numbers in the outline (default: true)"
@@ -273,7 +273,7 @@
         pattern:@"^[^\\0]+$"
         allowedValues:nil];
     
-    CSCapabilityArgument *outputArg = [CSCapabilityArgument 
+    CSCapArgument *outputArg = [CSCapArgument 
         argumentWithName:@"output"
         type:CSArgumentTypeString
         description:@"Write output to specified file instead of stdout"
@@ -283,15 +283,15 @@
         defaultValue:nil];
     [arguments addOptionalArgument:outputArg];
     
-    CSCapabilityOutput *output = [CSCapabilityOutput 
+    CSCapOutput *output = [CSCapOutput 
         outputWithType:CSOutputTypeObject
         schemaRef:@"document-outline.json"
         contentType:@"application/json"
         validation:nil
         description:@"Hierarchical document outline with section titles and optional page numbers"];
     
-    return [CSCapability 
-        capabilityWithId:capabilityKey
+    return [CSCap 
+        capWithId:capCard
         version:@"1.0.0"
         description:@"Extract document outline/table of contents with hierarchical structure"
         metadata:@{}
@@ -301,18 +301,18 @@
         acceptsStdin:YES];
 }
 
-+ (CSCapability *)extractPagesCapability {
++ (CSCap *)extractPagesCap {
     NSError *error;
-    CSCapabilityKey *capabilityKey = [CSCapabilityKey fromString:@"action=extract;target=pages;type=document" error:&error];
-    if (!capabilityKey) {
-        @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
-                                       reason:@"Failed to create capability ID for extract-pages"
+    CSCapCard *capCard = [CSCapCard fromString:@"action=extract;target=pages;type=document" error:&error];
+    if (!capCard) {
+        @throw [NSException exceptionWithName:@"InvalidCapID" 
+                                       reason:@"Failed to create cap ID for extract-pages"
                                      userInfo:nil];
     }
     
     NSString *command = @"extract-pages";
     
-    CSCapabilityArguments *arguments = [CSCapabilityArguments arguments];
+    CSCapArguments *arguments = [CSCapArguments arguments];
     
     // Required file_path argument
     CSArgumentValidation *filePathValidation = [CSArgumentValidation 
@@ -323,7 +323,7 @@
         pattern:@"^[^\\0]+$"
         allowedValues:nil];
     
-    CSCapabilityArgument *filePathArg = [CSCapabilityArgument 
+    CSCapArgument *filePathArg = [CSCapArgument 
         argumentWithName:@"file_path"
         type:CSArgumentTypeString
         description:@"Path to the document file to process"
@@ -342,7 +342,7 @@
         pattern:@"^[^\\0]+$"
         allowedValues:nil];
     
-    CSCapabilityArgument *outputArg = [CSCapabilityArgument 
+    CSCapArgument *outputArg = [CSCapArgument 
         argumentWithName:@"output"
         type:CSArgumentTypeString
         description:@"Write output to specified file instead of stdout"
@@ -361,7 +361,7 @@
         pattern:@"^\\d+(-\\d*)?$"
         allowedValues:nil];
     
-    CSCapabilityArgument *pageRangeArg = [CSCapabilityArgument 
+    CSCapArgument *pageRangeArg = [CSCapArgument 
         argumentWithName:@"page_range"
         type:CSArgumentTypeString
         description:@"Page range to extract (e.g., '1-5' or '10-')"
@@ -371,15 +371,15 @@
         defaultValue:nil];
     [arguments addOptionalArgument:pageRangeArg];
     
-    CSCapabilityOutput *output = [CSCapabilityOutput 
+    CSCapOutput *output = [CSCapOutput 
         outputWithType:CSOutputTypeObject
         schemaRef:@"document-pages.json"
         contentType:@"application/json"
         validation:nil
         description:@"Document pages with text content organized by pages and paragraphs"];
     
-    return [CSCapability 
-        capabilityWithId:capabilityKey
+    return [CSCap 
+        capWithId:capCard
         version:@"1.0.0"
         description:@"Extract document pages with text content organized by pages and paragraphs"
         metadata:@{}
@@ -389,200 +389,200 @@
         acceptsStdin:YES];
 }
 
-+ (NSArray<CSCapability *> *)allStandardCapabilities {
++ (NSArray<CSCap *> *)allStandardCaps {
     return @[
-        [self extractMetadataCapability],
-        [self generateThumbnailCapability],
-        [self extractOutlineCapability],
-        [self extractPagesCapability]
+        [self extractMetadataCap],
+        [self generateThumbnailCap],
+        [self extractOutlineCap],
+        [self extractPagesCap]
     ];
 }
 
-+ (nullable CSCapability *)standardCapabilityWithName:(NSString *)name {
++ (nullable CSCap *)standardCapWithName:(NSString *)name {
     if ([name isEqualToString:@"extract-metadata"]) {
-        return [self extractMetadataCapability];
+        return [self extractMetadataCap];
     } else if ([name isEqualToString:@"generate-thumbnail"]) {
-        return [self generateThumbnailCapability];
+        return [self generateThumbnailCap];
     } else if ([name isEqualToString:@"extract-outline"]) {
-        return [self extractOutlineCapability];
+        return [self extractOutlineCap];
     } else if ([name isEqualToString:@"extract-pages"]) {
-        return [self extractPagesCapability];
+        return [self extractPagesCap];
     }
     return nil;
 }
 
-+ (nullable CSCapability *)standardCapabilityWithId:(NSString *)idString {
++ (nullable CSCap *)standardCapWithId:(NSString *)idString {
     if ([idString isEqualToString:@"action=extract;target=metadata;type=document"]) {
-        return [self extractMetadataCapability];
+        return [self extractMetadataCap];
     } else if ([idString isEqualToString:@"action=generate;output=binary;target=thumbnail;type=document"]) {
-        return [self generateThumbnailCapability];
+        return [self generateThumbnailCap];
     } else if ([idString isEqualToString:@"action=extract;target=outline;type=document"]) {
-        return [self extractOutlineCapability];
+        return [self extractOutlineCap];
     } else if ([idString isEqualToString:@"action=extract;target=pages;type=document"]) {
-        return [self extractPagesCapability];
+        return [self extractPagesCap];
     }
     return nil;
 }
 
-+ (CSCapability *)extractMetadataCapabilitySubbedWith:(NSArray<NSString *> *)fileTypes {
-    CSCapability *baseCapability = [self extractMetadataCapability];
++ (CSCap *)extractMetadataCapSubbedWith:(NSArray<NSString *> *)fileTypes {
+    CSCap *baseCap = [self extractMetadataCap];
     
-    NSMutableArray<CSCapability *> *capabilities = [NSMutableArray array];
+    NSMutableArray<CSCap *> *caps = [NSMutableArray array];
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
         NSString *newIdString = [NSString stringWithFormat:@"action=extract;format=%@;target=metadata;type=document", fileType];
-        CSCapabilityKey *newId = [CSCapabilityKey fromString:newIdString error:&error];
+        CSCapCard *newId = [CSCapCard fromString:newIdString error:&error];
         if (!newId) {
-            @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
-                                           reason:[NSString stringWithFormat:@"Failed to create capability ID for %@", newIdString]
+            @throw [NSException exceptionWithName:@"InvalidCapID" 
+                                           reason:[NSString stringWithFormat:@"Failed to create cap ID for %@", newIdString]
                                          userInfo:nil];
         }
         
-        CSCapability *capability = [CSCapability 
-            capabilityWithId:newId
-            version:baseCapability.version
-            description:baseCapability.capabilityDescription
-            metadata:baseCapability.metadata
-            command:baseCapability.command
-            arguments:baseCapability.arguments
-            output:baseCapability.output
-            acceptsStdin:baseCapability.acceptsStdin];
-        [capabilities addObject:capability];
+        CSCap *cap = [CSCap 
+            capWithId:newId
+            version:baseCap.version
+            description:baseCap.capDescription
+            metadata:baseCap.metadata
+            command:baseCap.command
+            arguments:baseCap.arguments
+            output:baseCap.output
+            acceptsStdin:baseCap.acceptsStdin];
+        [caps addObject:cap];
     }
     
-    // Return first capability for single file type, or throw if multiple
-    if (capabilities.count == 1) {
-        return capabilities[0];
+    // Return first cap for single file type, or throw if multiple
+    if (caps.count == 1) {
+        return caps[0];
     } else {
         @throw [NSException exceptionWithName:@"MultipleFileTypes" 
-                                       reason:@"extractMetadataCapabilitySubbedWith should only be called with a single file type"
+                                       reason:@"extractMetadataCapSubbedWith should only be called with a single file type"
                                      userInfo:nil];
     }
 }
 
-+ (CSCapability *)generateThumbnailCapabilitySubbedWith:(NSArray<NSString *> *)fileTypes {
-    CSCapability *baseCapability = [self generateThumbnailCapability];
++ (CSCap *)generateThumbnailCapSubbedWith:(NSArray<NSString *> *)fileTypes {
+    CSCap *baseCap = [self generateThumbnailCap];
     
-    NSMutableArray<CSCapability *> *capabilities = [NSMutableArray array];
+    NSMutableArray<CSCap *> *caps = [NSMutableArray array];
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
         NSString *newIdString = [NSString stringWithFormat:@"action=generate;format=%@;output=binary;target=thumbnail;type=document", fileType];
-        CSCapabilityKey *newId = [CSCapabilityKey fromString:newIdString error:&error];
+        CSCapCard *newId = [CSCapCard fromString:newIdString error:&error];
         if (!newId) {
-            @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
-                                           reason:[NSString stringWithFormat:@"Failed to create capability ID for %@", newIdString]
+            @throw [NSException exceptionWithName:@"InvalidCapID" 
+                                           reason:[NSString stringWithFormat:@"Failed to create cap ID for %@", newIdString]
                                          userInfo:nil];
         }
         
-        CSCapability *capability = [CSCapability 
-            capabilityWithId:newId
-            version:baseCapability.version
-            description:baseCapability.capabilityDescription
-            metadata:baseCapability.metadata
-            command:baseCapability.command
-            arguments:baseCapability.arguments
-            output:baseCapability.output
-            acceptsStdin:baseCapability.acceptsStdin];
-        [capabilities addObject:capability];
+        CSCap *cap = [CSCap 
+            capWithId:newId
+            version:baseCap.version
+            description:baseCap.capDescription
+            metadata:baseCap.metadata
+            command:baseCap.command
+            arguments:baseCap.arguments
+            output:baseCap.output
+            acceptsStdin:baseCap.acceptsStdin];
+        [caps addObject:cap];
     }
     
-    // Return first capability for single file type, or throw if multiple
-    if (capabilities.count == 1) {
-        return capabilities[0];
+    // Return first cap for single file type, or throw if multiple
+    if (caps.count == 1) {
+        return caps[0];
     } else {
         @throw [NSException exceptionWithName:@"MultipleFileTypes" 
-                                       reason:@"generateThumbnailCapabilitySubbedWith should only be called with a single file type"
+                                       reason:@"generateThumbnailCapSubbedWith should only be called with a single file type"
                                      userInfo:nil];
     }
 }
 
-+ (CSCapability *)extractOutlineCapabilitySubbedWith:(NSArray<NSString *> *)fileTypes {
-    CSCapability *baseCapability = [self extractOutlineCapability];
++ (CSCap *)extractOutlineCapSubbedWith:(NSArray<NSString *> *)fileTypes {
+    CSCap *baseCap = [self extractOutlineCap];
     
-    NSMutableArray<CSCapability *> *capabilities = [NSMutableArray array];
+    NSMutableArray<CSCap *> *caps = [NSMutableArray array];
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
         NSString *newIdString = [NSString stringWithFormat:@"action=extract;format=%@;target=outline;type=document", fileType];
-        CSCapabilityKey *newId = [CSCapabilityKey fromString:newIdString error:&error];
+        CSCapCard *newId = [CSCapCard fromString:newIdString error:&error];
         if (!newId) {
-            @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
-                                           reason:[NSString stringWithFormat:@"Failed to create capability ID for %@", newIdString]
+            @throw [NSException exceptionWithName:@"InvalidCapID" 
+                                           reason:[NSString stringWithFormat:@"Failed to create cap ID for %@", newIdString]
                                          userInfo:nil];
         }
         
-        CSCapability *capability = [CSCapability 
-            capabilityWithId:newId
-            version:baseCapability.version
-            description:baseCapability.capabilityDescription
-            metadata:baseCapability.metadata
-            command:baseCapability.command
-            arguments:baseCapability.arguments
-            output:baseCapability.output
-            acceptsStdin:baseCapability.acceptsStdin];
-        [capabilities addObject:capability];
+        CSCap *cap = [CSCap 
+            capWithId:newId
+            version:baseCap.version
+            description:baseCap.capDescription
+            metadata:baseCap.metadata
+            command:baseCap.command
+            arguments:baseCap.arguments
+            output:baseCap.output
+            acceptsStdin:baseCap.acceptsStdin];
+        [caps addObject:cap];
     }
     
-    // Return first capability for single file type, or throw if multiple
-    if (capabilities.count == 1) {
-        return capabilities[0];
+    // Return first cap for single file type, or throw if multiple
+    if (caps.count == 1) {
+        return caps[0];
     } else {
         @throw [NSException exceptionWithName:@"MultipleFileTypes" 
-                                       reason:@"extractOutlineCapabilitySubbedWith should only be called with a single file type"
+                                       reason:@"extractOutlineCapSubbedWith should only be called with a single file type"
                                      userInfo:nil];
     }
 }
 
-+ (CSCapability *)extractPagesCapabilitySubbedWith:(NSArray<NSString *> *)fileTypes {
-    CSCapability *baseCapability = [self extractPagesCapability];
++ (CSCap *)extractPagesCapSubbedWith:(NSArray<NSString *> *)fileTypes {
+    CSCap *baseCap = [self extractPagesCap];
     
-    NSMutableArray<CSCapability *> *capabilities = [NSMutableArray array];
+    NSMutableArray<CSCap *> *caps = [NSMutableArray array];
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
         NSString *newIdString = [NSString stringWithFormat:@"action=extract;format=%@;target=pages;type=document", fileType];
-        CSCapabilityKey *newId = [CSCapabilityKey fromString:newIdString error:&error];
+        CSCapCard *newId = [CSCapCard fromString:newIdString error:&error];
         if (!newId) {
-            @throw [NSException exceptionWithName:@"InvalidCapabilityID" 
-                                           reason:[NSString stringWithFormat:@"Failed to create capability ID for %@", newIdString]
+            @throw [NSException exceptionWithName:@"InvalidCapID" 
+                                           reason:[NSString stringWithFormat:@"Failed to create cap ID for %@", newIdString]
                                          userInfo:nil];
         }
         
-        CSCapability *capability = [CSCapability 
-            capabilityWithId:newId
-            version:baseCapability.version
-            description:baseCapability.capabilityDescription
-            metadata:baseCapability.metadata
-            command:baseCapability.command
-            arguments:baseCapability.arguments
-            output:baseCapability.output
-            acceptsStdin:baseCapability.acceptsStdin];
-        [capabilities addObject:capability];
+        CSCap *cap = [CSCap 
+            capWithId:newId
+            version:baseCap.version
+            description:baseCap.capDescription
+            metadata:baseCap.metadata
+            command:baseCap.command
+            arguments:baseCap.arguments
+            output:baseCap.output
+            acceptsStdin:baseCap.acceptsStdin];
+        [caps addObject:cap];
     }
     
-    // Return first capability for single file type, or throw if multiple
-    if (capabilities.count == 1) {
-        return capabilities[0];
+    // Return first cap for single file type, or throw if multiple
+    if (caps.count == 1) {
+        return caps[0];
     } else {
         @throw [NSException exceptionWithName:@"MultipleFileTypes" 
-                                       reason:@"extractPagesCapabilitySubbedWith should only be called with a single file type"
+                                       reason:@"extractPagesCapSubbedWith should only be called with a single file type"
                                      userInfo:nil];
     }
 }
 
-+ (NSArray<CSCapability *> *)allStandardCapabilitiesSubbedWith:(NSArray<NSString *> *)fileTypes {
-    NSMutableArray<CSCapability *> *allCapabilities = [NSMutableArray array];
++ (NSArray<CSCap *> *)allStandardCapsSubbedWith:(NSArray<NSString *> *)fileTypes {
+    NSMutableArray<CSCap *> *allCaps = [NSMutableArray array];
     
     for (NSString *fileType in fileTypes) {
-        [allCapabilities addObject:[self extractMetadataCapabilitySubbedWith:@[fileType]]];
-        [allCapabilities addObject:[self generateThumbnailCapabilitySubbedWith:@[fileType]]];
-        [allCapabilities addObject:[self extractOutlineCapabilitySubbedWith:@[fileType]]];
-        [allCapabilities addObject:[self extractPagesCapabilitySubbedWith:@[fileType]]];
+        [allCaps addObject:[self extractMetadataCapSubbedWith:@[fileType]]];
+        [allCaps addObject:[self generateThumbnailCapSubbedWith:@[fileType]]];
+        [allCaps addObject:[self extractOutlineCapSubbedWith:@[fileType]]];
+        [allCaps addObject:[self extractPagesCapSubbedWith:@[fileType]]];
     }
     
-    return allCapabilities;
+    return allCaps;
 }
 
 @end

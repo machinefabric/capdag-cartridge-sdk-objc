@@ -2,7 +2,7 @@
 //  LBVRPluginSDK.m
 //  LBVR Plugin SDK for Objective-C
 //
-//  Unified capability-based plugin interface with standardized command-line calling
+//  Unified cap-based plugin interface with standardized command-line calling
 //
 
 #import "include/LBVRPluginSDK.h"
@@ -11,7 +11,7 @@
 
 @implementation LBVRPluginRegistry {
     NSMutableDictionary<NSString *, LBVRPluginEntry *> *_plugins;
-    NSMutableDictionary<NSString *, NSMutableArray<NSString *> *> *_capabilityIndex;
+    NSMutableDictionary<NSString *, NSMutableArray<NSString *> *> *_capIndex;
 }
 
 + (instancetype)sharedRegistry {
@@ -27,24 +27,24 @@
     self = [super init];
     if (self) {
         _plugins = [[NSMutableDictionary alloc] init];
-        _capabilityIndex = [[NSMutableDictionary alloc] init];
+        _capIndex = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
 
 - (void)registerPlugin:(NSString *)name
             binaryPath:(NSString *)binaryPath
-          capabilities:(NSArray<NSString *> *)capabilities {
+          caps:(NSArray<NSString *> *)caps {
     
     LBVRPluginEntry *entry = [[LBVRPluginEntry alloc] initWithBinaryPath:binaryPath
-                                                            capabilities:capabilities];
+                                                            caps:caps];
     
-    // Update capability index
-    for (NSString *capability in capabilities) {
-        NSMutableArray<NSString *> *plugins = _capabilityIndex[capability];
+    // Update cap index
+    for (NSString *cap in caps) {
+        NSMutableArray<NSString *> *plugins = _capIndex[cap];
         if (!plugins) {
             plugins = [[NSMutableArray alloc] init];
-            _capabilityIndex[capability] = plugins;
+            _capIndex[cap] = plugins;
         }
         [plugins addObject:name];
     }
@@ -52,13 +52,13 @@
     _plugins[name] = entry;
 }
 
-- (LBVRCapabilityCaller *)can:(NSString *)capability error:(NSError **)error {
-    NSString *bestPlugin = [self findBestPluginForCapability:capability];
+- (LBVRCapCaller *)can:(NSString *)cap error:(NSError **)error {
+    NSString *bestPlugin = [self findBestPluginForCap:cap];
     if (!bestPlugin) {
         if (error) {
             *error = [NSError errorWithDomain:@"LBVRPluginSDK"
                                          code:1001
-                                     userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Capability '%@' is not available in any registered plugin", capability]}];
+                                     userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Cap '%@' is not available in any registered plugin", cap]}];
         }
         return nil;
     }
@@ -73,20 +73,20 @@
         return nil;
     }
     
-    LBVRCapabilityCaller *caller = [[LBVRCapabilityCaller alloc] init];
+    LBVRCapCaller *caller = [[LBVRCapCaller alloc] init];
     caller.pluginName = bestPlugin;
-    caller.capability = capability;
+    caller.cap = cap;
     caller.binaryPath = plugin.binaryPath;
     
     return caller;
 }
 
-- (NSArray<NSString *> *)listCapabilities {
-    return [_capabilityIndex allKeys];
+- (NSArray<NSString *> *)listCaps {
+    return [_capIndex allKeys];
 }
 
-- (NSString *)findBestPluginForCapability:(NSString *)capability {
-    NSArray<NSString *> *candidates = [self getCapabilityCandidates:capability];
+- (NSString *)findBestPluginForCap:(NSString *)cap {
+    NSArray<NSString *> *candidates = [self getCapCandidates:cap];
     if (candidates.count == 0) {
         return nil;
     }
@@ -96,7 +96,7 @@
     
     for (NSString *pluginName in candidates) {
         LBVRPluginEntry *plugin = _plugins[pluginName];
-        NSInteger score = [self calculateCapabilityScore:plugin forCapability:capability];
+        NSInteger score = [self calculateCapScore:plugin forCap:cap];
         if (score > bestScore) {
             bestPlugin = pluginName;
             bestScore = score;
@@ -106,19 +106,19 @@
     return bestPlugin;
 }
 
-- (NSArray<NSString *> *)getCapabilityCandidates:(NSString *)capability {
+- (NSArray<NSString *> *)getCapCandidates:(NSString *)cap {
     // Direct match
-    NSArray<NSString *> *plugins = _capabilityIndex[capability];
+    NSArray<NSString *> *plugins = _capIndex[cap];
     if (plugins) {
         return plugins;
     }
     
     // Try wildcard variations
-    if ([capability containsString:@":"]) {
-        NSArray<NSString *> *parts = [capability componentsSeparatedByString:@":"];
+    if ([cap containsString:@":"]) {
+        NSArray<NSString *> *parts = [cap componentsSeparatedByString:@":"];
         if (parts.count == 2) {
-            NSString *wildcardCapability = [NSString stringWithFormat:@"%@:*", parts[0]];
-            NSArray<NSString *> *wildcardPlugins = _capabilityIndex[wildcardCapability];
+            NSString *wildcardCap = [NSString stringWithFormat:@"%@:*", parts[0]];
+            NSArray<NSString *> *wildcardPlugins = _capIndex[wildcardCap];
             if (wildcardPlugins) {
                 return wildcardPlugins;
             }
@@ -128,12 +128,12 @@
     return @[];
 }
 
-- (NSInteger)calculateCapabilityScore:(LBVRPluginEntry *)plugin forCapability:(NSString *)capability {
+- (NSInteger)calculateCapScore:(LBVRPluginEntry *)plugin forCap:(NSString *)cap {
     NSInteger score = 0;
     
     // Add specificity score
-    for (NSString *cap in plugin.capabilities) {
-        if ([cap isEqualToString:capability]) {
+    for (NSString *cap in plugin.caps) {
+        if ([cap isEqualToString:cap]) {
             if ([cap containsString:@":"] && ![cap hasSuffix:@":*"]) {
                 score += 20; // Exact file type match
             } else if ([cap hasSuffix:@":*"]) {
@@ -150,14 +150,14 @@
 
 @end
 
-// MARK: - Capability Caller
+// MARK: - Cap Caller
 
-@implementation LBVRCapabilityCaller
+@implementation LBVRCapCaller
 
 - (void)call:(NSArray *)args completion:(void (^)(LBVRResponseWrapper * _Nullable, NSError * _Nullable))completion {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        // Convert capability to CLI flag
-        NSString *operation = [self.capability componentsSeparatedByString:@":"][0];
+        // Convert cap to CLI flag
+        NSString *operation = [self.cap componentsSeparatedByString:@":"][0];
         NSString *command = [NSString stringWithFormat:@"--%@", operation];
         
         // Build command arguments
@@ -300,11 +300,11 @@
 @implementation LBVRPluginEntry
 
 - (instancetype)initWithBinaryPath:(NSString *)binaryPath
-                      capabilities:(NSArray<NSString *> *)capabilities {
+                      caps:(NSArray<NSString *> *)caps {
     self = [super init];
     if (self) {
         _binaryPath = [binaryPath copy];
-        _capabilities = [capabilities copy];
+        _caps = [caps copy];
     }
     return self;
 }
@@ -313,23 +313,23 @@
 
 // MARK: - Plugin Manifest Category
 
-@implementation CSCapabilityManifest (LBVRPluginSDK)
+@implementation CSCapManifest (LBVRPluginSDK)
 
 + (instancetype)pluginWithName:(NSString *)name
                        version:(NSString *)version
                    description:(NSString *)description
-                  capabilities:(NSArray<CSCapability *> *)capabilities {
-    return [CSCapabilityManifest manifestWithName:name
+                  caps:(NSArray<CSCap *> *)caps {
+    return [CSCapManifest manifestWithName:name
                                            version:version
                                        description:description
-                                      capabilities:capabilities];
+                                      caps:caps];
 }
 
 @end
 
-// MARK: - Standardized Capabilities
+// MARK: - Standardized Caps
 
-@implementation LBVRStandardizedCapabilities
+@implementation LBVRStandardizedCaps
 
 + (NSString *)extractMetadata {
     return @"extract-metadata";
@@ -357,15 +357,15 @@
 
 @implementation LBVRCLIHelper
 
-+ (NSString *)capabilityToFlag:(NSString *)capability {
-    NSString *operation = [capability componentsSeparatedByString:@":"][0];
++ (NSString *)capToFlag:(NSString *)cap {
+    NSString *operation = [cap componentsSeparatedByString:@":"][0];
     return [NSString stringWithFormat:@"--%@", operation];
 }
 
-+ (NSArray<NSString *> *)buildCommandArgs:(NSString *)capability args:(NSArray *)args {
++ (NSArray<NSString *> *)buildCommandArgs:(NSString *)cap args:(NSArray *)args {
     NSMutableArray<NSString *> *cmdArgs = [[NSMutableArray alloc] init];
     
-    [cmdArgs addObject:[self capabilityToFlag:capability]];
+    [cmdArgs addObject:[self capToFlag:cap]];
     
     for (id arg in args) {
         [cmdArgs addObject:[NSString stringWithFormat:@"%@", arg]];
@@ -926,29 +926,29 @@
         dict[@"author"] = pluginManifest.author;
     }
     
-    // Handle capabilities - expecting CSCapability objects only
-    NSMutableArray *capabilitiesArray = [[NSMutableArray alloc] init];
-    if (pluginManifest.capabilities) {
-        for (CSCapability *capability in pluginManifest.capabilities) {
-            NSMutableDictionary *capabilityDict = [[NSMutableDictionary alloc] init];
+    // Handle caps - expecting CSCap objects only
+    NSMutableArray *capsArray = [[NSMutableArray alloc] init];
+    if (pluginManifest.caps) {
+        for (CSCap *cap in pluginManifest.caps) {
+            NSMutableDictionary *capDict = [[NSMutableDictionary alloc] init];
             
-            // Basic capability info
-            capabilityDict[@"id"] = [capability idString];
-            capabilityDict[@"version"] = capability.version;
-            capabilityDict[@"command"] = capability.command;
-            capabilityDict[@"description"] = capability.capabilityDescription;
+            // Basic cap info
+            capDict[@"id"] = [cap idString];
+            capDict[@"version"] = cap.version;
+            capDict[@"command"] = cap.command;
+            capDict[@"description"] = cap.capDescription;
             
             // Add metadata (including file types)
-            if (capability.metadata && capability.metadata.count > 0) {
-                capabilityDict[@"metadata"] = capability.metadata;
+            if (cap.metadata && cap.metadata.count > 0) {
+                capDict[@"metadata"] = cap.metadata;
             }
             
             // Add arguments info
-            if (capability.arguments && !capability.arguments.isEmpty) {
+            if (cap.arguments && !cap.arguments.isEmpty) {
                 NSMutableDictionary *argumentsDict = [[NSMutableDictionary alloc] init];
-                if (capability.arguments.required.count > 0) {
+                if (cap.arguments.required.count > 0) {
                     NSMutableArray *requiredArgs = [[NSMutableArray alloc] init];
-                    for (CSCapabilityArgument *arg in capability.arguments.required) {
+                    for (CSCapArgument *arg in cap.arguments.required) {
                         NSMutableDictionary *argDict = [@{
                             @"name": arg.name,
                             @"type": [self argumentTypeStringFromEnum:arg.type],
@@ -962,9 +962,9 @@
                     }
                     argumentsDict[@"required"] = requiredArgs;
                 }
-                if (capability.arguments.optional.count > 0) {
+                if (cap.arguments.optional.count > 0) {
                     NSMutableArray *optionalArgs = [[NSMutableArray alloc] init];
-                    for (CSCapabilityArgument *arg in capability.arguments.optional) {
+                    for (CSCapArgument *arg in cap.arguments.optional) {
                         NSMutableDictionary *argDict = [@{
                             @"name": arg.name,
                             @"type": [self argumentTypeStringFromEnum:arg.type],
@@ -978,28 +978,28 @@
                     }
                     argumentsDict[@"optional"] = optionalArgs;
                 }
-                capabilityDict[@"arguments"] = argumentsDict;
+                capDict[@"arguments"] = argumentsDict;
             }
             
             // Add output info
-            if (capability.output) {
+            if (cap.output) {
                 NSMutableDictionary *outputDict = [[NSMutableDictionary alloc] init];
-                outputDict[@"type"] = [self outputTypeStringFromEnum:capability.output.type];
-                outputDict[@"description"] = capability.output.outputDescription;
-                if (capability.output.contentType) {
-                    outputDict[@"content_type"] = capability.output.contentType;
+                outputDict[@"type"] = [self outputTypeStringFromEnum:cap.output.type];
+                outputDict[@"description"] = cap.output.outputDescription;
+                if (cap.output.contentType) {
+                    outputDict[@"content_type"] = cap.output.contentType;
                 }
-                if (capability.output.schemaRef) {
-                    outputDict[@"schema_ref"] = capability.output.schemaRef;
+                if (cap.output.schemaRef) {
+                    outputDict[@"schema_ref"] = cap.output.schemaRef;
                 }
-                capabilityDict[@"output"] = outputDict;
+                capDict[@"output"] = outputDict;
             }
             
-            [capabilitiesArray addObject:capabilityDict];
+            [capsArray addObject:capDict];
         }
     }
-    // Wrap capabilities array in capabilities object to match reference implementation
-    dict[@"capabilities"] = @{@"capabilities": capabilitiesArray};
+    // Wrap caps array in caps object to match reference implementation
+    dict[@"caps"] = @{@"caps": capsArray};
     
     NSError *jsonError = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&jsonError];

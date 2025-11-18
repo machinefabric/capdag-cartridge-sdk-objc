@@ -2,21 +2,21 @@
 //  LBVRPluginSDK.h
 //  LBVR Plugin SDK for Objective-C
 //
-//  Unified capability-based plugin interface with standardized command-line calling
+//  Unified cap-based plugin interface with standardized command-line calling
 //
 
 #import <Foundation/Foundation.h>
 #import "CapDef.h"
-#import "CSPluginCapabilities.h"
-#import "CSStandardCapabilities.h"
-#import "LBVRStandardCapabilities.h"
+#import "CSPluginCaps.h"
+#import "CSStandardCaps.h"
+#import "LBVRStandardCaps.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 // MARK: - Unified Plugin Registry
 
 @class LBVRPluginEntry;
-@class LBVRCapabilityCaller;
+@class LBVRCapCaller;
 @class LBVRResponseWrapper;
 
 @interface LBVRPluginRegistry : NSObject
@@ -24,19 +24,19 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedRegistry;
 - (void)registerPlugin:(NSString *)name
             binaryPath:(NSString *)binaryPath
-          capabilities:(NSArray<NSString *> *)capabilities;
+          caps:(NSArray<NSString *> *)caps;
 
-- (LBVRCapabilityCaller * _Nullable)can:(NSString *)capability error:(NSError **)error;
-- (NSArray<NSString *> *)listCapabilities;
+- (LBVRCapCaller * _Nullable)can:(NSString *)cap error:(NSError **)error;
+- (NSArray<NSString *> *)listCaps;
 
 @end
 
-// MARK: - Capability Caller
+// MARK: - Cap Caller
 
-@interface LBVRCapabilityCaller : NSObject
+@interface LBVRCapCaller : NSObject
 
 @property (nonatomic, strong) NSString *pluginName;
-@property (nonatomic, strong) NSString *capability;
+@property (nonatomic, strong) NSString *cap;
 @property (nonatomic, strong) NSString *binaryPath;
 
 - (void)call:(NSArray *)args completion:(void (^)(LBVRResponseWrapper * _Nullable response, NSError * _Nullable error))completion;
@@ -65,28 +65,28 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LBVRPluginEntry : NSObject
 
 @property (nonatomic, strong) NSString *binaryPath;
-@property (nonatomic, strong) NSArray<NSString *> *capabilities;
+@property (nonatomic, strong) NSArray<NSString *> *caps;
 
 - (instancetype)initWithBinaryPath:(NSString *)binaryPath
-                      capabilities:(NSArray<NSString *> *)capabilities;
+                      caps:(NSArray<NSString *> *)caps;
 
 @end
 
-// MARK: - Plugin Capabilities (now using formal capability SDK)
-// Use CSPluginCapabilities from CapDef instead of the old string-based system
+// MARK: - Plugin Caps (now using formal cap SDK)
+// Use CSPluginCaps from CapDef instead of the old string-based system
 
 // MARK: - Plugin Manifest (for --manifest output)
-// Re-export CSCapabilityManifest as LBVRPluginManifest for backward compatibility
+// Re-export CSCapManifest as LBVRPluginManifest for backward compatibility
 
-typedef CSCapabilityManifest LBVRPluginManifest;
+typedef CSCapManifest LBVRPluginManifest;
 
 // Convenience constructors for plugins
-@interface CSCapabilityManifest (LBVRPluginSDK)
+@interface CSCapManifest (LBVRPluginSDK)
 
 + (instancetype)pluginWithName:(NSString *)name
                        version:(NSString *)version
                    description:(NSString *)description
-                  capabilities:(NSArray<CSCapability *> *)capabilities;
+                  caps:(NSArray<CSCap *> *)caps;
 
 @end
 
@@ -257,7 +257,7 @@ typedef CSCapabilityManifest LBVRPluginManifest;
 @protocol LBVRDocumentHandler <NSObject>
 
 /**
- * Get plugin manifest including capabilities
+ * Get plugin manifest including caps
  * @return Plugin manifest
  */
 - (LBVRPluginManifest *)getPluginManifest;
@@ -310,9 +310,9 @@ typedef CSCapabilityManifest LBVRPluginManifest;
 
 @end
 
-// MARK: - Standardized Capabilities
+// MARK: - Standardized Caps
 
-@interface LBVRStandardizedCapabilities : NSObject
+@interface LBVRStandardizedCaps : NSObject
 
 @property (class, nonatomic, strong, readonly) NSString *extractMetadata;
 @property (class, nonatomic, strong, readonly) NSString *extractOutline;
@@ -336,8 +336,8 @@ typedef CSCapabilityManifest LBVRPluginManifest;
 
 @interface LBVRCLIHelper : NSObject
 
-+ (NSString *)capabilityToFlag:(NSString *)capability;
-+ (NSArray<NSString *> *)buildCommandArgs:(NSString *)capability args:(NSArray *)args;
++ (NSString *)capToFlag:(NSString *)cap;
++ (NSArray<NSString *> *)buildCommandArgs:(NSString *)cap args:(NSArray *)args;
 + (void)executePlugin:(NSString *)binaryPath 
                  args:(NSArray<NSString *> *)args
            completion:(void (^)(NSData * _Nullable output, NSError * _Nullable error))completion;

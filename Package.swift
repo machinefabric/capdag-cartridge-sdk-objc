@@ -16,7 +16,7 @@ let package = Package(
             targets: ["LBVRPluginSDK"]),
     ],
     dependencies: [
-        // Depend on the capability definition package
+        // Depend on the cap definition package
         .package(path: "../capdef-objc"),
     ],
     targets: [
