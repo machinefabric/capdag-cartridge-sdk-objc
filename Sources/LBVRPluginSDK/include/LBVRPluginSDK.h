@@ -94,6 +94,8 @@ NS_ASSUME_NONNULL_BEGIN
                    description:(NSString *)description
                 capabilities:(CSPluginCapabilities *)capabilities;
 
++ (instancetype)manifestWithDictionary:(NSDictionary * _Nonnull)dictionary error:(NSError * _Nullable * _Nullable)error NS_SWIFT_NAME(init(dictionary:error:));
+
 - (LBVRPluginManifest *)withAuthor:(NSString *)author;
 @end
 

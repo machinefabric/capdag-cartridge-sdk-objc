@@ -32,6 +32,14 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)capabilitiesWithArray:(NSArray<CSCapability *> *)capabilities;
 
 /**
+ * Create capabilities collection from a dictionary representation
+ * @param dictionary The dictionary containing capabilities data
+ * @param error Pointer to NSError for error reporting
+ * @return A new CSPluginCapabilities instance, or nil if parsing fails
+ */
++ (instancetype)capabilitiesWithDictionary:(NSDictionary * _Nonnull)dictionary error:(NSError * _Nullable * _Nullable)error NS_SWIFT_NAME(init(dictionary:error:));
+
+/**
  * Add a capability to the collection
  * @param capability The capability to add
  */

@@ -22,6 +22,29 @@
     return instance;
 }
 
++ (instancetype)capabilitiesWithDictionary:(NSDictionary *)dictionary error:(NSError **)error {
+    NSArray *capabilitiesArray = dictionary[@"capabilities"];
+    if (!capabilitiesArray) {
+        if (error) {
+            *error = [NSError errorWithDomain:@"CSPluginCapabilitiesError"
+                                         code:1006
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Missing capabilities array in dictionary"}];
+        }
+        return nil;
+    }
+    
+    NSMutableArray<CSCapability *> *capabilities = [NSMutableArray array];
+    for (NSDictionary *capDict in capabilitiesArray) {
+        CSCapability *capability = [CSCapability capabilityWithDictionary:capDict error:error];
+        if (!capability) {
+            return nil;
+        }
+        [capabilities addObject:capability];
+    }
+    
+    return [self capabilitiesWithArray:capabilities];
+}
+
 - (instancetype)init {
     self = [super init];
     if (self) {

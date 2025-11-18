@@ -339,6 +339,40 @@
                          capabilities:capabilities];
 }
 
++ (instancetype)manifestWithDictionary:(NSDictionary *)dictionary error:(NSError **)error {
+    NSString *name = dictionary[@"name"];
+    NSString *version = dictionary[@"version"];
+    NSString *description = dictionary[@"description"];
+    NSDictionary *capabilitiesDict = dictionary[@"capabilities"];
+    
+    if (!name || !version || !description || !capabilitiesDict) {
+        if (error) {
+            *error = [NSError errorWithDomain:@"LBVRPluginManifestError"
+                                         code:1007
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Missing required manifest fields: name, version, description, or capabilities"}];
+        }
+        return nil;
+    }
+    
+    CSPluginCapabilities *capabilities = [CSPluginCapabilities capabilitiesWithDictionary:capabilitiesDict error:error];
+    if (!capabilities) {
+        return nil;
+    }
+    
+    LBVRPluginManifest *manifest = [[self alloc] initWithName:name
+                                                       version:version
+                                             pluginDescription:description
+                                                  capabilities:capabilities];
+    
+    // Optional fields
+    NSString *author = dictionary[@"author"];
+    if (author) {
+        manifest.author = author;
+    }
+    
+    return manifest;
+}
+
 - (LBVRPluginManifest *)withAuthor:(NSString *)author {
     self.author = [author copy];
     return self;
