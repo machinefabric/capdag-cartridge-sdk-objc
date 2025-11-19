@@ -487,7 +487,7 @@
         _sourceFile = [sourceFile copy];
         _documentType = [documentType copy];
         _totalPages = totalPages;
-        _tocEntries = [[NSMutableArray alloc] init];
+        _outlineEntries = [[NSMutableArray alloc] init];
         _hasOutline = NO;
     }
     return self;
@@ -498,14 +498,14 @@
     return self;
 }
 
-- (void)addEntry:(LBVRTocEntry *)entry {
-    [_tocEntries addObject:entry];
+- (void)addEntry:(LBVROutlineEntry *)entry {
+    [_outlineEntries addObject:entry];
     _hasOutline = YES;
 }
 
 @end
 
-@implementation LBVRTocEntry
+@implementation LBVROutlineEntry
 
 - (instancetype)initWithTitle:(NSString *)title level:(NSUInteger)level {
     self = [super init];
@@ -521,12 +521,12 @@
     return [[self alloc] initWithTitle:title level:level];
 }
 
-- (LBVRTocEntry *)withPage:(NSUInteger)page {
+- (LBVROutlineEntry *)withPage:(NSUInteger)page {
     self.page = page;
     return self;
 }
 
-- (void)addChild:(LBVRTocEntry *)child {
+- (void)addChild:(LBVROutlineEntry *)child {
     [_children addObject:child];
 }
 
@@ -683,8 +683,8 @@
         return [self documentPagesToDict:(LBVRDocumentPages *)object];
     }
     
-    if ([object isKindOfClass:[LBVRTocEntry class]]) {
-        return [self tocEntryToDict:(LBVRTocEntry *)object];
+    if ([object isKindOfClass:[LBVROutlineEntry class]]) {
+        return [self outlineEntryToDict:(LBVROutlineEntry *)object];
     }
     
     if ([object isKindOfClass:[LBVRDocumentPage class]]) {
@@ -765,12 +765,12 @@
     dict[@"hasOutline"] = @(outline.hasOutline);
     if (outline.title) dict[@"title"] = outline.title;
     
-    if (outline.tocEntries && outline.tocEntries.count > 0) {
+    if (outline.outlineEntries && outline.outlineEntries.count > 0) {
         NSMutableArray *entriesArray = [[NSMutableArray alloc] init];
-        for (LBVRTocEntry *entry in outline.tocEntries) {
-            [entriesArray addObject:[self tocEntryToDict:entry]];
+        for (LBVROutlineEntry *entry in outline.outlineEntries) {
+            [entriesArray addObject:[self outlineEntryToDict:entry]];
         }
-        dict[@"tocEntries"] = entriesArray;
+        dict[@"outlineEntries"] = entriesArray;
     }
     
     if (outline.extractionInfo) {
@@ -803,7 +803,7 @@
     return dict;
 }
 
-+ (NSDictionary *)tocEntryToDict:(LBVRTocEntry *)entry {
++ (NSDictionary *)outlineEntryToDict:(LBVROutlineEntry *)entry {
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     
     if (entry.title) dict[@"title"] = entry.title;
@@ -813,8 +813,8 @@
     
     if (entry.children && entry.children.count > 0) {
         NSMutableArray *childrenArray = [[NSMutableArray alloc] init];
-        for (LBVRTocEntry *child in entry.children) {
-            [childrenArray addObject:[self tocEntryToDict:child]];
+        for (LBVROutlineEntry *child in entry.children) {
+            [childrenArray addObject:[self outlineEntryToDict:child]];
         }
         dict[@"children"] = childrenArray;
     }

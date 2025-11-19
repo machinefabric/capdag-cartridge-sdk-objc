@@ -165,7 +165,7 @@ NSString *outputJSON = [LBVRJSONSerializer serializePluginOutput:output];
 ### Core Classes
 
 - **`LBVRDocumentMetadata`**: Document metadata (conforms to `file-metadata.json` schema)
-- **`LBVRDocumentOutline`**: Document outline/TOC (conforms to `document-outline.json` schema)  
+- **`LBVRDocumentOutline`**: Document outline/Outline (conforms to `document-outline.json` schema)  
 - **`LBVRDocumentPages`**: Document pages with paragraphs (conforms to `document-pages.json` schema)
 - **`LBVRPluginOutput`**: Combined output from document processing
 - **`LBVRPluginManager`**: Central plugin registration and management
@@ -213,7 +213,7 @@ All document handlers must implement the `LBVRDocumentHandler` protocol:
 This SDK fully conforms to the LBVR plugin schemas:
 
 - ✅ `file-metadata.json` - Document metadata structure
-- ✅ `document-outline.json` - Document outline/TOC structure  
+- ✅ `document-outline.json` - Document outline/Outline structure  
 - ✅ `document-pages.json` - Document pages with paragraphs
 - ✅ `handler-interface.json` - Document handler interface requirements
 

@@ -168,16 +168,16 @@ typedef CSCapManifest LBVRPluginManifest;
                      extractorVersion:(NSString *)extractorVersion;
 @end
 
-@interface LBVRTocEntry : NSObject
+@interface LBVROutlineEntry : NSObject
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, assign) NSUInteger level;
 @property (nonatomic, assign) NSUInteger page; // 1-indexed, 0 if no destination
 @property (nonatomic, strong, nullable) NSString *sourceRef;
-@property (nonatomic, strong) NSMutableArray<LBVRTocEntry *> *children;
+@property (nonatomic, strong) NSMutableArray<LBVROutlineEntry *> *children;
 - (instancetype)initWithTitle:(NSString *)title level:(NSUInteger)level;
 + (instancetype)entryWithTitle:(NSString *)title level:(NSUInteger)level;
-- (LBVRTocEntry *)withPage:(NSUInteger)page;
-- (void)addChild:(LBVRTocEntry *)child;
+- (LBVROutlineEntry *)withPage:(NSUInteger)page;
+- (void)addChild:(LBVROutlineEntry *)child;
 @end
 
 @interface LBVRDocumentOutline : NSObject
@@ -185,14 +185,14 @@ typedef CSCapManifest LBVRPluginManifest;
 @property (nonatomic, strong, nullable) NSString *title;
 @property (nonatomic, strong) NSString *documentType;
 @property (nonatomic, assign) NSUInteger totalPages;
-@property (nonatomic, strong) NSMutableArray<LBVRTocEntry *> *tocEntries;
+@property (nonatomic, strong) NSMutableArray<LBVROutlineEntry *> *outlineEntries;
 @property (nonatomic, assign) BOOL hasOutline;
 @property (nonatomic, strong) LBVRExtractionInfo *extractionInfo;
 - (instancetype)initWithSourceFile:(NSString *)sourceFile 
                       documentType:(NSString *)documentType 
                         totalPages:(NSUInteger)totalPages;
 - (LBVRDocumentOutline *)withTitle:(NSString *)title;
-- (void)addEntry:(LBVRTocEntry *)entry;
+- (void)addEntry:(LBVROutlineEntry *)entry;
 @end
 
 // MARK: - Document Pages (conforms to document-pages.json schema)
