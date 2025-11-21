@@ -9,7 +9,7 @@
 
 + (CSCap *)extractMetadataCap {
     NSError *error;
-    CSCapCard *capCard = [CSCapCard fromString:@"action=extract;target=metadata;type=document" error:&error];
+    CSCapCard *capCard = [CSCapCard fromString:@"action=extract;target=metadata;" error:&error];
     if (!capCard) {
         @throw [NSException exceptionWithName:@"InvalidCapID" 
                                        reason:@"Failed to create cap ID for extract-metadata"
@@ -78,7 +78,7 @@
 
 + (CSCap *)generateThumbnailCap {
     NSError *error;
-    CSCapCard *capCard = [CSCapCard fromString:@"action=generate;output=binary;target=thumbnail;type=document" error:&error];
+    CSCapCard *capCard = [CSCapCard fromString:@"action=generate;output=binary;target=thumbnail;" error:&error];
     if (!capCard) {
         @throw [NSException exceptionWithName:@"InvalidCapID" 
                                        reason:@"Failed to create cap ID for generate-thumbnail"
@@ -204,7 +204,7 @@
 
 + (CSCap *)extractOutlineCap {
     NSError *error;
-    CSCapCard *capCard = [CSCapCard fromString:@"action=extract;target=outline;type=document" error:&error];
+    CSCapCard *capCard = [CSCapCard fromString:@"action=extract;target=outline;" error:&error];
     if (!capCard) {
         @throw [NSException exceptionWithName:@"InvalidCapID" 
                                        reason:@"Failed to create cap ID for extract-outline"
@@ -303,7 +303,7 @@
 
 + (CSCap *)extractPagesCap {
     NSError *error;
-    CSCapCard *capCard = [CSCapCard fromString:@"action=extract;target=pages;type=document" error:&error];
+    CSCapCard *capCard = [CSCapCard fromString:@"action=extract;target=pages;" error:&error];
     if (!capCard) {
         @throw [NSException exceptionWithName:@"InvalidCapID" 
                                        reason:@"Failed to create cap ID for extract-pages"
@@ -412,13 +412,13 @@
 }
 
 + (nullable CSCap *)standardCapWithId:(NSString *)idString {
-    if ([idString isEqualToString:@"action=extract;target=metadata;type=document"]) {
+    if ([idString isEqualToString:@"action=extract;target=metadata;"]) {
         return [self extractMetadataCap];
-    } else if ([idString isEqualToString:@"action=generate;output=binary;target=thumbnail;type=document"]) {
+    } else if ([idString isEqualToString:@"action=generate;output=binary;target=thumbnail;"]) {
         return [self generateThumbnailCap];
-    } else if ([idString isEqualToString:@"action=extract;target=outline;type=document"]) {
+    } else if ([idString isEqualToString:@"action=extract;target=outline;"]) {
         return [self extractOutlineCap];
-    } else if ([idString isEqualToString:@"action=extract;target=pages;type=document"]) {
+    } else if ([idString isEqualToString:@"action=extract;target=pages;"]) {
         return [self extractPagesCap];
     }
     return nil;
@@ -431,7 +431,7 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newIdString = [NSString stringWithFormat:@"action=extract;format=%@;target=metadata;type=document", fileType];
+        NSString *newIdString = [NSString stringWithFormat:@"action=extract;format=%@;target=metadata;", fileType];
         CSCapCard *newId = [CSCapCard fromString:newIdString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapID" 
@@ -468,7 +468,7 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newIdString = [NSString stringWithFormat:@"action=generate;format=%@;output=binary;target=thumbnail;type=document", fileType];
+        NSString *newIdString = [NSString stringWithFormat:@"action=generate;format=%@;output=binary;target=thumbnail;", fileType];
         CSCapCard *newId = [CSCapCard fromString:newIdString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapID" 
@@ -505,7 +505,7 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newIdString = [NSString stringWithFormat:@"action=extract;format=%@;target=outline;type=document", fileType];
+        NSString *newIdString = [NSString stringWithFormat:@"action=extract;format=%@;target=outline;", fileType];
         CSCapCard *newId = [CSCapCard fromString:newIdString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapID" 
@@ -542,7 +542,7 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newIdString = [NSString stringWithFormat:@"action=extract;format=%@;target=pages;type=document", fileType];
+        NSString *newIdString = [NSString stringWithFormat:@"action=extract;format=%@;target=pages;", fileType];
         CSCapCard *newId = [CSCapCard fromString:newIdString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapID" 
