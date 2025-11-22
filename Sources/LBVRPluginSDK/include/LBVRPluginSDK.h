@@ -40,6 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSString *binaryPath;
 
 - (void)call:(NSArray *)args completion:(void (^)(LBVRResponseWrapper * _Nullable response, NSError * _Nullable error))completion;
+- (void)callWithStdin:(NSArray *)args stdinData:(NSData * _Nullable)stdinData completion:(void (^)(LBVRResponseWrapper * _Nullable response, NSError * _Nullable error))completion;
 
 @end
 
@@ -208,10 +209,13 @@ typedef CSCapManifest LBVRPluginManifest;
 
 @interface LBVRDocumentPage : NSObject
 @property (nonatomic, assign) NSUInteger pageNumber; // 1-indexed
-@property (nonatomic, strong) NSMutableArray<LBVRDocumentParagraph *> *paragraphs;
+@property (nonatomic, strong) NSString *textContent;
 @property (nonatomic, strong, nullable) NSString *sourceRef;
+@property (nonatomic, strong, nullable) NSNumber *wordCount;
+@property (nonatomic, strong, nullable) NSNumber *characterCount;
 - (instancetype)initWithPageNumber:(NSUInteger)pageNumber;
-- (void)addParagraph:(LBVRDocumentParagraph *)paragraph;
+- (instancetype)initWithPageNumber:(NSUInteger)pageNumber textContent:(NSString *)textContent;
+- (void)setTextContent:(NSString *)textContent;
 @end
 
 @interface LBVRDocumentPages : NSObject

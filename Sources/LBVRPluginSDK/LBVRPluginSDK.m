@@ -155,6 +155,10 @@
 @implementation LBVRCapCaller
 
 - (void)call:(NSArray *)args completion:(void (^)(LBVRResponseWrapper * _Nullable, NSError * _Nullable))completion {
+    [self callWithStdin:args stdinData:nil completion:completion];
+}
+
+- (void)callWithStdin:(NSArray *)args stdinData:(NSData * _Nullable)stdinData completion:(void (^)(LBVRResponseWrapper * _Nullable, NSError * _Nullable))completion {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Convert cap to CLI flag
         NSString *operation = [self.cap componentsSeparatedByString:@":"][0];
@@ -173,6 +177,19 @@
         
         NSPipe *outputPipe = [NSPipe pipe];
         task.standardOutput = outputPipe;
+        
+        // Set up stdin if provided
+        if (stdinData) {
+            NSPipe *inputPipe = [NSPipe pipe];
+            task.standardInput = inputPipe;
+            
+            // Write stdin data in background
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSFileHandle *stdinHandle = [inputPipe fileHandleForWriting];
+                [stdinHandle writeData:stdinData];
+                [stdinHandle closeFile];
+            });
+        }
         
         @try {
             [task launch];
@@ -577,13 +594,38 @@
     self = [super init];
     if (self) {
         _pageNumber = pageNumber;
-        _paragraphs = [[NSMutableArray alloc] init];
+        _textContent = @"";
     }
     return self;
 }
 
-- (void)addParagraph:(LBVRDocumentParagraph *)paragraph {
-    [_paragraphs addObject:paragraph];
+- (instancetype)initWithPageNumber:(NSUInteger)pageNumber textContent:(NSString *)textContent {
+    self = [super init];
+    if (self) {
+        _pageNumber = pageNumber;
+        _textContent = [textContent copy];
+        [self updateWordAndCharacterCounts];
+    }
+    return self;
+}
+
+- (void)setTextContent:(NSString *)textContent {
+    _textContent = [textContent copy];
+    [self updateWordAndCharacterCounts];
+}
+
+- (void)updateWordAndCharacterCounts {
+    // Count words
+    NSArray<NSString *> *words = [_textContent componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSMutableArray<NSString *> *nonEmptyWords = [[NSMutableArray alloc] init];
+    for (NSString *word in words) {
+        NSString *trimmed = [word stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if (trimmed.length > 0) {
+            [nonEmptyWords addObject:trimmed];
+        }
+    }
+    _wordCount = @(nonEmptyWords.count);
+    _characterCount = @(_textContent.length);
 }
 
 @end
@@ -825,16 +867,11 @@
 + (NSDictionary *)documentPageToDict:(LBVRDocumentPage *)page {
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     
-    dict[@"pageNumber"] = @(page.pageNumber);
-    if (page.sourceRef) dict[@"sourceRef"] = page.sourceRef;
-    
-    if (page.paragraphs && page.paragraphs.count > 0) {
-        NSMutableArray *paragraphsArray = [[NSMutableArray alloc] init];
-        for (LBVRDocumentParagraph *paragraph in page.paragraphs) {
-            [paragraphsArray addObject:[self documentParagraphToDict:paragraph]];
-        }
-        dict[@"paragraphs"] = paragraphsArray;
-    }
+    dict[@"page_number"] = @(page.pageNumber);
+    if (page.textContent) dict[@"text_content"] = page.textContent;
+    if (page.sourceRef) dict[@"source_ref"] = page.sourceRef;
+    if (page.wordCount) dict[@"word_count"] = page.wordCount;
+    if (page.characterCount) dict[@"character_count"] = page.characterCount;
     
     return dict;
 }
