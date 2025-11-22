@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSString *cap;
 @property (nonatomic, strong) NSString *binaryPath;
 
-- (void)callWithStdin:(NSArray *)args stdinData:(NSData * _Nullable)stdinData completion:(void (^)(LBVRResponseWrapper * _Nullable response, NSError * _Nullable error))completion;
+- (void)call:(NSArray *)args stdinData:(NSData * _Nullable)stdinData completion:(void (^)(LBVRResponseWrapper * _Nullable response, NSError * _Nullable error))completion;
 
 @end
 

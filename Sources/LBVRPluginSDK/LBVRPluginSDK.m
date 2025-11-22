@@ -154,7 +154,7 @@
 
 @implementation LBVRCapCaller
 
-- (void)callWithStdin:(NSArray *)args stdinData:(NSData * _Nullable)stdinData completion:(void (^)(LBVRResponseWrapper * _Nullable, NSError * _Nullable))completion {
+- (void)call:(NSArray *)args stdinData:(NSData * _Nullable)stdinData completion:(void (^)(LBVRResponseWrapper * _Nullable, NSError * _Nullable))completion {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Convert cap to CLI flag
         NSString *operation = [self.cap componentsSeparatedByString:@":"][0];
