@@ -1,9 +1,9 @@
 //
-//  LBVRStandardCaps.h
+//  FMIOStandardCaps.h
 //  Standard cap definitions with arguments
 //
 //  This provides the standard cap definitions used across
-//  all LBVR plugins, including their formal argument specifications.
+//  all FMIO plugins, including their formal argument specifications.
 //
 
 #import <Foundation/Foundation.h>
@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * Standard cap factory methods
  */
-@interface LBVRStandardCaps : NSObject
+@interface FMIOStandardCaps : NSObject
 
 /**
  * Create the standard extract-metadata cap with full argument definition

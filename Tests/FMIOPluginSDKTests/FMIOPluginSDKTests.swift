@@ -1,22 +1,22 @@
 import XCTest
-@testable import LBVRPluginSDK
+@testable import FMIOPluginSDK
 
-final class LBVRPluginSDKTests: XCTestCase {
+final class FMIOPluginSDKTests: XCTestCase {
     func testStandardCaps() throws {
         // Test that standard caps can be created
-        let extractMetadata = LBVRStandardCaps.extractMetadataCap()
+        let extractMetadata = FMIOStandardCaps.extractMetadataCap()
         XCTAssertNotNil(extractMetadata)
         XCTAssertEqual(extractMetadata.version, "1.0.0")
         
-        let generateThumbnail = LBVRStandardCaps.generateThumbnailCap()
+        let generateThumbnail = FMIOStandardCaps.generateThumbnailCap()
         XCTAssertNotNil(generateThumbnail)
         XCTAssertEqual(generateThumbnail.version, "1.0.0")
         
-        let extractOutline = LBVRStandardCaps.extractOutlineCap()
+        let extractOutline = FMIOStandardCaps.extractOutlineCap()
         XCTAssertNotNil(extractOutline)
         XCTAssertEqual(extractOutline.version, "1.0.0")
         
-        let extractPages = LBVRStandardCaps.extractPagesCap()
+        let extractPages = FMIOStandardCaps.extractPagesCap()
         XCTAssertNotNil(extractPages)
         XCTAssertEqual(extractPages.version, "1.0.0")
     }
@@ -27,7 +27,7 @@ final class LBVRPluginSDKTests: XCTestCase {
         XCTAssertNotNil(caps)
         XCTAssertTrue(caps.isEmpty())
         
-        let extractMetadata = LBVRStandardCaps.extractMetadataCap()
+        let extractMetadata = FMIOStandardCaps.extractMetadataCap()
         caps.addCap(extractMetadata)
         XCTAssertFalse(caps.isEmpty())
         XCTAssertEqual(caps.count(), 1)
@@ -35,12 +35,12 @@ final class LBVRPluginSDKTests: XCTestCase {
     
     func testProcessingResult() throws {
         // Test processing result creation
-        let successResult = LBVRProcessingResult.success(withData: "test data")
+        let successResult = FMIOProcessingResult.success(withData: "test data")
         XCTAssertTrue(successResult.success)
         XCTAssertEqual(successResult.data as? String, "test data")
         XCTAssertNil(successResult.error)
         
-        let failureResult = LBVRProcessingResult.failure(withError: "test error")
+        let failureResult = FMIOProcessingResult.failure(withError: "test error")
         XCTAssertFalse(failureResult.success)
         XCTAssertNil(failureResult.data)
         XCTAssertEqual(failureResult.error, "test error")

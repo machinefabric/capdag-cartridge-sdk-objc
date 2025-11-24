@@ -3,7 +3,7 @@
 //  Standard cap definitions with arguments
 //
 //  This provides the standard cap definitions used across
-//  all LBVR plugins, including their formal argument specifications.
+//  all FMIO plugins, including their formal argument specifications.
 //
 
 #import <Foundation/Foundation.h>

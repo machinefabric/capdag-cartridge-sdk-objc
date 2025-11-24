@@ -1,11 +1,11 @@
 //
-//  LBVRStandardCaps.m
+//  FMIOStandardCaps.m
 //  Standard cap definitions implementation
 //
 
-#import "include/LBVRStandardCaps.h"
+#import "include/FMIOStandardCaps.h"
 
-@implementation LBVRStandardCaps
+@implementation FMIOStandardCaps
 
 + (CSCap *)extractMetadataCap {
     NSError *error;

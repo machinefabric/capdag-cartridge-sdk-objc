@@ -1,14 +1,14 @@
-# LBVR Plugin SDK for Objective-C
+# FMIO Plugin SDK for Objective-C
 
-A native Objective-C framework for building document processing plugins for the LBVR system.
+A native Objective-C framework for building document processing plugins for the FMIO system.
 
 ## Overview
 
-The LBVR Plugin SDK for Objective-C provides a complete framework for building document handlers that can extract metadata, outlines, pages, and generate thumbnails from various document formats. It conforms to the LBVR plugin schemas and provides full compatibility with the LBVR ecosystem.
+The FMIO Plugin SDK for Objective-C provides a complete framework for building document handlers that can extract metadata, outlines, pages, and generate thumbnails from various document formats. It conforms to the FMIO plugin schemas and provides full compatibility with the FMIO ecosystem.
 
 ## Features
 
-- ✅ **Schema Compliant**: Fully conforms to LBVR plugin schemas
+- ✅ **Schema Compliant**: Fully conforms to FMIO plugin schemas
 - ✅ **Async/Await Support**: Modern completion-handler based API
 - ✅ **JSON Serialization**: Built-in JSON serialization for all data types
 - ✅ **Type Safety**: Full Objective-C type safety with nullability annotations
@@ -21,8 +21,8 @@ The LBVR Plugin SDK for Objective-C provides a complete framework for building d
 
 1. Clone or download the SDK:
 ```bash
-git clone https://github.com/your-org/lbvr-plugin-sdk-objc.git
-cd lbvr-plugin-sdk-objc
+git clone https://github.com/your-org/fmio-plugin-sdk-objc.git
+cd fmio-plugin-sdk-objc
 ```
 
 2. Build the SDK:
@@ -40,8 +40,8 @@ make install
 Add the header and link the static library:
 
 ```objc
-#import "LBVRPluginSDK.h"
-// Link with: -lLBVRPluginSDK -framework Foundation
+#import "FMIOPluginSDK.h"
+// Link with: -lFMIOPluginSDK -framework Foundation
 ```
 
 ## Quick Start
@@ -49,9 +49,9 @@ Add the header and link the static library:
 ### 1. Implement a Document Handler
 
 ```objc
-#import "LBVRPluginSDK.h"
+#import "FMIOPluginSDK.h"
 
-@interface HTMLDocumentHandler : NSObject <LBVRDocumentHandler>
+@interface HTMLDocumentHandler : NSObject <FMIODocumentHandler>
 @end
 
 @implementation HTMLDocumentHandler
@@ -68,9 +68,9 @@ Add the header and link the static library:
     return @[@"html", @"htm"];
 }
 
-- (void)extractMetadata:(NSString *)filePath completion:(void (^)(LBVRDocumentMetadata * _Nullable, NSError * _Nullable))completion {
+- (void)extractMetadata:(NSString *)filePath completion:(void (^)(FMIODocumentMetadata * _Nullable, NSError * _Nullable))completion {
     // Create extraction info
-    LBVRExtractionInfo *extractionInfo = [[LBVRExtractionInfo alloc] 
+    FMIOExtractionInfo *extractionInfo = [[FMIOExtractionInfo alloc] 
         initWithExtractorName:@"HTML Handler" 
              extractorVersion:@"1.0.0"];
     
@@ -87,7 +87,7 @@ Add the header and link the static library:
     long long fileSize = [[fileAttributes objectForKey:NSFileSize] longLongValue];
     
     // Create metadata
-    LBVRDocumentMetadata *metadata = [[LBVRDocumentMetadata alloc] 
+    FMIODocumentMetadata *metadata = [[FMIODocumentMetadata alloc] 
         initWithFilePath:filePath 
            fileSizeBytes:fileSize 
            contentLength:0 
@@ -133,11 +133,11 @@ Add the header and link the static library:
 ```objc
 // Register the handler
 HTMLDocumentHandler *htmlHandler = [[HTMLDocumentHandler alloc] init];
-[[LBVRPluginManager sharedManager] registerHandler:htmlHandler 
+[[FMIOPluginManager sharedManager] registerHandler:htmlHandler 
                                   forFileExtensions:@[@"html", @"htm"]];
 
 // Process a document
-LBVRPluginOutput *output = [[LBVRPluginManager sharedManager] 
+FMIOPluginOutput *output = [[FMIOPluginManager sharedManager] 
     processDocument:@"/path/to/document.html"];
 
 if (output.success) {
@@ -152,36 +152,36 @@ if (output.success) {
 
 ```objc
 // Serialize results to JSON
-NSString *metadataJSON = [LBVRJSONSerializer serializeMetadata:output.metadata];
-NSString *outlineJSON = [LBVRJSONSerializer serializeOutline:output.outline];
-NSString *pagesJSON = [LBVRJSONSerializer serializePages:output.pages];
+NSString *metadataJSON = [FMIOJSONSerializer serializeMetadata:output.metadata];
+NSString *outlineJSON = [FMIOJSONSerializer serializeOutline:output.outline];
+NSString *pagesJSON = [FMIOJSONSerializer serializePages:output.pages];
 
 // Full output serialization
-NSString *outputJSON = [LBVRJSONSerializer serializePluginOutput:output];
+NSString *outputJSON = [FMIOJSONSerializer serializePluginOutput:output];
 ```
 
 ## Architecture
 
 ### Core Classes
 
-- **`LBVRDocumentMetadata`**: Document metadata (conforms to `file-metadata.json` schema)
-- **`LBVRDocumentOutline`**: Document outline (conforms to `document-outline.json` schema)  
-- **`LBVRDocumentPages`**: Document pages with paragraphs (conforms to `document-pages.json` schema)
-- **`LBVRPluginOutput`**: Combined output from document processing
-- **`LBVRPluginManager`**: Central plugin registration and management
+- **`FMIODocumentMetadata`**: Document metadata (conforms to `file-metadata.json` schema)
+- **`FMIODocumentOutline`**: Document outline (conforms to `document-outline.json` schema)  
+- **`FMIODocumentPages`**: Document pages with paragraphs (conforms to `document-pages.json` schema)
+- **`FMIOPluginOutput`**: Combined output from document processing
+- **`FMIOPluginManager`**: Central plugin registration and management
 
 ### Protocol
 
-- **`LBVRDocumentHandler`**: Main protocol that document handlers must implement
+- **`FMIODocumentHandler`**: Main protocol that document handlers must implement
 
 ### Helpers
 
-- **`LBVRJSONSerializer`**: JSON serialization utilities
-- **`LBVRExtractionInfo`**: Metadata about the extraction process
+- **`FMIOJSONSerializer`**: JSON serialization utilities
+- **`FMIOExtractionInfo`**: Metadata about the extraction process
 
 ## Document Handler Protocol
 
-All document handlers must implement the `LBVRDocumentHandler` protocol:
+All document handlers must implement the `FMIODocumentHandler` protocol:
 
 ### Required Methods
 
@@ -192,11 +192,11 @@ All document handlers must implement the `LBVRDocumentHandler` protocol:
 - (NSArray<NSString *> *)supportedExtensions;
 
 // Core functionality
-- (void)extractMetadata:(NSString *)filePath completion:(void (^)(LBVRDocumentMetadata *, NSError *))completion;
-- (void)extractOutline:(NSString *)filePath completion:(void (^)(LBVRDocumentOutline *, NSError *))completion;
-- (void)extractPages:(NSString *)filePath completion:(void (^)(LBVRDocumentPages *, NSError *))completion;
+- (void)extractMetadata:(NSString *)filePath completion:(void (^)(FMIODocumentMetadata *, NSError *))completion;
+- (void)extractOutline:(NSString *)filePath completion:(void (^)(FMIODocumentOutline *, NSError *))completion;
+- (void)extractPages:(NSString *)filePath completion:(void (^)(FMIODocumentPages *, NSError *))completion;
 - (void)validateFile:(NSString *)filePath completion:(void (^)(BOOL, NSError *))completion;
-- (void)getFileInfo:(NSString *)filePath completion:(void (^)(LBVRFileInfo *, NSError *))completion;
+- (void)getFileInfo:(NSString *)filePath completion:(void (^)(FMIOFileInfo *, NSError *))completion;
 - (void)generateThumbnail:(NSString *)filePath width:(NSUInteger)width height:(NSUInteger)height completion:(void (^)(NSData *, NSError *))completion;
 ```
 
@@ -205,12 +205,12 @@ All document handlers must implement the `LBVRDocumentHandler` protocol:
 ```objc
 // Default implementations provided
 - (BOOL)canHandle:(NSString *)filePath;
-- (LBVRPluginCaps *)getCaps;
+- (FMIOPluginCaps *)getCaps;
 ```
 
 ## Schema Compliance
 
-This SDK fully conforms to the LBVR plugin schemas:
+This SDK fully conforms to the FMIO plugin schemas:
 
 - ✅ `file-metadata.json` - Document metadata structure
 - ✅ `document-outline.json` - Document outline structure  

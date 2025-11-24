@@ -1,24 +1,24 @@
 //
-//  LBVRPluginSDK.m
-//  LBVR Plugin SDK for Objective-C
+//  FMIOPluginSDK.m
+//  FMIO Plugin SDK for Objective-C
 //
 //  Unified cap-based plugin interface with standardized command-line calling
 //
 
-#import "include/LBVRPluginSDK.h"
+#import "include/FMIOPluginSDK.h"
 
 // MARK: - Unified Plugin Registry
 
-@implementation LBVRPluginRegistry {
-    NSMutableDictionary<NSString *, LBVRPluginEntry *> *_plugins;
+@implementation FMIOPluginRegistry {
+    NSMutableDictionary<NSString *, FMIOPluginEntry *> *_plugins;
     NSMutableDictionary<NSString *, NSMutableArray<NSString *> *> *_capIndex;
 }
 
 + (instancetype)sharedRegistry {
-    static LBVRPluginRegistry *sharedInstance = nil;
+    static FMIOPluginRegistry *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[LBVRPluginRegistry alloc] init];
+        sharedInstance = [[FMIOPluginRegistry alloc] init];
     });
     return sharedInstance;
 }
@@ -36,7 +36,7 @@
             binaryPath:(NSString *)binaryPath
           caps:(NSArray<NSString *> *)caps {
     
-    LBVRPluginEntry *entry = [[LBVRPluginEntry alloc] initWithBinaryPath:binaryPath
+    FMIOPluginEntry *entry = [[FMIOPluginEntry alloc] initWithBinaryPath:binaryPath
                                                             caps:caps];
     
     // Update cap index
@@ -52,28 +52,28 @@
     _plugins[name] = entry;
 }
 
-- (LBVRCapCaller *)can:(NSString *)cap error:(NSError **)error {
+- (FMIOCapCaller *)can:(NSString *)cap error:(NSError **)error {
     NSString *bestPlugin = [self findBestPluginForCap:cap];
     if (!bestPlugin) {
         if (error) {
-            *error = [NSError errorWithDomain:@"LBVRPluginSDK"
+            *error = [NSError errorWithDomain:@"FMIOPluginSDK"
                                          code:1001
                                      userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Cap '%@' is not available in any registered plugin", cap]}];
         }
         return nil;
     }
     
-    LBVRPluginEntry *plugin = _plugins[bestPlugin];
+    FMIOPluginEntry *plugin = _plugins[bestPlugin];
     if (!plugin) {
         if (error) {
-            *error = [NSError errorWithDomain:@"LBVRPluginSDK"
+            *error = [NSError errorWithDomain:@"FMIOPluginSDK"
                                          code:1002
                                      userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Plugin '%@' not found in registry", bestPlugin]}];
         }
         return nil;
     }
     
-    LBVRCapCaller *caller = [[LBVRCapCaller alloc] init];
+    FMIOCapCaller *caller = [[FMIOCapCaller alloc] init];
     caller.pluginName = bestPlugin;
     caller.cap = cap;
     caller.binaryPath = plugin.binaryPath;
@@ -95,7 +95,7 @@
     NSInteger bestScore = -1;
     
     for (NSString *pluginName in candidates) {
-        LBVRPluginEntry *plugin = _plugins[pluginName];
+        FMIOPluginEntry *plugin = _plugins[pluginName];
         NSInteger score = [self calculateCapScore:plugin forCap:cap];
         if (score > bestScore) {
             bestPlugin = pluginName;
@@ -128,7 +128,7 @@
     return @[];
 }
 
-- (NSInteger)calculateCapScore:(LBVRPluginEntry *)plugin forCap:(NSString *)cap {
+- (NSInteger)calculateCapScore:(FMIOPluginEntry *)plugin forCap:(NSString *)cap {
     NSInteger score = 0;
     
     // Add specificity score
@@ -152,9 +152,9 @@
 
 // MARK: - Cap Caller
 
-@implementation LBVRCapCaller
+@implementation FMIOCapCaller
 
-- (void)call:(NSArray *)args stdinData:(NSData * _Nullable)stdinData completion:(void (^)(LBVRResponseWrapper * _Nullable, NSError * _Nullable))completion {
+- (void)call:(NSArray *)args stdinData:(NSData * _Nullable)stdinData completion:(void (^)(FMIOResponseWrapper * _Nullable, NSError * _Nullable))completion {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Convert cap to CLI flag
         NSString *operation = [self.cap componentsSeparatedByString:@":"][0];
@@ -194,12 +194,12 @@
             NSData *outputData = [[outputPipe fileHandleForReading] readDataToEndOfFile];
             
             if (task.terminationStatus == 0) {
-                LBVRResponseWrapper *response = [[LBVRResponseWrapper alloc] initWithData:outputData];
+                FMIOResponseWrapper *response = [[FMIOResponseWrapper alloc] initWithData:outputData];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     completion(response, nil);
                 });
             } else {
-                NSError *error = [NSError errorWithDomain:@"LBVRPluginSDK"
+                NSError *error = [NSError errorWithDomain:@"FMIOPluginSDK"
                                                      code:1003
                                                  userInfo:@{NSLocalizedDescriptionKey: @"Plugin execution failed"}];
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -207,7 +207,7 @@
                 });
             }
         } @catch (NSException *exception) {
-            NSError *error = [NSError errorWithDomain:@"LBVRPluginSDK"
+            NSError *error = [NSError errorWithDomain:@"FMIOPluginSDK"
                                                  code:1004
                                              userInfo:@{NSLocalizedDescriptionKey: exception.reason ?: @"Plugin execution exception"}];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -221,7 +221,7 @@
 
 // MARK: - Response Wrapper
 
-@implementation LBVRResponseWrapper
+@implementation FMIOResponseWrapper
 
 - (instancetype)initWithData:(NSData *)data {
     self = [super init];
@@ -244,7 +244,7 @@
         return YES;
     } @catch (NSException *exception) {
         if (error) {
-            *error = [NSError errorWithDomain:@"LBVRPluginSDK"
+            *error = [NSError errorWithDomain:@"FMIOPluginSDK"
                                          code:1005
                                      userInfo:@{NSLocalizedDescriptionKey: exception.reason ?: @"Type conversion failed"}];
         }
@@ -255,7 +255,7 @@
 - (NSString *)asStringWithError:(NSError **)error {
     NSString *result = [[NSString alloc] initWithData:self.data encoding:NSUTF8StringEncoding];
     if (!result && error) {
-        *error = [NSError errorWithDomain:@"LBVRPluginSDK"
+        *error = [NSError errorWithDomain:@"FMIOPluginSDK"
                                      code:1006
                                  userInfo:@{NSLocalizedDescriptionKey: @"Failed to convert data to string"}];
     }
@@ -279,7 +279,7 @@
     }
     
     if (error) {
-        *error = [NSError errorWithDomain:@"LBVRPluginSDK"
+        *error = [NSError errorWithDomain:@"FMIOPluginSDK"
                                      code:1007
                                  userInfo:@{NSLocalizedDescriptionKey: @"Data is not a number"}];
     }
@@ -299,7 +299,7 @@
     }
     
     if (error) {
-        *error = [NSError errorWithDomain:@"LBVRPluginSDK"
+        *error = [NSError errorWithDomain:@"FMIOPluginSDK"
                                      code:1008
                                  userInfo:@{NSLocalizedDescriptionKey: @"Data is not a boolean"}];
     }
@@ -310,7 +310,7 @@
 
 // MARK: - Plugin Entry
 
-@implementation LBVRPluginEntry
+@implementation FMIOPluginEntry
 
 - (instancetype)initWithBinaryPath:(NSString *)binaryPath
                       caps:(NSArray<NSString *> *)caps {
@@ -326,7 +326,7 @@
 
 // MARK: - Plugin Manifest Category
 
-@implementation CSCapManifest (LBVRPluginSDK)
+@implementation CSCapManifest (FMIOPluginSDK)
 
 + (instancetype)pluginWithName:(NSString *)name
                        version:(NSString *)version
@@ -342,7 +342,7 @@
 
 // MARK: - Standardized Caps
 
-@implementation LBVRStandardizedCaps
+@implementation FMIOStandardizedCaps
 
 + (NSString *)extractMetadata {
     return @"extract-metadata";
@@ -368,7 +368,7 @@
 
 // MARK: - CLI Helper
 
-@implementation LBVRCLIHelper
+@implementation FMIOCLIHelper
 
 + (NSString *)capToFlag:(NSString *)cap {
     NSString *operation = [cap componentsSeparatedByString:@":"][0];
@@ -412,7 +412,7 @@
                     completion(outputData, nil);
                 });
             } else {
-                NSError *error = [NSError errorWithDomain:@"LBVRPluginSDK"
+                NSError *error = [NSError errorWithDomain:@"FMIOPluginSDK"
                                                      code:1003
                                                  userInfo:@{NSLocalizedDescriptionKey: @"Plugin execution failed"}];
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -420,7 +420,7 @@
                 });
             }
         } @catch (NSException *exception) {
-            NSError *error = [NSError errorWithDomain:@"LBVRPluginSDK"
+            NSError *error = [NSError errorWithDomain:@"FMIOPluginSDK"
                                                  code:1004
                                              userInfo:@{NSLocalizedDescriptionKey: exception.reason ?: @"Plugin execution exception"}];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -434,7 +434,7 @@
 
 // MARK: - Extraction Info
 
-@implementation LBVRExtractionInfo
+@implementation FMIOExtractionInfo
 
 - (instancetype)initWithExtractorName:(NSString *)extractorName extractorVersion:(NSString *)extractorVersion {
     self = [super init];
@@ -451,7 +451,7 @@
 
 // MARK: - Document Metadata (schemas remain the same)
 
-@implementation LBVRDocumentMetadata
+@implementation FMIODocumentMetadata
 
 - (instancetype)initWithFilePath:(NSString *)filePath
                    fileSizeBytes:(unsigned long long)fileSizeBytes
@@ -490,7 +490,7 @@
 
 @end
 
-@implementation LBVRDocumentOutline
+@implementation FMIODocumentOutline
 
 - (instancetype)initWithSourceFile:(NSString *)sourceFile
                        documentType:(NSString *)documentType
@@ -506,19 +506,19 @@
     return self;
 }
 
-- (LBVRDocumentOutline *)withTitle:(NSString *)title {
+- (FMIODocumentOutline *)withTitle:(NSString *)title {
     self.title = [title copy];
     return self;
 }
 
-- (void)addEntry:(LBVROutlineEntry *)entry {
+- (void)addEntry:(FMIOOutlineEntry *)entry {
     [_outlineEntries addObject:entry];
     _hasOutline = YES;
 }
 
 @end
 
-@implementation LBVROutlineEntry
+@implementation FMIOOutlineEntry
 
 - (instancetype)initWithTitle:(NSString *)title level:(NSUInteger)level {
     self = [super init];
@@ -534,18 +534,18 @@
     return [[self alloc] initWithTitle:title level:level];
 }
 
-- (LBVROutlineEntry *)withPage:(NSUInteger)page {
+- (FMIOOutlineEntry *)withPage:(NSUInteger)page {
     self.page = page;
     return self;
 }
 
-- (void)addChild:(LBVROutlineEntry *)child {
+- (void)addChild:(FMIOOutlineEntry *)child {
     [_children addObject:child];
 }
 
 @end
 
-@implementation LBVRDocumentPages
+@implementation FMIODocumentPages
 
 - (instancetype)initWithSourceFile:(NSString *)sourceFile
                        documentType:(NSString *)documentType {
@@ -559,19 +559,19 @@
     return self;
 }
 
-- (LBVRDocumentPages *)withTitle:(NSString *)title {
+- (FMIODocumentPages *)withTitle:(NSString *)title {
     self.title = [title copy];
     return self;
 }
 
-- (void)addPage:(LBVRDocumentPage *)page {
+- (void)addPage:(FMIODocumentPage *)page {
     [_pages addObject:page];
     _totalPages = _pages.count;
 }
 
 @end
 
-@implementation LBVRDocumentParagraph
+@implementation FMIODocumentParagraph
 
 - (instancetype)initWithParagraphNumber:(NSUInteger)paragraphNumber textContent:(NSString *)textContent {
     self = [super init];
@@ -584,7 +584,7 @@
 
 @end
 
-@implementation LBVRDocumentPage
+@implementation FMIODocumentPage
 
 - (instancetype)initWithPageNumber:(NSUInteger)pageNumber {
     self = [super init];
@@ -628,10 +628,10 @@
 
 // MARK: - File Info
 
-@implementation LBVRQuickMetadata
+@implementation FMIOQuickMetadata
 @end
 
-@implementation LBVRFileInfo
+@implementation FMIOFileInfo
 
 - (instancetype)initWithPath:(NSString *)path
                         size:(unsigned long long)size
@@ -651,7 +651,7 @@
 
 // MARK: - JSON Serialization Helpers
 
-@implementation LBVRJSONSerializer
+@implementation FMIOJSONSerializer
 
 + (NSString *)serializeToJSON:(id)object {
     if (!object) return nil;
@@ -709,32 +709,32 @@
     }
     
     // Handle custom objects
-    if ([object isKindOfClass:[LBVRDocumentMetadata class]]) {
-        return [self documentMetadataToDict:(LBVRDocumentMetadata *)object];
+    if ([object isKindOfClass:[FMIODocumentMetadata class]]) {
+        return [self documentMetadataToDict:(FMIODocumentMetadata *)object];
     }
     
-    if ([object isKindOfClass:[LBVRDocumentOutline class]]) {
-        return [self documentOutlineToDict:(LBVRDocumentOutline *)object];
+    if ([object isKindOfClass:[FMIODocumentOutline class]]) {
+        return [self documentOutlineToDict:(FMIODocumentOutline *)object];
     }
     
-    if ([object isKindOfClass:[LBVRDocumentPages class]]) {
-        return [self documentPagesToDict:(LBVRDocumentPages *)object];
+    if ([object isKindOfClass:[FMIODocumentPages class]]) {
+        return [self documentPagesToDict:(FMIODocumentPages *)object];
     }
     
-    if ([object isKindOfClass:[LBVROutlineEntry class]]) {
-        return [self outlineEntryToDict:(LBVROutlineEntry *)object];
+    if ([object isKindOfClass:[FMIOOutlineEntry class]]) {
+        return [self outlineEntryToDict:(FMIOOutlineEntry *)object];
     }
     
-    if ([object isKindOfClass:[LBVRDocumentPage class]]) {
-        return [self documentPageToDict:(LBVRDocumentPage *)object];
+    if ([object isKindOfClass:[FMIODocumentPage class]]) {
+        return [self documentPageToDict:(FMIODocumentPage *)object];
     }
     
-    if ([object isKindOfClass:[LBVRDocumentParagraph class]]) {
-        return [self documentParagraphToDict:(LBVRDocumentParagraph *)object];
+    if ([object isKindOfClass:[FMIODocumentParagraph class]]) {
+        return [self documentParagraphToDict:(FMIODocumentParagraph *)object];
     }
     
-    if ([object isKindOfClass:[LBVRExtractionInfo class]]) {
-        return [self extractionInfoToDict:(LBVRExtractionInfo *)object];
+    if ([object isKindOfClass:[FMIOExtractionInfo class]]) {
+        return [self extractionInfoToDict:(FMIOExtractionInfo *)object];
     }
     
     // For unknown types, try to convert safely
@@ -750,7 +750,7 @@
     return @"<null>";
 }
 
-+ (NSDictionary *)documentMetadataToDict:(LBVRDocumentMetadata *)metadata {
++ (NSDictionary *)documentMetadataToDict:(FMIODocumentMetadata *)metadata {
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     
     if (metadata.filePath) dict[@"file_path"] = metadata.filePath;
@@ -794,7 +794,7 @@
     return dict;
 }
 
-+ (NSDictionary *)documentOutlineToDict:(LBVRDocumentOutline *)outline {
++ (NSDictionary *)documentOutlineToDict:(FMIODocumentOutline *)outline {
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     
     if (outline.sourceFile) dict[@"sourceFile"] = outline.sourceFile;
@@ -805,7 +805,7 @@
     
     if (outline.outlineEntries && outline.outlineEntries.count > 0) {
         NSMutableArray *entriesArray = [[NSMutableArray alloc] init];
-        for (LBVROutlineEntry *entry in outline.outlineEntries) {
+        for (FMIOOutlineEntry *entry in outline.outlineEntries) {
             [entriesArray addObject:[self outlineEntryToDict:entry]];
         }
         dict[@"outlineEntries"] = entriesArray;
@@ -818,7 +818,7 @@
     return dict;
 }
 
-+ (NSDictionary *)documentPagesToDict:(LBVRDocumentPages *)pages {
++ (NSDictionary *)documentPagesToDict:(FMIODocumentPages *)pages {
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     
     if (pages.sourceFile) dict[@"sourceFile"] = pages.sourceFile;
@@ -828,7 +828,7 @@
     
     if (pages.pages && pages.pages.count > 0) {
         NSMutableArray *pagesArray = [[NSMutableArray alloc] init];
-        for (LBVRDocumentPage *page in pages.pages) {
+        for (FMIODocumentPage *page in pages.pages) {
             [pagesArray addObject:[self documentPageToDict:page]];
         }
         dict[@"pages"] = pagesArray;
@@ -841,7 +841,7 @@
     return dict;
 }
 
-+ (NSDictionary *)outlineEntryToDict:(LBVROutlineEntry *)entry {
++ (NSDictionary *)outlineEntryToDict:(FMIOOutlineEntry *)entry {
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     
     if (entry.title) dict[@"title"] = entry.title;
@@ -851,7 +851,7 @@
     
     if (entry.children && entry.children.count > 0) {
         NSMutableArray *childrenArray = [[NSMutableArray alloc] init];
-        for (LBVROutlineEntry *child in entry.children) {
+        for (FMIOOutlineEntry *child in entry.children) {
             [childrenArray addObject:[self outlineEntryToDict:child]];
         }
         dict[@"children"] = childrenArray;
@@ -860,7 +860,7 @@
     return dict;
 }
 
-+ (NSDictionary *)documentPageToDict:(LBVRDocumentPage *)page {
++ (NSDictionary *)documentPageToDict:(FMIODocumentPage *)page {
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     
     dict[@"page_number"] = @(page.pageNumber);
@@ -872,7 +872,7 @@
     return dict;
 }
 
-+ (NSDictionary *)documentParagraphToDict:(LBVRDocumentParagraph *)paragraph {
++ (NSDictionary *)documentParagraphToDict:(FMIODocumentParagraph *)paragraph {
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     
     dict[@"paragraphNumber"] = @(paragraph.paragraphNumber);
@@ -884,7 +884,7 @@
     return dict;
 }
 
-+ (NSDictionary *)extractionInfoToDict:(LBVRExtractionInfo *)info {
++ (NSDictionary *)extractionInfoToDict:(FMIOExtractionInfo *)info {
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     
     if (info.extractorName) dict[@"extractorName"] = info.extractorName;
@@ -946,7 +946,7 @@
     }
 }
 
-+ (NSString *)serializePluginManifest:(LBVRPluginManifest *)pluginManifest {
++ (NSString *)serializePluginManifest:(FMIOPluginManifest *)pluginManifest {
     if (!pluginManifest) return nil;
     
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
@@ -1047,7 +1047,7 @@
 + (id)deserializeFromJSON:(NSString *)jsonString error:(NSError **)error {
     if (!jsonString) {
         if (error) {
-            *error = [NSError errorWithDomain:@"LBVRPluginSDK"
+            *error = [NSError errorWithDomain:@"FMIOPluginSDK"
                                          code:1009
                                      userInfo:@{NSLocalizedDescriptionKey: @"JSON string is nil"}];
         }
@@ -1057,7 +1057,7 @@
     NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     if (!jsonData) {
         if (error) {
-            *error = [NSError errorWithDomain:@"LBVRPluginSDK"
+            *error = [NSError errorWithDomain:@"FMIOPluginSDK"
                                          code:1010
                                      userInfo:@{NSLocalizedDescriptionKey: @"Failed to convert string to data"}];
         }
@@ -1071,17 +1071,17 @@
 
 // MARK: - Processing Result Implementation
 
-@implementation LBVRProcessingResult
+@implementation FMIOProcessingResult
 
 + (instancetype)successWithData:(id)data {
-    LBVRProcessingResult *result = [[LBVRProcessingResult alloc] init];
+    FMIOProcessingResult *result = [[FMIOProcessingResult alloc] init];
     result.success = YES;
     result.data = data;
     return result;
 }
 
 + (instancetype)failureWithError:(NSString *)error {
-    LBVRProcessingResult *result = [[LBVRProcessingResult alloc] init];
+    FMIOProcessingResult *result = [[FMIOProcessingResult alloc] init];
     result.success = NO;
     result.error = error;
     return result;

@@ -1,6 +1,6 @@
 //
-//  LBVRPluginSDK.h
-//  LBVR Plugin SDK for Objective-C
+//  FMIOPluginSDK.h
+//  FMIO Plugin SDK for Objective-C
 //
 //  Unified cap-based plugin interface with standardized command-line calling
 //
@@ -9,43 +9,43 @@
 #import "CapDef.h"
 #import "CSPluginCaps.h"
 #import "CSStandardCaps.h"
-#import "LBVRStandardCaps.h"
+#import "FMIOStandardCaps.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 // MARK: - Unified Plugin Registry
 
-@class LBVRPluginEntry;
-@class LBVRCapCaller;
-@class LBVRResponseWrapper;
+@class FMIOPluginEntry;
+@class FMIOCapCaller;
+@class FMIOResponseWrapper;
 
-@interface LBVRPluginRegistry : NSObject
+@interface FMIOPluginRegistry : NSObject
 
 + (instancetype)sharedRegistry;
 - (void)registerPlugin:(NSString *)name
             binaryPath:(NSString *)binaryPath
           caps:(NSArray<NSString *> *)caps;
 
-- (LBVRCapCaller * _Nullable)can:(NSString *)cap error:(NSError **)error;
+- (FMIOCapCaller * _Nullable)can:(NSString *)cap error:(NSError **)error;
 - (NSArray<NSString *> *)listCaps;
 
 @end
 
 // MARK: - Cap Caller
 
-@interface LBVRCapCaller : NSObject
+@interface FMIOCapCaller : NSObject
 
 @property (nonatomic, strong) NSString *pluginName;
 @property (nonatomic, strong) NSString *cap;
 @property (nonatomic, strong) NSString *binaryPath;
 
-- (void)call:(NSArray *)args stdinData:(NSData * _Nullable)stdinData completion:(void (^)(LBVRResponseWrapper * _Nullable response, NSError * _Nullable error))completion;
+- (void)call:(NSArray *)args stdinData:(NSData * _Nullable)stdinData completion:(void (^)(FMIOResponseWrapper * _Nullable response, NSError * _Nullable error))completion;
 
 @end
 
 // MARK: - Response Wrapper
 
-@interface LBVRResponseWrapper : NSObject
+@interface FMIOResponseWrapper : NSObject
 
 @property (nonatomic, strong, readonly) NSData *data;
 
@@ -62,7 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: - Plugin Entry
 
-@interface LBVRPluginEntry : NSObject
+@interface FMIOPluginEntry : NSObject
 
 @property (nonatomic, strong) NSString *binaryPath;
 @property (nonatomic, strong) NSArray<NSString *> *caps;
@@ -76,12 +76,12 @@ NS_ASSUME_NONNULL_BEGIN
 // Use CSPluginCaps from CapDef instead of the old string-based system
 
 // MARK: - Plugin Manifest (for --manifest output)
-// Re-export CSCapManifest as LBVRPluginManifest for backward compatibility
+// Re-export CSCapManifest as FMIOPluginManifest for backward compatibility
 
-typedef CSCapManifest LBVRPluginManifest;
+typedef CSCapManifest FMIOPluginManifest;
 
 // Convenience constructors for plugins
-@interface CSCapManifest (LBVRPluginSDK)
+@interface CSCapManifest (FMIOPluginSDK)
 
 + (instancetype)pluginWithName:(NSString *)name
                        version:(NSString *)version
@@ -92,7 +92,7 @@ typedef CSCapManifest LBVRPluginManifest;
 
 // MARK: - Document Metadata (conforms to file-metadata.json schema)
 
-@interface LBVRDocumentMetadata : NSObject
+@interface FMIODocumentMetadata : NSObject
 // Basic file info (required)
 @property (nonatomic, strong) NSString *filePath;
 @property (nonatomic, assign) unsigned long long fileSizeBytes;
@@ -159,7 +159,7 @@ typedef CSCapManifest LBVRPluginManifest;
 
 // MARK: - Document Outline (conforms to document-outline.json schema)
 
-@interface LBVRExtractionInfo : NSObject
+@interface FMIOExtractionInfo : NSObject
 @property (nonatomic, strong) NSString *extractorName;
 @property (nonatomic, strong) NSString *extractorVersion;
 @property (nonatomic, strong, nullable) NSDate *extractedAt;
@@ -168,36 +168,36 @@ typedef CSCapManifest LBVRPluginManifest;
                      extractorVersion:(NSString *)extractorVersion;
 @end
 
-@interface LBVROutlineEntry : NSObject
+@interface FMIOOutlineEntry : NSObject
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, assign) NSUInteger level;
 @property (nonatomic, assign) NSUInteger page; // 1-indexed, 0 if no destination
 @property (nonatomic, strong, nullable) NSString *sourceRef;
-@property (nonatomic, strong) NSMutableArray<LBVROutlineEntry *> *children;
+@property (nonatomic, strong) NSMutableArray<FMIOOutlineEntry *> *children;
 - (instancetype)initWithTitle:(NSString *)title level:(NSUInteger)level;
 + (instancetype)entryWithTitle:(NSString *)title level:(NSUInteger)level;
-- (LBVROutlineEntry *)withPage:(NSUInteger)page;
-- (void)addChild:(LBVROutlineEntry *)child;
+- (FMIOOutlineEntry *)withPage:(NSUInteger)page;
+- (void)addChild:(FMIOOutlineEntry *)child;
 @end
 
-@interface LBVRDocumentOutline : NSObject
+@interface FMIODocumentOutline : NSObject
 @property (nonatomic, strong) NSString *sourceFile;
 @property (nonatomic, strong, nullable) NSString *title;
 @property (nonatomic, strong) NSString *documentType;
 @property (nonatomic, assign) NSUInteger totalPages;
-@property (nonatomic, strong) NSMutableArray<LBVROutlineEntry *> *outlineEntries;
+@property (nonatomic, strong) NSMutableArray<FMIOOutlineEntry *> *outlineEntries;
 @property (nonatomic, assign) BOOL hasOutline;
-@property (nonatomic, strong) LBVRExtractionInfo *extractionInfo;
+@property (nonatomic, strong) FMIOExtractionInfo *extractionInfo;
 - (instancetype)initWithSourceFile:(NSString *)sourceFile 
                       documentType:(NSString *)documentType 
                         totalPages:(NSUInteger)totalPages;
-- (LBVRDocumentOutline *)withTitle:(NSString *)title;
-- (void)addEntry:(LBVROutlineEntry *)entry;
+- (FMIODocumentOutline *)withTitle:(NSString *)title;
+- (void)addEntry:(FMIOOutlineEntry *)entry;
 @end
 
 // MARK: - Document Pages (conforms to document-pages.json schema)
 
-@interface LBVRDocumentParagraph : NSObject
+@interface FMIODocumentParagraph : NSObject
 @property (nonatomic, assign) NSUInteger paragraphNumber; // 1-indexed
 @property (nonatomic, strong) NSString *textContent;
 @property (nonatomic, strong, nullable) NSString *sourceRef;
@@ -206,7 +206,7 @@ typedef CSCapManifest LBVRPluginManifest;
 - (instancetype)initWithParagraphNumber:(NSUInteger)paragraphNumber textContent:(NSString *)textContent;
 @end
 
-@interface LBVRDocumentPage : NSObject
+@interface FMIODocumentPage : NSObject
 @property (nonatomic, assign) NSUInteger pageNumber; // 1-indexed
 @property (nonatomic, strong) NSString *textContent;
 @property (nonatomic, strong, nullable) NSString *sourceRef;
@@ -217,33 +217,33 @@ typedef CSCapManifest LBVRPluginManifest;
 - (void)setTextContent:(NSString *)textContent;
 @end
 
-@interface LBVRDocumentPages : NSObject
+@interface FMIODocumentPages : NSObject
 @property (nonatomic, strong) NSString *sourceFile;
 @property (nonatomic, strong, nullable) NSString *title;
 @property (nonatomic, strong) NSString *documentType;
 @property (nonatomic, assign) NSUInteger totalPages;
-@property (nonatomic, strong) NSMutableArray<LBVRDocumentPage *> *pages;
-@property (nonatomic, strong) LBVRExtractionInfo *extractionInfo;
+@property (nonatomic, strong) NSMutableArray<FMIODocumentPage *> *pages;
+@property (nonatomic, strong) FMIOExtractionInfo *extractionInfo;
 - (instancetype)initWithSourceFile:(NSString *)sourceFile 
                       documentType:(NSString *)documentType;
-- (LBVRDocumentPages *)withTitle:(NSString *)title;
-- (void)addPage:(LBVRDocumentPage *)page;
+- (FMIODocumentPages *)withTitle:(NSString *)title;
+- (void)addPage:(FMIODocumentPage *)page;
 @end
 
 // MARK: - File Info (for quick file information)
 
-@interface LBVRQuickMetadata : NSObject
+@interface FMIOQuickMetadata : NSObject
 @property (nonatomic, strong, nullable) NSString *title;
 @property (nonatomic, strong, nullable) NSString *author;
 @property (nonatomic, strong, nullable) NSNumber *pageCount;
 @end
 
-@interface LBVRFileInfo : NSObject
+@interface FMIOFileInfo : NSObject
 @property (nonatomic, strong) NSString *path;
 @property (nonatomic, assign) unsigned long long size;
 @property (nonatomic, strong) NSString *documentType;
 @property (nonatomic, assign) BOOL isValid;
-@property (nonatomic, strong, nullable) LBVRQuickMetadata *quickMetadata;
+@property (nonatomic, strong, nullable) FMIOQuickMetadata *quickMetadata;
 - (instancetype)initWithPath:(NSString *)path 
                         size:(unsigned long long)size 
                 documentType:(NSString *)documentType 
@@ -252,39 +252,39 @@ typedef CSCapManifest LBVRPluginManifest;
 
 // MARK: - Document Handler Protocol
 
-@class LBVRProcessingResult;
+@class FMIOProcessingResult;
 
 /**
  * Document handler protocol that defines the contract for document processing plugins
  */
-@protocol LBVRDocumentHandler <NSObject>
+@protocol FMIODocumentHandler <NSObject>
 
 /**
  * Get plugin manifest including caps
  * @return Plugin manifest
  */
-- (LBVRPluginManifest *)getPluginManifest;
+- (FMIOPluginManifest *)getPluginManifest;
 
 /**
  * Extract metadata from a document
  * @param filePath Path to the document file
  * @return Processing result with metadata
  */
-- (LBVRProcessingResult *)extractMetadata:(NSString *)filePath;
+- (FMIOProcessingResult *)extractMetadata:(NSString *)filePath;
 
 /**
  * Extract outline/table of contents from a document
  * @param filePath Path to the document file
  * @return Processing result with outline
  */
-- (LBVRProcessingResult *)extractOutline:(NSString *)filePath;
+- (FMIOProcessingResult *)extractOutline:(NSString *)filePath;
 
 /**
  * Extract pages with text content from a document
  * @param filePath Path to the document file
  * @return Processing result with document pages
  */
-- (LBVRProcessingResult *)extractPages:(NSString *)filePath;
+- (FMIOProcessingResult *)extractPages:(NSString *)filePath;
 
 /**
  * Generate thumbnail image from a document
@@ -294,19 +294,19 @@ typedef CSCapManifest LBVRPluginManifest;
  * @param page Page number to generate thumbnail from (1-based)
  * @return Processing result with thumbnail data
  */
-- (LBVRProcessingResult *)generateThumbnail:(NSString *)filePath width:(NSInteger)width height:(NSInteger)height page:(NSInteger)page;
+- (FMIOProcessingResult *)generateThumbnail:(NSString *)filePath width:(NSInteger)width height:(NSInteger)height page:(NSInteger)page;
 
 @end
 
 // MARK: - Processing Result
 
-@interface LBVRProcessingResult : NSObject
+@interface FMIOProcessingResult : NSObject
 
 @property (nonatomic, assign) BOOL success;
 @property (nonatomic, strong, nullable) id data;
 @property (nonatomic, strong, nullable) NSString *error;
 @property (nonatomic, strong, nullable) NSNumber *processingTimeMs;
-@property (nonatomic, strong, nullable) LBVRFileInfo *fileInfo;
+@property (nonatomic, strong, nullable) FMIOFileInfo *fileInfo;
 
 + (instancetype)successWithData:(id)data;
 + (instancetype)failureWithError:(NSString *)error NS_SWIFT_NAME(failure(withError:));
@@ -315,7 +315,7 @@ typedef CSCapManifest LBVRPluginManifest;
 
 // MARK: - Standardized Caps
 
-@interface LBVRStandardizedCaps : NSObject
+@interface FMIOStandardizedCaps : NSObject
 
 @property (class, nonatomic, strong, readonly) NSString *extractMetadata;
 @property (class, nonatomic, strong, readonly) NSString *extractOutline;
@@ -327,9 +327,9 @@ typedef CSCapManifest LBVRPluginManifest;
 
 // MARK: - JSON Serialization Helpers
 
-@interface LBVRJSONSerializer : NSObject
+@interface FMIOJSONSerializer : NSObject
 
-+ (NSString * _Nullable)serializePluginManifest:(LBVRPluginManifest *)pluginManifest;
++ (NSString * _Nullable)serializePluginManifest:(FMIOPluginManifest *)pluginManifest;
 + (NSString * _Nullable)serializeToJSON:(id)object;
 + (id _Nullable)deserializeFromJSON:(NSString *)jsonString error:(NSError **)error;
 
@@ -337,7 +337,7 @@ typedef CSCapManifest LBVRPluginManifest;
 
 // MARK: - CLI Helper
 
-@interface LBVRCLIHelper : NSObject
+@interface FMIOCLIHelper : NSObject
 
 + (NSString *)capToFlag:(NSString *)cap;
 + (NSArray<NSString *> *)buildCommandArgs:(NSString *)cap args:(NSArray *)args;

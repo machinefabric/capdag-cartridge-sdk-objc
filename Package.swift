@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "LBVRPluginSDK",
+    name: "FMIOPluginSDK",
     platforms: [
         .macOS(.v11),
         .iOS(.v14)
@@ -12,8 +12,8 @@ let package = Package(
     products: [
         // The main plugin SDK library
         .library(
-            name: "LBVRPluginSDK",
-            targets: ["LBVRPluginSDK"]),
+            name: "FMIOPluginSDK",
+            targets: ["FMIOPluginSDK"]),
     ],
     dependencies: [
         // Depend on the cap definition package
@@ -22,11 +22,11 @@ let package = Package(
     targets: [
         // The main plugin SDK target
         .target(
-            name: "LBVRPluginSDK",
+            name: "FMIOPluginSDK",
             dependencies: [
                 .product(name: "CapDef", package: "capdef-objc"),
             ],
-            path: "Sources/LBVRPluginSDK",
+            path: "Sources/FMIOPluginSDK",
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("include"),
@@ -39,9 +39,9 @@ let package = Package(
         
         // Tests target
         .testTarget(
-            name: "LBVRPluginSDKTests",
-            dependencies: ["LBVRPluginSDK"],
-            path: "Tests/LBVRPluginSDKTests"
+            name: "FMIOPluginSDKTests",
+            dependencies: ["FMIOPluginSDK"],
+            path: "Tests/FMIOPluginSDKTests"
         ),
     ]
 )

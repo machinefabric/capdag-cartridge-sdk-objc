@@ -1,4 +1,4 @@
-# Makefile for LBVR Plugin SDK Objective-C
+# Makefile for FMIO Plugin SDK Objective-C
 # This SDK now depends on capdef-objc for formal cap management
 
 # Directories
@@ -8,7 +8,7 @@ DIST_DIR = dist
 
 help:
 	@echo "Usage: make <target>\n\n\
-	  build\t\tBuild the LBVR Plugin SDK with cap SDK integration\n\
+	  build\t\tBuild the FMIO Plugin SDK with cap SDK integration\n\
 	  build-capdef\tBuild only the cap SDK\n\
 	  clean\t\tRemove built artifacts\n\
 	  install\tInstall the library to system paths\n\
@@ -27,7 +27,7 @@ build-capdef:
 
 .PHONY: build-plugin-sdk
 build-plugin-sdk: build-capdef
-	@echo "Building lbvr-plugin-sdk-objc..."
+	@echo "Building fmio-plugin-sdk-objc..."
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(DIST_DIR)
 	
@@ -35,30 +35,30 @@ build-plugin-sdk: build-capdef
 	@cp -r $(CAP_SDK_DIR)/Sources/CapDef/include/* $(DIST_DIR)/
 	
 	# Compile our plugin SDK with cap SDK integration (now from Sources directory)
-	/usr/bin/clang -c -o $(BUILD_DIR)/LBVRPluginSDK.o Sources/LBVRPluginSDK/LBVRPluginSDK.m \
+	/usr/bin/clang -c -o $(BUILD_DIR)/FMIOPluginSDK.o Sources/FMIOPluginSDK/FMIOPluginSDK.m \
 		-I$(DIST_DIR) \
 		-I$(CAP_SDK_DIR)/Sources/CapDef/include \
-		-ISources/LBVRPluginSDK/include \
+		-ISources/FMIOPluginSDK/include \
 		-fobjc-arc -fno-modules
 	
-	/usr/bin/clang -c -o $(BUILD_DIR)/LBVRStandardCaps.o Sources/LBVRPluginSDK/LBVRStandardCaps.m \
+	/usr/bin/clang -c -o $(BUILD_DIR)/FMIOStandardCaps.o Sources/FMIOPluginSDK/FMIOStandardCaps.m \
 		-I$(DIST_DIR) \
 		-I$(CAP_SDK_DIR)/Sources/CapDef/include \
-		-ISources/LBVRPluginSDK/include \
+		-ISources/FMIOPluginSDK/include \
 		-fobjc-arc -fno-modules
 	
-	/usr/bin/clang -c -o $(BUILD_DIR)/CSPluginCaps.o Sources/LBVRPluginSDK/CSPluginCaps.m \
+	/usr/bin/clang -c -o $(BUILD_DIR)/CSPluginCaps.o Sources/FMIOPluginSDK/CSPluginCaps.m \
 		-I$(DIST_DIR) \
 		-I$(CAP_SDK_DIR)/Sources/CapDef/include \
-		-ISources/LBVRPluginSDK/include \
+		-ISources/FMIOPluginSDK/include \
 		-fobjc-arc -fno-modules
 	
 	# Create static library with all object files including CapDef
-	ar rcs $(DIST_DIR)/libLBVRPluginSDK.a $(BUILD_DIR)/*.o $(CAP_SDK_DIR)/.build/release/CapDef.build/*.o
+	ar rcs $(DIST_DIR)/libFMIOPluginSDK.a $(BUILD_DIR)/*.o $(CAP_SDK_DIR)/.build/release/CapDef.build/*.o
 	
 	# Copy plugin SDK headers
-	@cp Sources/LBVRPluginSDK/include/*.h $(DIST_DIR)/
-	@echo "✅ LBVR Plugin SDK built successfully with cap SDK integration in $(DIST_DIR)/"
+	@cp Sources/FMIOPluginSDK/include/*.h $(DIST_DIR)/
+	@echo "✅ FMIO Plugin SDK built successfully with cap SDK integration in $(DIST_DIR)/"
 
 .PHONY: clean
 clean:
@@ -68,10 +68,10 @@ clean:
 
 .PHONY: install
 install: build
-	@echo "Installing LBVR Plugin SDK with cap SDK..."
-	sudo cp $(DIST_DIR)/libLBVRPluginSDK.a /usr/local/lib/
+	@echo "Installing FMIO Plugin SDK with cap SDK..."
+	sudo cp $(DIST_DIR)/libFMIOPluginSDK.a /usr/local/lib/
 	sudo cp $(DIST_DIR)/*.h /usr/local/include/
-	@echo "✅ LBVR Plugin SDK installed to system paths"
+	@echo "✅ FMIO Plugin SDK installed to system paths"
 
 .PHONY: test
 test: build
@@ -85,7 +85,7 @@ example:
 	@echo ""
 	@echo "1. Add both SDKs to your project:"
 	@echo "   #import \"CapDef.h\""
-	@echo "   #import \"LBVRPluginSDK.h\""
+	@echo "   #import \"FMIOPluginSDK.h\""
 	@echo ""
 	@echo "2. Create formal cap definitions:"
 	@echo "   NSError *error;"
@@ -97,7 +97,7 @@ example:
 	@echo "   [caps addCap:cap];"
 	@echo ""
 	@echo "4. Create plugin manifest with formal caps:"
-	@echo "   LBVRPluginManifest *pluginManifest = [[LBVRPluginManifest alloc]"
+	@echo "   FMIOPluginManifest *pluginManifest = [[FMIOPluginManifest alloc]"
 	@echo "       initWithName:@\"MyPlugin\""
 	@echo "       version:@\"1.0.0\""
 	@echo "       pluginDescription:@\"Example plugin\""
