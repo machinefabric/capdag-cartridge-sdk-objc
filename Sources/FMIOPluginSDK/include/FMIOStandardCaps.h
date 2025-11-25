@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * Get a standard cap by cap ID string
- * @param idString The cap ID string (e.g., "action=extract;target=metadata;", "action=extract;target=pages;")
+ * @param idString The cap ID string (e.g., "action=extract;target=metadata;", "action=extract;target=pages")
  * @return The cap or nil if not found
  */
 + (nullable CSCap *)standardCapWithId:(NSString *)idString;

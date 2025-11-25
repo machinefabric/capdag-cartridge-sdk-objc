@@ -303,7 +303,7 @@
 
 + (CSCap *)extractPagesCap {
     NSError *error;
-    CSCapCard *capCard = [CSCapCard fromString:@"action=extract;target=pages;" error:&error];
+    CSCapCard *capCard = [CSCapCard fromString:@"action=extract;target=pages" error:&error];
     if (!capCard) {
         @throw [NSException exceptionWithName:@"InvalidCapID" 
                                        reason:@"Failed to create cap ID for extract-pages"
@@ -418,7 +418,7 @@
         return [self generateThumbnailCap];
     } else if ([idString isEqualToString:@"action=extract;target=outline;"]) {
         return [self extractOutlineCap];
-    } else if ([idString isEqualToString:@"action=extract;target=pages;"]) {
+    } else if ([idString isEqualToString:@"action=extract;target=pages"]) {
         return [self extractPagesCap];
     }
     return nil;
@@ -542,7 +542,7 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newIdString = [NSString stringWithFormat:@"action=extract;format=%@;target=pages;", fileType];
+        NSString *newIdString = [NSString stringWithFormat:@"action=extract;format=%@;target=pages", fileType];
         CSCapCard *newId = [CSCapCard fromString:newIdString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapID" 
