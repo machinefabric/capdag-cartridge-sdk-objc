@@ -59,17 +59,17 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)canHandleCap:(NSString *)capRequest;
 
 /**
- * Get all cap identifiers as strings
- * @return Array of cap identifier strings
+ * Get all cap URNs as strings
+ * @return Array of cap URN strings
  */
 - (NSArray<NSString *> *)capUrns;
 
 /**
  * Find a cap by identifier
- * @param identifier The cap identifier string
+ * @param identifier The cap URN string
  * @return The cap or nil if not found
  */
-- (nullable CSCap *)findCapWithIdentifier:(NSString *)identifier;
+- (nullable CSCap *)findCapWithUrn:(NSString *)identifier;
 
 /**
  * Find the most specific cap that can handle a request

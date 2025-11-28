@@ -79,12 +79,12 @@
 - (NSArray<NSString *> *)capUrns {
     NSMutableArray<NSString *> *identifiers = [NSMutableArray array];
     for (CSCap *cap in self.mutableCaps) {
-        [identifiers addObject:[cap idString]];
+        [identifiers addObject:[cap urnString]];
     }
     return identifiers;
 }
 
-- (nullable CSCap *)findCapWithIdentifier:(NSString *)identifier {
+- (nullable CSCap *)findCapWithUrn:(NSString *)identifier {
     NSError *error;
     CSCapUrn *searchId = [CSCapUrn fromString:identifier error:&error];
     if (!searchId) return nil;

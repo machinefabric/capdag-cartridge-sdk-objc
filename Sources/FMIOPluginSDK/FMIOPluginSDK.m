@@ -966,7 +966,7 @@
             NSMutableDictionary *capDict = [[NSMutableDictionary alloc] init];
             
             // Basic cap info
-            capDict[@"id"] = [cap idString];
+            capDict[@"id"] = [cap urnString];
             capDict[@"version"] = cap.version;
             capDict[@"command"] = cap.command;
             capDict[@"description"] = cap.capDescription;

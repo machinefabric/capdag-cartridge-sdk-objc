@@ -11,7 +11,7 @@
     NSError *error;
     CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:action=extract;target=metadata;" error:&error];
     if (!capUrn) {
-        @throw [NSException exceptionWithName:@"InvalidCapID" 
+        @throw [NSException exceptionWithName:@"InvalidCapUrn" 
                                        reason:@"Failed to create cap ID for extract-metadata"
                                      userInfo:nil];
     }
@@ -80,7 +80,7 @@
     NSError *error;
     CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:action=generate;output=binary;target=thumbnail;" error:&error];
     if (!capUrn) {
-        @throw [NSException exceptionWithName:@"InvalidCapID" 
+        @throw [NSException exceptionWithName:@"InvalidCapUrn" 
                                        reason:@"Failed to create cap ID for generate-thumbnail"
                                      userInfo:nil];
     }
@@ -206,7 +206,7 @@
     NSError *error;
     CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:action=extract;target=outline;" error:&error];
     if (!capUrn) {
-        @throw [NSException exceptionWithName:@"InvalidCapID" 
+        @throw [NSException exceptionWithName:@"InvalidCapUrn" 
                                        reason:@"Failed to create cap ID for extract-outline"
                                      userInfo:nil];
     }
@@ -305,7 +305,7 @@
     NSError *error;
     CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:action=extract;target=pages" error:&error];
     if (!capUrn) {
-        @throw [NSException exceptionWithName:@"InvalidCapID" 
+        @throw [NSException exceptionWithName:@"InvalidCapUrn" 
                                        reason:@"Failed to create cap ID for extract-pages"
                                      userInfo:nil];
     }
@@ -411,14 +411,14 @@
     return nil;
 }
 
-+ (nullable CSCap *)standardCapWithId:(NSString *)idString {
-    if ([idString isEqualToString:@"cap:action=extract;target=metadata;"]) {
++ (nullable CSCap *)standardCapWithId:(NSString *)urnString {
+    if ([urnString isEqualToString:@"cap:action=extract;target=metadata;"]) {
         return [self extractMetadataCap];
-    } else if ([idString isEqualToString:@"cap:action=generate;output=binary;target=thumbnail;"]) {
+    } else if ([urnString isEqualToString:@"cap:action=generate;output=binary;target=thumbnail;"]) {
         return [self generateThumbnailCap];
-    } else if ([idString isEqualToString:@"cap:action=extract;target=outline;"]) {
+    } else if ([urnString isEqualToString:@"cap:action=extract;target=outline;"]) {
         return [self extractOutlineCap];
-    } else if ([idString isEqualToString:@"cap:action=extract;target=pages"]) {
+    } else if ([urnString isEqualToString:@"cap:action=extract;target=pages"]) {
         return [self extractPagesCap];
     }
     return nil;
@@ -431,11 +431,11 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newIdString = [NSString stringWithFormat:@"cap:action=extract;format=%@;target=metadata;", fileType];
-        CSCapUrn *newId = [CSCapUrn fromString:newIdString error:&error];
+        NSString *newUrnString = [NSString stringWithFormat:@"cap:action=extract;format=%@;target=metadata;", fileType];
+        CSCapUrn *newId = [CSCapUrn fromString:newUrnString error:&error];
         if (!newId) {
-            @throw [NSException exceptionWithName:@"InvalidCapID" 
-                                           reason:[NSString stringWithFormat:@"Failed to create cap ID for %@", newIdString]
+            @throw [NSException exceptionWithName:@"InvalidCapUrn" 
+                                           reason:[NSString stringWithFormat:@"Failed to create cap ID for %@", newUrnString]
                                          userInfo:nil];
         }
         
@@ -468,11 +468,11 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newIdString = [NSString stringWithFormat:@"cap:action=generate;format=%@;output=binary;target=thumbnail;", fileType];
-        CSCapUrn *newId = [CSCapUrn fromString:newIdString error:&error];
+        NSString *newUrnString = [NSString stringWithFormat:@"cap:action=generate;format=%@;output=binary;target=thumbnail;", fileType];
+        CSCapUrn *newId = [CSCapUrn fromString:newUrnString error:&error];
         if (!newId) {
-            @throw [NSException exceptionWithName:@"InvalidCapID" 
-                                           reason:[NSString stringWithFormat:@"Failed to create cap ID for %@", newIdString]
+            @throw [NSException exceptionWithName:@"InvalidCapUrn" 
+                                           reason:[NSString stringWithFormat:@"Failed to create cap ID for %@", newUrnString]
                                          userInfo:nil];
         }
         
@@ -505,11 +505,11 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newIdString = [NSString stringWithFormat:@"cap:action=extract;format=%@;target=outline;", fileType];
-        CSCapUrn *newId = [CSCapUrn fromString:newIdString error:&error];
+        NSString *newUrnString = [NSString stringWithFormat:@"cap:action=extract;format=%@;target=outline;", fileType];
+        CSCapUrn *newId = [CSCapUrn fromString:newUrnString error:&error];
         if (!newId) {
-            @throw [NSException exceptionWithName:@"InvalidCapID" 
-                                           reason:[NSString stringWithFormat:@"Failed to create cap ID for %@", newIdString]
+            @throw [NSException exceptionWithName:@"InvalidCapUrn" 
+                                           reason:[NSString stringWithFormat:@"Failed to create cap ID for %@", newUrnString]
                                          userInfo:nil];
         }
         
@@ -542,11 +542,11 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newIdString = [NSString stringWithFormat:@"cap:action=extract;format=%@;target=pages", fileType];
-        CSCapUrn *newId = [CSCapUrn fromString:newIdString error:&error];
+        NSString *newUrnString = [NSString stringWithFormat:@"cap:action=extract;format=%@;target=pages", fileType];
+        CSCapUrn *newId = [CSCapUrn fromString:newUrnString error:&error];
         if (!newId) {
-            @throw [NSException exceptionWithName:@"InvalidCapID" 
-                                           reason:[NSString stringWithFormat:@"Failed to create cap ID for %@", newIdString]
+            @throw [NSException exceptionWithName:@"InvalidCapUrn" 
+                                           reason:[NSString stringWithFormat:@"Failed to create cap ID for %@", newUrnString]
                                          userInfo:nil];
         }
         
