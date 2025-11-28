@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CapDef.h"
+#import "CapNs.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

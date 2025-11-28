@@ -1,15 +1,15 @@
 # Makefile for FMIO Plugin SDK Objective-C
-# This SDK now depends on capdef-objc for formal cap management
+# This SDK now depends on capns-objc for formal cap management
 
 # Directories
-CAP_SDK_DIR = ../capdef-objc
+CAP_SDK_DIR = ../capns-objc
 BUILD_DIR = build
 DIST_DIR = dist
 
 help:
 	@echo "Usage: make <target>\n\n\
 	  build\t\tBuild the FMIO Plugin SDK with cap SDK integration\n\
-	  build-capdef\tBuild only the cap SDK\n\
+	  build-capns\tBuild only the cap SDK\n\
 	  clean\t\tRemove built artifacts\n\
 	  install\tInstall the library to system paths\n\
 	  test\t\tRun tests for both SDKs\n\
@@ -18,43 +18,43 @@ help:
 
 # Build both the cap SDK and the plugin SDK
 .PHONY: build
-build: build-capdef build-plugin-sdk
+build: build-capns build-plugin-sdk
 
-.PHONY: build-capdef
-build-capdef:
-	@echo "Building capdef-objc..."
+.PHONY: build-capns
+build-capns:
+	@echo "Building capns-objc..."
 	cd $(CAP_SDK_DIR) && swift build -c release
 
 .PHONY: build-plugin-sdk
-build-plugin-sdk: build-capdef
+build-plugin-sdk: build-capns
 	@echo "Building fmio-plugin-sdk-objc..."
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(DIST_DIR)
 	
 	# Copy cap SDK headers
-	@cp -r $(CAP_SDK_DIR)/Sources/CapDef/include/* $(DIST_DIR)/
+	@cp -r $(CAP_SDK_DIR)/Sources/CapNs/include/* $(DIST_DIR)/
 	
 	# Compile our plugin SDK with cap SDK integration (now from Sources directory)
 	/usr/bin/clang -c -o $(BUILD_DIR)/FMIOPluginSDK.o Sources/FMIOPluginSDK/FMIOPluginSDK.m \
 		-I$(DIST_DIR) \
-		-I$(CAP_SDK_DIR)/Sources/CapDef/include \
+		-I$(CAP_SDK_DIR)/Sources/CapNs/include \
 		-ISources/FMIOPluginSDK/include \
 		-fobjc-arc -fno-modules
 	
 	/usr/bin/clang -c -o $(BUILD_DIR)/FMIOStandardCaps.o Sources/FMIOPluginSDK/FMIOStandardCaps.m \
 		-I$(DIST_DIR) \
-		-I$(CAP_SDK_DIR)/Sources/CapDef/include \
+		-I$(CAP_SDK_DIR)/Sources/CapNs/include \
 		-ISources/FMIOPluginSDK/include \
 		-fobjc-arc -fno-modules
 	
 	/usr/bin/clang -c -o $(BUILD_DIR)/CSPluginCaps.o Sources/FMIOPluginSDK/CSPluginCaps.m \
 		-I$(DIST_DIR) \
-		-I$(CAP_SDK_DIR)/Sources/CapDef/include \
+		-I$(CAP_SDK_DIR)/Sources/CapNs/include \
 		-ISources/FMIOPluginSDK/include \
 		-fobjc-arc -fno-modules
 	
-	# Create static library with all object files including CapDef
-	ar rcs $(DIST_DIR)/libFMIOPluginSDK.a $(BUILD_DIR)/*.o $(CAP_SDK_DIR)/.build/release/CapDef.build/*.o
+	# Create static library with all object files including CapNs
+	ar rcs $(DIST_DIR)/libFMIOPluginSDK.a $(BUILD_DIR)/*.o $(CAP_SDK_DIR)/.build/release/CapNs.build/*.o
 	
 	# Copy plugin SDK headers
 	@cp Sources/FMIOPluginSDK/include/*.h $(DIST_DIR)/
@@ -84,7 +84,7 @@ example:
 	@echo "Example plugin integration with formal cap SDK:"
 	@echo ""
 	@echo "1. Add both SDKs to your project:"
-	@echo "   #import \"CapDef.h\""
+	@echo "   #import \"CapNs.h\""
 	@echo "   #import \"FMIOPluginSDK.h\""
 	@echo ""
 	@echo "2. Create formal cap definitions:"

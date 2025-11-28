@@ -17,14 +17,14 @@ let package = Package(
     ],
     dependencies: [
         // Depend on the cap definition package
-        .package(path: "../capdef-objc"),
+        .package(path: "../capns-objc"),
     ],
     targets: [
         // The main plugin SDK target
         .target(
             name: "FMIOPluginSDK",
             dependencies: [
-                .product(name: "CapDef", package: "capdef-objc"),
+                .product(name: "CapNs", package: "capns-objc"),
             ],
             path: "Sources/FMIOPluginSDK",
             publicHeadersPath: "include",
