@@ -62,7 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
  * Get all cap identifiers as strings
  * @return Array of cap identifier strings
  */
-- (NSArray<NSString *> *)capCards;
+- (NSArray<NSString *> *)capUrns;
 
 /**
  * Find a cap by identifier

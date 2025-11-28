@@ -76,7 +76,7 @@
     return NO;
 }
 
-- (NSArray<NSString *> *)capCards {
+- (NSArray<NSString *> *)capUrns {
     NSMutableArray<NSString *> *identifiers = [NSMutableArray array];
     for (CSCap *cap in self.mutableCaps) {
         [identifiers addObject:[cap idString]];
@@ -86,11 +86,11 @@
 
 - (nullable CSCap *)findCapWithIdentifier:(NSString *)identifier {
     NSError *error;
-    CSCapCard *searchId = [CSCapCard fromString:identifier error:&error];
+    CSCapUrn *searchId = [CSCapUrn fromString:identifier error:&error];
     if (!searchId) return nil;
     
     for (CSCap *cap in self.mutableCaps) {
-        if ([cap.capCard isEqual:searchId]) {
+        if ([cap.capUrn isEqual:searchId]) {
             return cap;
         }
     }
@@ -99,19 +99,19 @@
 
 - (nullable CSCap *)findBestCapForRequest:(NSString *)request {
     NSError *error;
-    CSCapCard *requestId = [CSCapCard fromString:request error:&error];
+    CSCapUrn *requestId = [CSCapUrn fromString:request error:&error];
     if (!requestId) return nil;
     
-    NSMutableArray<CSCapCard *> *capCards = [NSMutableArray array];
+    NSMutableArray<CSCapUrn *> *capUrns = [NSMutableArray array];
     for (CSCap *cap in self.mutableCaps) {
-        [capCards addObject:cap.capCard];
+        [capUrns addObject:cap.capUrn];
     }
     
-    CSCapCard *bestId = [CSCapMatcher findBestMatchInCaps:capCards forRequest:requestId];
+    CSCapUrn *bestId = [CSCapMatcher findBestMatchInCaps:capUrns forRequest:requestId];
     if (!bestId) return nil;
     
     for (CSCap *cap in self.mutableCaps) {
-        if ([cap.capCard isEqual:bestId]) {
+        if ([cap.capUrn isEqual:bestId]) {
             return cap;
         }
     }
