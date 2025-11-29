@@ -31,8 +31,8 @@
     
     CSCapArgument *filePathArg = [CSCapArgument 
         argumentWithName:@"file_path"
-        type:CSArgumentTypeString
-        description:@"Path to the document file to process"
+        argType:CSArgumentTypeString
+        argDescription:@"Path to the document file to process"
         cliFlag:@"file_path"
         position:@0
         validation:filePathValidation
@@ -50,8 +50,8 @@
     
     CSCapArgument *outputArg = [CSCapArgument 
         argumentWithName:@"output"
-        type:CSArgumentTypeString
-        description:@"Write output to specified file instead of stdout"
+        argType:CSArgumentTypeString
+        argDescription:@"Write output to specified file instead of stdout"
         cliFlag:@"--output"
         position:nil
         validation:outputValidation
@@ -63,7 +63,7 @@
         schemaRef:@"file-metadata.json"
         contentType:@"application/json"
         validation:nil
-        description:@"Structured metadata including file properties, document properties, and format-specific metadata"];
+        outputDescription:@"Structured metadata including file properties, document properties, and format-specific metadata"];
     
     return [CSCap 
         capWithUrn:capUrn
@@ -100,8 +100,8 @@
     
     CSCapArgument *filePathArg = [CSCapArgument 
         argumentWithName:@"file_path"
-        type:CSArgumentTypeString
-        description:@"Path to the document file to process"
+        argType:CSArgumentTypeString
+        argDescription:@"Path to the document file to process"
         cliFlag:@"file_path"
         position:@0
         validation:filePathValidation
@@ -119,8 +119,8 @@
     
     CSCapArgument *widthArg = [CSCapArgument 
         argumentWithName:@"width"
-        type:CSArgumentTypeInteger
-        description:@"Width of the thumbnail in pixels"
+        argType:CSArgumentTypeInteger
+        argDescription:@"Width of the thumbnail in pixels"
         cliFlag:@"--width"
         position:nil
         validation:widthValidation
@@ -138,8 +138,8 @@
     
     CSCapArgument *heightArg = [CSCapArgument 
         argumentWithName:@"height"
-        type:CSArgumentTypeInteger
-        description:@"Height of the thumbnail in pixels"
+        argType:CSArgumentTypeInteger
+        argDescription:@"Height of the thumbnail in pixels"
         cliFlag:@"--height"
         position:nil
         validation:heightValidation
@@ -157,8 +157,8 @@
     
     CSCapArgument *outputArg = [CSCapArgument 
         argumentWithName:@"output"
-        type:CSArgumentTypeString
-        description:@"Write thumbnail to specified file instead of stdout"
+        argType:CSArgumentTypeString
+        argDescription:@"Write thumbnail to specified file instead of stdout"
         cliFlag:@"--output"
         position:nil
         validation:outputValidation
@@ -176,8 +176,8 @@
     
     CSCapArgument *pageArg = [CSCapArgument 
         argumentWithName:@"page"
-        type:CSArgumentTypeInteger
-        description:@"Page number to generate thumbnail from (1-based, default: 1)"
+        argType:CSArgumentTypeInteger
+        argDescription:@"Page number to generate thumbnail from (1-based, default: 1)"
         cliFlag:@"--page"
         position:nil
         validation:pageValidation
@@ -189,7 +189,7 @@
         schemaRef:nil
         contentType:@"image/png"
         validation:nil
-        description:@"PNG image data representing a thumbnail of the document"];
+        outputDescription:@"PNG image data representing a thumbnail of the document"];
     
     return [CSCap 
         capWithUrn:capUrn
@@ -226,8 +226,8 @@
     
     CSCapArgument *filePathArg = [CSCapArgument 
         argumentWithName:@"file_path"
-        type:CSArgumentTypeString
-        description:@"Path to the document file to process"
+        argType:CSArgumentTypeString
+        argDescription:@"Path to the document file to process"
         cliFlag:@"file_path"
         position:@0
         validation:filePathValidation
@@ -245,8 +245,8 @@
     
     CSCapArgument *maxDepthArg = [CSCapArgument 
         argumentWithName:@"max_depth"
-        type:CSArgumentTypeInteger
-        description:@"Maximum outline depth to extract (1-10)"
+        argType:CSArgumentTypeInteger
+        argDescription:@"Maximum outline depth to extract (1-10)"
         cliFlag:@"--max-depth"
         position:nil
         validation:maxDepthValidation
@@ -256,8 +256,8 @@
     // Optional include_page_numbers argument
     CSCapArgument *includePageNumbersArg = [CSCapArgument 
         argumentWithName:@"include_page_numbers"
-        type:CSArgumentTypeBoolean
-        description:@"Include page numbers in the outline (default: true)"
+        argType:CSArgumentTypeBoolean
+        argDescription:@"Include page numbers in the outline (default: true)"
         cliFlag:@"--include-page-numbers"
         position:nil
         validation:nil
@@ -275,8 +275,8 @@
     
     CSCapArgument *outputArg = [CSCapArgument 
         argumentWithName:@"output"
-        type:CSArgumentTypeString
-        description:@"Write output to specified file instead of stdout"
+        argType:CSArgumentTypeString
+        argDescription:@"Write output to specified file instead of stdout"
         cliFlag:@"--output"
         position:nil
         validation:outputValidation
@@ -288,7 +288,7 @@
         schemaRef:@"document-outline.json"
         contentType:@"application/json"
         validation:nil
-        description:@"Hierarchical document outline with section titles and optional page numbers"];
+        outputDescription:@"Hierarchical document outline with section titles and optional page numbers"];
     
     return [CSCap 
         capWithUrn:capUrn
@@ -325,8 +325,8 @@
     
     CSCapArgument *filePathArg = [CSCapArgument 
         argumentWithName:@"file_path"
-        type:CSArgumentTypeString
-        description:@"Path to the document file to process"
+        argType:CSArgumentTypeString
+        argDescription:@"Path to the document file to process"
         cliFlag:@"file_path"
         position:@0
         validation:filePathValidation
@@ -344,8 +344,8 @@
     
     CSCapArgument *outputArg = [CSCapArgument 
         argumentWithName:@"output"
-        type:CSArgumentTypeString
-        description:@"Write output to specified file instead of stdout"
+        argType:CSArgumentTypeString
+        argDescription:@"Write output to specified file instead of stdout"
         cliFlag:@"--output"
         position:nil
         validation:outputValidation
@@ -363,8 +363,8 @@
     
     CSCapArgument *pageRangeArg = [CSCapArgument 
         argumentWithName:@"page_range"
-        type:CSArgumentTypeString
-        description:@"Page range to extract (e.g., '1-5' or '10-')"
+        argType:CSArgumentTypeString
+        argDescription:@"Page range to extract (e.g., '1-5' or '10-')"
         cliFlag:@"--page-range"
         position:nil
         validation:pageRangeValidation
@@ -376,7 +376,7 @@
         schemaRef:@"document-pages.json"
         contentType:@"application/json"
         validation:nil
-        description:@"Document pages with text content organized by pages and paragraphs"];
+        outputDescription:@"Document pages with text content organized by pages and paragraphs"];
     
     return [CSCap 
         capWithUrn:capUrn

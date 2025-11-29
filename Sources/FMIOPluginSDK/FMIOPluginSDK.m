@@ -984,8 +984,8 @@
                     for (CSCapArgument *arg in cap.arguments.required) {
                         NSMutableDictionary *argDict = [@{
                             @"name": arg.name,
-                            @"type": [self argumentTypeStringFromEnum:arg.type],
-                            @"description": arg.argumentDescription,
+                            @"arg_type": [self argumentTypeStringFromEnum:arg.argType],
+                            @"arg_description": arg.argDescription,
                             @"cli_flag": arg.cliFlag
                         } mutableCopy];
                         if (arg.position) {
@@ -1000,8 +1000,8 @@
                     for (CSCapArgument *arg in cap.arguments.optional) {
                         NSMutableDictionary *argDict = [@{
                             @"name": arg.name,
-                            @"type": [self argumentTypeStringFromEnum:arg.type],
-                            @"description": arg.argumentDescription,
+                            @"arg_type": [self argumentTypeStringFromEnum:arg.argType],
+                            @"arg_description": arg.argDescription,
                             @"cli_flag": arg.cliFlag
                         } mutableCopy];
                         if (arg.defaultValue) {
@@ -1017,8 +1017,8 @@
             // Add output info
             if (cap.output) {
                 NSMutableDictionary *outputDict = [[NSMutableDictionary alloc] init];
-                outputDict[@"type"] = [self outputTypeStringFromEnum:cap.output.type];
-                outputDict[@"description"] = cap.output.outputDescription;
+                outputDict[@"output_type"] = [self outputTypeStringFromEnum:cap.output.outputType];
+                outputDict[@"output_description"] = cap.output.outputDescription;
                 if (cap.output.contentType) {
                     outputDict[@"content_type"] = cap.output.contentType;
                 }
