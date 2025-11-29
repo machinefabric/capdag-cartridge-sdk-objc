@@ -12,7 +12,7 @@
     CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:action=extract;target=metadata;" error:&error];
     if (!capUrn) {
         @throw [NSException exceptionWithName:@"InvalidCapUrn" 
-                                       reason:@"Failed to create cap ID for extract-metadata"
+                                       reason:@"Failed to create cap URN for extract-metadata"
                                      userInfo:nil];
     }
     
@@ -66,7 +66,7 @@
         description:@"Structured metadata including file properties, document properties, and format-specific metadata"];
     
     return [CSCap 
-        capWithId:capUrn
+        capWithUrn:capUrn
         version:@"1.0.0"
         description:@"Extract document metadata including title, author, creation date, file size, and other properties"
         metadata:@{}
@@ -81,7 +81,7 @@
     CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:action=generate;output=binary;target=thumbnail;" error:&error];
     if (!capUrn) {
         @throw [NSException exceptionWithName:@"InvalidCapUrn" 
-                                       reason:@"Failed to create cap ID for generate-thumbnail"
+                                       reason:@"Failed to create cap URN for generate-thumbnail"
                                      userInfo:nil];
     }
     
@@ -192,7 +192,7 @@
         description:@"PNG image data representing a thumbnail of the document"];
     
     return [CSCap 
-        capWithId:capUrn
+        capWithUrn:capUrn
         version:@"1.0.0"
         description:@"Generate a thumbnail image preview of the document"
         metadata:@{}
@@ -207,7 +207,7 @@
     CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:action=extract;target=outline;" error:&error];
     if (!capUrn) {
         @throw [NSException exceptionWithName:@"InvalidCapUrn" 
-                                       reason:@"Failed to create cap ID for extract-outline"
+                                       reason:@"Failed to create cap URN for extract-outline"
                                      userInfo:nil];
     }
     
@@ -291,7 +291,7 @@
         description:@"Hierarchical document outline with section titles and optional page numbers"];
     
     return [CSCap 
-        capWithId:capUrn
+        capWithUrn:capUrn
         version:@"1.0.0"
         description:@"Extract document outline/table of contents with hierarchical structure"
         metadata:@{}
@@ -306,7 +306,7 @@
     CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:action=extract;target=pages" error:&error];
     if (!capUrn) {
         @throw [NSException exceptionWithName:@"InvalidCapUrn" 
-                                       reason:@"Failed to create cap ID for extract-pages"
+                                       reason:@"Failed to create cap URN for extract-pages"
                                      userInfo:nil];
     }
     
@@ -379,7 +379,7 @@
         description:@"Document pages with text content organized by pages and paragraphs"];
     
     return [CSCap 
-        capWithId:capUrn
+        capWithUrn:capUrn
         version:@"1.0.0"
         description:@"Extract document pages with text content organized by pages and paragraphs"
         metadata:@{}
@@ -435,12 +435,12 @@
         CSCapUrn *newId = [CSCapUrn fromString:newUrnString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapUrn" 
-                                           reason:[NSString stringWithFormat:@"Failed to create cap ID for %@", newUrnString]
+                                           reason:[NSString stringWithFormat:@"Failed to create cap URN for %@", newUrnString]
                                          userInfo:nil];
         }
         
         CSCap *cap = [CSCap 
-            capWithId:newId
+            capWithUrn:newId
             version:baseCap.version
             description:baseCap.capDescription
             metadata:baseCap.metadata
@@ -472,12 +472,12 @@
         CSCapUrn *newId = [CSCapUrn fromString:newUrnString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapUrn" 
-                                           reason:[NSString stringWithFormat:@"Failed to create cap ID for %@", newUrnString]
+                                           reason:[NSString stringWithFormat:@"Failed to create cap URN for %@", newUrnString]
                                          userInfo:nil];
         }
         
         CSCap *cap = [CSCap 
-            capWithId:newId
+            capWithUrn:newId
             version:baseCap.version
             description:baseCap.capDescription
             metadata:baseCap.metadata
@@ -509,12 +509,12 @@
         CSCapUrn *newId = [CSCapUrn fromString:newUrnString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapUrn" 
-                                           reason:[NSString stringWithFormat:@"Failed to create cap ID for %@", newUrnString]
+                                           reason:[NSString stringWithFormat:@"Failed to create cap URN for %@", newUrnString]
                                          userInfo:nil];
         }
         
         CSCap *cap = [CSCap 
-            capWithId:newId
+            capWithUrn:newId
             version:baseCap.version
             description:baseCap.capDescription
             metadata:baseCap.metadata
@@ -546,12 +546,12 @@
         CSCapUrn *newId = [CSCapUrn fromString:newUrnString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapUrn" 
-                                           reason:[NSString stringWithFormat:@"Failed to create cap ID for %@", newUrnString]
+                                           reason:[NSString stringWithFormat:@"Failed to create cap URN for %@", newUrnString]
                                          userInfo:nil];
         }
         
         CSCap *cap = [CSCap 
-            capWithId:newId
+            capWithUrn:newId
             version:baseCap.version
             description:baseCap.capDescription
             metadata:baseCap.metadata

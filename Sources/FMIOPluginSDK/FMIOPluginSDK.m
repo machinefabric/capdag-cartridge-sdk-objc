@@ -132,11 +132,11 @@
     NSInteger score = 0;
     
     // Add specificity score
-    for (NSString *cap in plugin.caps) {
-        if ([cap isEqualToString:cap]) {
-            if ([cap containsString:@":"] && ![cap hasSuffix:@":*"]) {
+    for (NSString *pluginCap in plugin.caps) {
+        if ([pluginCap isEqualToString:cap]) {
+            if ([pluginCap containsString:@":"] && ![pluginCap hasSuffix:@":*"]) {
                 score += 20; // Exact file type match
-            } else if ([cap hasSuffix:@":*"]) {
+            } else if ([pluginCap hasSuffix:@":*"]) {
                 score += 10; // Wildcard match
             } else {
                 score += 5; // Operation-only match

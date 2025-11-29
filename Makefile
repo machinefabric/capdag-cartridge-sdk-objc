@@ -90,7 +90,7 @@ example:
 	@echo "2. Create formal cap definitions:"
 	@echo "   NSError *error;"
 	@echo "   CSCapUrn *capId = [CSCapUrn fromString:@\"extract-metadata:pdf\" error:&error];"
-	@echo "   CSCap *cap = [CSCap capWithId:capId version:@\"1.0.0\"];"
+	@echo "   CSCap *cap = [CSCap capWithUrn:capId version:@\"1.0.0\"];";
 	@echo ""
 	@echo "3. Build plugin caps collection:"
 	@echo "   CSPluginCaps *caps = [CSPluginCaps new];"
