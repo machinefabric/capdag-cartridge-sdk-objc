@@ -411,7 +411,7 @@
     return nil;
 }
 
-+ (nullable CSCap *)standardCapWithId:(NSString *)urnString {
++ (nullable CSCap *)standardCapWithUrn:(NSString *)urnString {
     if ([urnString isEqualToString:@"cap:action=extract;target=metadata;"]) {
         return [self extractMetadataCap];
     } else if ([urnString isEqualToString:@"cap:action=generate;output=binary;target=thumbnail;"]) {

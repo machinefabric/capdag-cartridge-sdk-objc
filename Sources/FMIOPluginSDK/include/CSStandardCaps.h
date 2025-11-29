@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param urnString The cap URN string (e.g., "cap:action=extract;target=metadata;")
  * @return The cap or nil if not found
  */
-+ (nullable CSCap *)standardCapWithId:(NSString *)urnString;
++ (nullable CSCap *)standardCapWithUrn:(NSString *)urnString;
 
 @end
 
