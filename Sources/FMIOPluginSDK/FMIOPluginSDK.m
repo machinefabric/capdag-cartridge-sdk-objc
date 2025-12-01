@@ -52,7 +52,7 @@
     _plugins[name] = entry;
 }
 
-- (FMIOCapCaller *)can:(NSString *)cap error:(NSError **)error {
+- (CSCapCaller *)can:(NSString *)cap error:(NSError **)error {
     NSString *bestPlugin = [self findBestPluginForCap:cap];
     if (!bestPlugin) {
         if (error) {
@@ -73,12 +73,17 @@
         return nil;
     }
     
-    FMIOCapCaller *caller = [[FMIOCapCaller alloc] init];
-    caller.pluginName = bestPlugin;
-    caller.cap = cap;
-    caller.binaryPath = plugin.binaryPath;
+    // Create a cap host adapter for the plugin binary
+    FMIOPluginCapHost *capHost = [[FMIOPluginCapHost alloc] initWithBinaryPath:plugin.binaryPath];
     
-    return caller;
+    // Get cap definition (for now, create a basic one - in production this would come from registry)
+    CSCap *capDefinition = [self createBasicCapDefinitionForCap:cap];
+    
+    return [CSCapCaller callerWithCap:cap capHost:capHost capDefinition:capDefinition];
+}
+
+- (CSCapCaller *)can:(NSString *)cap {
+    return [self can:cap error:nil];
 }
 
 - (NSArray<NSString *> *)listCaps {
@@ -148,21 +153,66 @@
     return score;
 }
 
+- (CSCap *)createBasicCapDefinitionForCap:(NSString *)cap {
+    // For now, create a basic cap definition - in production this would come from registry
+    NSError *error;
+    CSCapUrn *capUrn = [CSCapUrn fromString:[cap lowercaseString] error:&error];
+    if (!capUrn) {
+        // Fallback to basic cap URN
+        capUrn = [CSCapUrn fromString:@"cap:action=generic;" error:nil];
+    }
+    
+    CSCapArguments *arguments = [CSCapArguments arguments];
+    CSCapOutput *output = [CSCapOutput outputWithType:CSOutputTypeObject
+                                             schemaRef:nil
+                                           contentType:@"application/json"
+                                            validation:nil
+                                     outputDescription:@"Generic plugin output"];
+    
+    return [CSCap capWithUrn:capUrn
+                     command:[cap componentsSeparatedByString:@":"][0]
+                 description:@"Generic plugin capability"
+                    metadata:@{}
+                   arguments:arguments
+                      output:output
+                acceptsStdin:YES];
+}
+
 @end
 
-// MARK: - Cap Caller
+// MARK: - Plugin Cap Host Implementation
 
-@implementation FMIOCapCaller
+@implementation FMIOPluginCapHost
 
-- (void)call:(NSArray *)args stdinData:(NSData * _Nullable)stdinData completion:(void (^)(FMIOResponseWrapper * _Nullable, NSError * _Nullable))completion {
+- (instancetype)initWithBinaryPath:(NSString *)binaryPath {
+    self = [super init];
+    if (self) {
+        _binaryPath = [binaryPath copy];
+    }
+    return self;
+}
+
+- (void)executeCap:(NSString *)cap
+    positionalArgs:(NSArray *)positionalArgs
+         namedArgs:(NSArray *)namedArgs
+         stdinData:(NSData * _Nullable)stdinData
+        completion:(void (^)(CSResponseWrapper * _Nullable response, NSError * _Nullable error))completion {
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Convert cap to CLI flag
-        NSString *operation = [self.cap componentsSeparatedByString:@":"][0];
+        NSString *operation = [cap componentsSeparatedByString:@":"][0];
         NSString *command = [NSString stringWithFormat:@"--%@", operation];
         
         // Build command arguments
         NSMutableArray<NSString *> *cmdArgs = [[NSMutableArray alloc] initWithObjects:command, nil];
-        for (id arg in args) {
+        
+        // Add positional args
+        for (id arg in positionalArgs) {
+            [cmdArgs addObject:[NSString stringWithFormat:@"%@", arg]];
+        }
+        
+        // Add named args (these would typically be formatted as --flag value)
+        for (id arg in namedArgs) {
             [cmdArgs addObject:[NSString stringWithFormat:@"%@", arg]];
         }
         
@@ -194,7 +244,7 @@
             NSData *outputData = [[outputPipe fileHandleForReading] readDataToEndOfFile];
             
             if (task.terminationStatus == 0) {
-                FMIOResponseWrapper *response = [[FMIOResponseWrapper alloc] initWithData:outputData];
+                CSResponseWrapper *response = [CSResponseWrapper responseWithData:outputData];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     completion(response, nil);
                 });
@@ -219,94 +269,7 @@
 
 @end
 
-// MARK: - Response Wrapper
 
-@implementation FMIOResponseWrapper
-
-- (instancetype)initWithData:(NSData *)data {
-    self = [super init];
-    if (self) {
-        _data = [data copy];
-    }
-    return self;
-}
-
-- (BOOL)asType:(Class)type result:(id _Nullable *)result error:(NSError **)error {
-    @try {
-        NSError *jsonError;
-        id jsonObject = [NSJSONSerialization JSONObjectWithData:self.data options:0 error:&jsonError];
-        if (jsonError) {
-            if (error) *error = jsonError;
-            return NO;
-        }
-        
-        if (result) *result = jsonObject;
-        return YES;
-    } @catch (NSException *exception) {
-        if (error) {
-            *error = [NSError errorWithDomain:@"FMIOPluginSDK"
-                                         code:1005
-                                     userInfo:@{NSLocalizedDescriptionKey: exception.reason ?: @"Type conversion failed"}];
-        }
-        return NO;
-    }
-}
-
-- (NSString *)asStringWithError:(NSError **)error {
-    NSString *result = [[NSString alloc] initWithData:self.data encoding:NSUTF8StringEncoding];
-    if (!result && error) {
-        *error = [NSError errorWithDomain:@"FMIOPluginSDK"
-                                     code:1006
-                                 userInfo:@{NSLocalizedDescriptionKey: @"Failed to convert data to string"}];
-    }
-    return result;
-}
-
-- (NSData *)asBytes {
-    return self.data;
-}
-
-- (NSNumber *)asIntWithError:(NSError **)error {
-    NSError *jsonError;
-    id jsonObject = [NSJSONSerialization JSONObjectWithData:self.data options:0 error:&jsonError];
-    if (jsonError) {
-        if (error) *error = jsonError;
-        return nil;
-    }
-    
-    if ([jsonObject isKindOfClass:[NSNumber class]]) {
-        return (NSNumber *)jsonObject;
-    }
-    
-    if (error) {
-        *error = [NSError errorWithDomain:@"FMIOPluginSDK"
-                                     code:1007
-                                 userInfo:@{NSLocalizedDescriptionKey: @"Data is not a number"}];
-    }
-    return nil;
-}
-
-- (NSNumber *)asBoolWithError:(NSError **)error {
-    NSError *jsonError;
-    id jsonObject = [NSJSONSerialization JSONObjectWithData:self.data options:0 error:&jsonError];
-    if (jsonError) {
-        if (error) *error = jsonError;
-        return nil;
-    }
-    
-    if ([jsonObject isKindOfClass:[NSNumber class]]) {
-        return (NSNumber *)jsonObject;
-    }
-    
-    if (error) {
-        *error = [NSError errorWithDomain:@"FMIOPluginSDK"
-                                     code:1008
-                                 userInfo:@{NSLocalizedDescriptionKey: @"Data is not a boolean"}];
-    }
-    return nil;
-}
-
-@end
 
 // MARK: - Plugin Entry
 
@@ -329,12 +292,11 @@
 @implementation CSCapManifest (FMIOPluginSDK)
 
 + (instancetype)pluginWithName:(NSString *)name
-                       version:(NSString *)version
                    description:(NSString *)description
                   caps:(NSArray<CSCap *> *)caps {
     return [CSCapManifest manifestWithName:name
-                                           version:version
-                                       description:description
+                                   version:@"1.0.0"
+                               description:description
                                       caps:caps];
 }
 
@@ -967,7 +929,6 @@
             
             // Basic cap info
             capDict[@"id"] = [cap urnString];
-            capDict[@"version"] = cap.version;
             capDict[@"command"] = cap.command;
             capDict[@"description"] = cap.capDescription;
             

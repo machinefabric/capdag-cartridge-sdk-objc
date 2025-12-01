@@ -148,15 +148,9 @@
 }
 
 - (NSArray<CSCap *> *)capsWithVersion:(NSString *)version {
-    NSMutableArray<CSCap *> *matches = [NSMutableArray array];
-    
-    for (CSCap *cap in self.mutableCaps) {
-        if ([cap.version isEqualToString:version]) {
-            [matches addObject:cap];
-        }
-    }
-    
-    return matches;
+    // Version filtering is no longer supported since caps don't have versions
+    // Return empty array for backward compatibility
+    return @[];
 }
 
 - (NSUInteger)count {

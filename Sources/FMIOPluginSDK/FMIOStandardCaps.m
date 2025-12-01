@@ -67,10 +67,9 @@
     
     return [CSCap 
         capWithUrn:capUrn
-        version:@"1.0.0"
+        command:command
         description:@"Extract document metadata including title, author, creation date, file size, and other properties"
         metadata:@{}
-        command:command
         arguments:arguments
         output:output
         acceptsStdin:YES];
@@ -193,10 +192,9 @@
     
     return [CSCap 
         capWithUrn:capUrn
-        version:@"1.0.0"
+        command:command
         description:@"Generate a thumbnail image preview of the document"
         metadata:@{}
-        command:command
         arguments:arguments
         output:output
         acceptsStdin:YES];
@@ -292,10 +290,9 @@
     
     return [CSCap 
         capWithUrn:capUrn
-        version:@"1.0.0"
+        command:command
         description:@"Extract document outline/table of contents with hierarchical structure"
         metadata:@{}
-        command:command
         arguments:arguments
         output:output
         acceptsStdin:YES];
@@ -380,10 +377,9 @@
     
     return [CSCap 
         capWithUrn:capUrn
-        version:@"1.0.0"
+        command:command
         description:@"Extract document pages with text content organized by pages and paragraphs"
         metadata:@{}
-        command:command
         arguments:arguments
         output:output
         acceptsStdin:YES];
@@ -441,10 +437,9 @@
         
         CSCap *cap = [CSCap 
             capWithUrn:newId
-            version:baseCap.version
+            command:baseCap.command
             description:baseCap.capDescription
             metadata:baseCap.metadata
-            command:baseCap.command
             arguments:baseCap.arguments
             output:baseCap.output
             acceptsStdin:baseCap.acceptsStdin];
@@ -478,10 +473,9 @@
         
         CSCap *cap = [CSCap 
             capWithUrn:newId
-            version:baseCap.version
+            command:baseCap.command
             description:baseCap.capDescription
             metadata:baseCap.metadata
-            command:baseCap.command
             arguments:baseCap.arguments
             output:baseCap.output
             acceptsStdin:baseCap.acceptsStdin];
@@ -515,10 +509,9 @@
         
         CSCap *cap = [CSCap 
             capWithUrn:newId
-            version:baseCap.version
+            command:baseCap.command
             description:baseCap.capDescription
             metadata:baseCap.metadata
-            command:baseCap.command
             arguments:baseCap.arguments
             output:baseCap.output
             acceptsStdin:baseCap.acceptsStdin];
@@ -552,10 +545,9 @@
         
         CSCap *cap = [CSCap 
             capWithUrn:newId
-            version:baseCap.version
+            command:baseCap.command
             description:baseCap.capDescription
             metadata:baseCap.metadata
-            command:baseCap.command
             arguments:baseCap.arguments
             output:baseCap.output
             acceptsStdin:baseCap.acceptsStdin];

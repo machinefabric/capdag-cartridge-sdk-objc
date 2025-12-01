@@ -10,14 +10,14 @@
 #import "CSPluginCaps.h"
 #import "CSStandardCaps.h"
 #import "FMIOStandardCaps.h"
+#import "FMIORegistryManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 // MARK: - Unified Plugin Registry
 
 @class FMIOPluginEntry;
-@class FMIOCapCaller;
-@class FMIOResponseWrapper;
+@class FMIOPluginCapHost;
 
 @interface FMIOPluginRegistry : NSObject
 
@@ -26,38 +26,17 @@ NS_ASSUME_NONNULL_BEGIN
             binaryPath:(NSString *)binaryPath
           caps:(NSArray<NSString *> *)caps;
 
-- (FMIOCapCaller * _Nullable)can:(NSString *)cap error:(NSError **)error;
+- (CSCapCaller * _Nullable)can:(NSString *)cap error:(NSError **)error;
+- (CSCapCaller * _Nullable)can:(NSString *)cap;
 - (NSArray<NSString *> *)listCaps;
 
 @end
 
-// MARK: - Cap Caller
+// MARK: - Plugin Cap Host
 
-@interface FMIOCapCaller : NSObject
-
-@property (nonatomic, strong) NSString *pluginName;
-@property (nonatomic, strong) NSString *cap;
+@interface FMIOPluginCapHost : NSObject <CSCapHost>
 @property (nonatomic, strong) NSString *binaryPath;
-
-- (void)call:(NSArray *)args stdinData:(NSData * _Nullable)stdinData completion:(void (^)(FMIOResponseWrapper * _Nullable response, NSError * _Nullable error))completion;
-
-@end
-
-// MARK: - Response Wrapper
-
-@interface FMIOResponseWrapper : NSObject
-
-@property (nonatomic, strong, readonly) NSData *data;
-
-- (instancetype)initWithData:(NSData *)data;
-
-// Type-safe deserialization methods
-- (BOOL)asType:(Class)type result:(id _Nullable * _Nullable)result error:(NSError **)error;
-- (NSString * _Nullable)asStringWithError:(NSError **)error;
-- (NSData *)asBytes;
-- (NSNumber * _Nullable)asIntWithError:(NSError **)error;
-- (NSNumber * _Nullable)asBoolWithError:(NSError **)error;
-
+- (instancetype)initWithBinaryPath:(NSString *)binaryPath;
 @end
 
 // MARK: - Plugin Entry
@@ -84,7 +63,6 @@ typedef CSCapManifest FMIOPluginManifest;
 @interface CSCapManifest (FMIOPluginSDK)
 
 + (instancetype)pluginWithName:(NSString *)name
-                       version:(NSString *)version
                    description:(NSString *)description
                   caps:(NSArray<CSCap *> *)caps;
 
