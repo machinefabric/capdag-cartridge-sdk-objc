@@ -325,4 +325,111 @@ typedef CSCapManifest FMIOPluginManifest;
 
 @end
 
+// MARK: - Schema-Enabled Cap Constructors
+
+/**
+ * Extension to CSCapArgument for plugin-specific schema validation
+ */
+@interface CSCapArgument (FMIOPluginSDK)
+
+/**
+ * Create an object argument with embedded JSON schema for document metadata
+ * @param name Argument name
+ * @param description Argument description
+ * @param cliFlag CLI flag
+ * @param schema JSON schema for validation
+ * @return A new CSCapArgument instance configured for document metadata
+ */
++ (instancetype)documentMetadataArgumentWithName:(NSString *)name
+                                     description:(NSString *)description
+                                         cliFlag:(NSString *)cliFlag
+                                          schema:(NSDictionary *)schema;
+
+/**
+ * Create an array argument with embedded JSON schema for document pages
+ * @param name Argument name
+ * @param description Argument description
+ * @param cliFlag CLI flag
+ * @param schema JSON schema for validation
+ * @return A new CSCapArgument instance configured for document pages
+ */
++ (instancetype)documentPagesArgumentWithName:(NSString *)name
+                                  description:(NSString *)description
+                                      cliFlag:(NSString *)cliFlag
+                                       schema:(NSDictionary *)schema;
+
+@end
+
+/**
+ * Extension to CSCapOutput for plugin-specific schema validation
+ */
+@interface CSCapOutput (FMIOPluginSDK)
+
+/**
+ * Create an object output with embedded JSON schema for document metadata
+ * @param schema JSON schema for validation
+ * @param description Output description
+ * @return A new CSCapOutput instance configured for document metadata
+ */
++ (instancetype)documentMetadataOutputWithSchema:(NSDictionary *)schema
+                                     description:(NSString *)description;
+
+/**
+ * Create an array output with embedded JSON schema for document pages
+ * @param schema JSON schema for validation
+ * @param description Output description
+ * @return A new CSCapOutput instance configured for document pages
+ */
++ (instancetype)documentPagesOutputWithSchema:(NSDictionary *)schema
+                                  description:(NSString *)description;
+
+/**
+ * Create an object output with embedded JSON schema for document outline
+ * @param schema JSON schema for validation
+ * @param description Output description
+ * @return A new CSCapOutput instance configured for document outline
+ */
++ (instancetype)documentOutlineOutputWithSchema:(NSDictionary *)schema
+                                    description:(NSString *)description;
+
+@end
+
+/**
+ * Schema validation utility for plugins
+ */
+@interface FMIOSchemaValidationHelper : NSObject
+
+/**
+ * Shared schema validator instance with standard resolver
+ */
++ (CSJSONSchemaValidator *)sharedValidator;
+
+/**
+ * Validate plugin manifest against cap schema requirements
+ * @param manifest The plugin manifest to validate
+ * @param error Pointer to NSError for error reporting
+ * @return YES if validation succeeds, NO if it fails
+ */
++ (BOOL)validatePluginManifest:(FMIOPluginManifest *)manifest error:(NSError **)error;
+
+/**
+ * Get standard document metadata schema
+ * @return Standard JSON schema for document metadata
+ */
++ (NSDictionary *)standardDocumentMetadataSchema;
+
+/**
+ * Get standard document pages schema
+ * @return Standard JSON schema for document pages
+ */
++ (NSDictionary *)standardDocumentPagesSchema;
+
+/**
+ * Get standard document outline schema
+ * @return Standard JSON schema for document outline
+ */
++ (NSDictionary *)standardDocumentOutlineSchema;
+
+@end
+
 NS_ASSUME_NONNULL_END
