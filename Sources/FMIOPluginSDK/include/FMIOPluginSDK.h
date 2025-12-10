@@ -303,15 +303,6 @@ typedef CSCapManifest FMIOPluginManifest;
 
 @end
 
-// MARK: - JSON Serialization Helpers
-
-@interface FMIOJSONSerializer : NSObject
-
-+ (NSString * _Nullable)serializePluginManifest:(FMIOPluginManifest *)pluginManifest;
-+ (NSString * _Nullable)serializeToJSON:(id)object;
-+ (id _Nullable)deserializeFromJSON:(NSString *)jsonString error:(NSError **)error;
-
-@end
 
 // MARK: - CLI Helper
 

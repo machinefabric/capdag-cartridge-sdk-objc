@@ -9,7 +9,7 @@
 
 + (CSCap *)extractMetadataCap {
     NSError *error;
-    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:action=extract;target=metadata;" error:&error];
+    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:action=extract;target=metadata" error:&error];
     if (!capUrn) {
         @throw [NSException exceptionWithName:@"InvalidCapUrn" 
                                        reason:@"Failed to create cap URN for extract-metadata"
@@ -67,6 +67,7 @@
     
     return [CSCap 
         capWithUrn:capUrn
+        title:@"Extract Document Metadata"
         command:command
         description:@"Extract document metadata including title, author, creation date, file size, and other properties"
         metadata:@{}
@@ -77,7 +78,7 @@
 
 + (CSCap *)generateThumbnailCap {
     NSError *error;
-    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:action=generate;output=binary;target=thumbnail;" error:&error];
+    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:action=generate;output=binary;target=thumbnail" error:&error];
     if (!capUrn) {
         @throw [NSException exceptionWithName:@"InvalidCapUrn" 
                                        reason:@"Failed to create cap URN for generate-thumbnail"
@@ -192,6 +193,7 @@
     
     return [CSCap 
         capWithUrn:capUrn
+        title:@"Generate Thumbnail"
         command:command
         description:@"Generate a thumbnail image preview of the document"
         metadata:@{}
@@ -202,7 +204,7 @@
 
 + (CSCap *)extractOutlineCap {
     NSError *error;
-    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:action=extract;target=outline;" error:&error];
+    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:action=extract;target=outline" error:&error];
     if (!capUrn) {
         @throw [NSException exceptionWithName:@"InvalidCapUrn" 
                                        reason:@"Failed to create cap URN for extract-outline"
@@ -290,6 +292,7 @@
     
     return [CSCap 
         capWithUrn:capUrn
+        title:@"Extract Document Outline"
         command:command
         description:@"Extract document outline/table of contents with hierarchical structure"
         metadata:@{}
@@ -377,6 +380,7 @@
     
     return [CSCap 
         capWithUrn:capUrn
+        title:@"Extract Document Pages"
         command:command
         description:@"Extract document pages with text content organized by pages and paragraphs"
         metadata:@{}
@@ -408,11 +412,11 @@
 }
 
 + (nullable CSCap *)standardCapWithUrn:(NSString *)urnString {
-    if ([urnString isEqualToString:@"cap:action=extract;target=metadata;"]) {
+    if ([urnString isEqualToString:@"cap:action=extract;target=metadata"]) {
         return [self extractMetadataCap];
-    } else if ([urnString isEqualToString:@"cap:action=generate;output=binary;target=thumbnail;"]) {
+    } else if ([urnString isEqualToString:@"cap:action=generate;output=binary;target=thumbnail"]) {
         return [self generateThumbnailCap];
-    } else if ([urnString isEqualToString:@"cap:action=extract;target=outline;"]) {
+    } else if ([urnString isEqualToString:@"cap:action=extract;target=outline"]) {
         return [self extractOutlineCap];
     } else if ([urnString isEqualToString:@"cap:action=extract;target=pages"]) {
         return [self extractPagesCap];
@@ -427,7 +431,7 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newUrnString = [NSString stringWithFormat:@"cap:action=extract;format=%@;target=metadata;", fileType];
+        NSString *newUrnString = [NSString stringWithFormat:@"cap:action=extract;ext=%@;target=metadata", fileType];
         CSCapUrn *newId = [CSCapUrn fromString:newUrnString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapUrn" 
@@ -437,6 +441,7 @@
         
         CSCap *cap = [CSCap 
             capWithUrn:newId
+            title:baseCap.title
             command:baseCap.command
             description:baseCap.capDescription
             metadata:baseCap.metadata
@@ -463,7 +468,7 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newUrnString = [NSString stringWithFormat:@"cap:action=generate;format=%@;output=binary;target=thumbnail;", fileType];
+        NSString *newUrnString = [NSString stringWithFormat:@"cap:action=generate;ext=%@;output=binary;target=thumbnail", fileType];
         CSCapUrn *newId = [CSCapUrn fromString:newUrnString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapUrn" 
@@ -473,6 +478,7 @@
         
         CSCap *cap = [CSCap 
             capWithUrn:newId
+            title:baseCap.title
             command:baseCap.command
             description:baseCap.capDescription
             metadata:baseCap.metadata
@@ -499,7 +505,7 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newUrnString = [NSString stringWithFormat:@"cap:action=extract;format=%@;target=outline;", fileType];
+        NSString *newUrnString = [NSString stringWithFormat:@"cap:action=extract;ext=%@;target=outline", fileType];
         CSCapUrn *newId = [CSCapUrn fromString:newUrnString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapUrn" 
@@ -509,6 +515,7 @@
         
         CSCap *cap = [CSCap 
             capWithUrn:newId
+            title:baseCap.title
             command:baseCap.command
             description:baseCap.capDescription
             metadata:baseCap.metadata
@@ -535,7 +542,7 @@
     
     for (NSString *fileType in fileTypes) {
         NSError *error;
-        NSString *newUrnString = [NSString stringWithFormat:@"cap:action=extract;format=%@;target=pages", fileType];
+        NSString *newUrnString = [NSString stringWithFormat:@"cap:action=extract;ext=%@;target=pages", fileType];
         CSCapUrn *newId = [CSCapUrn fromString:newUrnString error:&error];
         if (!newId) {
             @throw [NSException exceptionWithName:@"InvalidCapUrn" 
@@ -545,6 +552,7 @@
         
         CSCap *cap = [CSCap 
             capWithUrn:newId
+            title:baseCap.title
             command:baseCap.command
             description:baseCap.capDescription
             metadata:baseCap.metadata
