@@ -68,6 +68,7 @@
     return [CSCap 
         capWithUrn:capUrn
         title:@"Extract Document Metadata"
+        category:@"Document Processing"
         command:command
         description:@"Extract document metadata including title, author, creation date, file size, and other properties"
         metadata:@{}
@@ -194,6 +195,7 @@
     return [CSCap 
         capWithUrn:capUrn
         title:@"Generate Thumbnail"
+        category:@"Document Processing"
         command:command
         description:@"Generate a thumbnail image preview of the document"
         metadata:@{}
@@ -293,6 +295,7 @@
     return [CSCap 
         capWithUrn:capUrn
         title:@"Extract Document Outline"
+        category:@"Document Processing"
         command:command
         description:@"Extract document outline/table of contents with hierarchical structure"
         metadata:@{}
@@ -381,6 +384,7 @@
     return [CSCap 
         capWithUrn:capUrn
         title:@"Extract Document Pages"
+        category:@"Document Processing"
         command:command
         description:@"Extract document pages with text content organized by pages and paragraphs"
         metadata:@{}
@@ -442,6 +446,7 @@
         CSCap *cap = [CSCap 
             capWithUrn:newId
             title:baseCap.title
+            category:baseCap.category
             command:baseCap.command
             description:baseCap.capDescription
             metadata:baseCap.metadata
@@ -479,6 +484,7 @@
         CSCap *cap = [CSCap 
             capWithUrn:newId
             title:baseCap.title
+            category:baseCap.category
             command:baseCap.command
             description:baseCap.capDescription
             metadata:baseCap.metadata
@@ -516,6 +522,7 @@
         CSCap *cap = [CSCap 
             capWithUrn:newId
             title:baseCap.title
+            category:baseCap.category
             command:baseCap.command
             description:baseCap.capDescription
             metadata:baseCap.metadata
@@ -553,6 +560,7 @@
         CSCap *cap = [CSCap 
             capWithUrn:newId
             title:baseCap.title
+            category:baseCap.category
             command:baseCap.command
             description:baseCap.capDescription
             metadata:baseCap.metadata
