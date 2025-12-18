@@ -74,7 +74,8 @@
         metadata:@{}
         arguments:arguments
         output:output
-        acceptsStdin:YES];
+        acceptsStdin:YES
+        metadataJSON:nil];
 }
 
 + (CSCap *)generateThumbnailCap {
@@ -201,7 +202,8 @@
         metadata:@{}
         arguments:arguments
         output:output
-        acceptsStdin:YES];
+        acceptsStdin:YES
+        metadataJSON:nil];
 }
 
 + (CSCap *)extractOutlineCap {
@@ -301,7 +303,8 @@
         metadata:@{}
         arguments:arguments
         output:output
-        acceptsStdin:YES];
+        acceptsStdin:YES
+        metadataJSON:nil];
 }
 
 + (CSCap *)extractPagesCap {
@@ -390,7 +393,8 @@
         metadata:@{}
         arguments:arguments
         output:output
-        acceptsStdin:YES];
+        acceptsStdin:YES
+        metadataJSON:nil];
 }
 
 + (NSArray<CSCap *> *)allStandardCaps {
@@ -452,7 +456,8 @@
             metadata:baseCap.metadata
             arguments:baseCap.arguments
             output:baseCap.output
-            acceptsStdin:baseCap.acceptsStdin];
+            acceptsStdin:baseCap.acceptsStdin
+            metadataJSON:baseCap.metadataJSON];
         [caps addObject:cap];
     }
     
@@ -490,7 +495,8 @@
             metadata:baseCap.metadata
             arguments:baseCap.arguments
             output:baseCap.output
-            acceptsStdin:baseCap.acceptsStdin];
+            acceptsStdin:baseCap.acceptsStdin
+            metadataJSON:baseCap.metadataJSON];
         [caps addObject:cap];
     }
     
@@ -528,7 +534,8 @@
             metadata:baseCap.metadata
             arguments:baseCap.arguments
             output:baseCap.output
-            acceptsStdin:baseCap.acceptsStdin];
+            acceptsStdin:baseCap.acceptsStdin
+            metadataJSON:baseCap.metadataJSON];
         [caps addObject:cap];
     }
     
@@ -566,7 +573,8 @@
             metadata:baseCap.metadata
             arguments:baseCap.arguments
             output:baseCap.output
-            acceptsStdin:baseCap.acceptsStdin];
+            acceptsStdin:baseCap.acceptsStdin
+            metadataJSON:baseCap.metadataJSON];
         [caps addObject:cap];
     }
     

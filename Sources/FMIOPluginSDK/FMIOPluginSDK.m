@@ -177,7 +177,8 @@
                     metadata:@{}
                    arguments:arguments
                       output:output
-                acceptsStdin:YES];
+                acceptsStdin:YES
+                metadataJSON:nil];
 }
 
 @end
