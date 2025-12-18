@@ -253,16 +253,16 @@
         defaultValue:nil];
     [arguments addOptionalArgument:maxDepthArg];
     
-    // Optional include_page_numbers argument
-    CSCapArgument *includePageNumbersArg = [CSCapArgument 
-        argumentWithName:@"include_page_numbers"
+    // Optional include_order_indexes argument
+    CSCapArgument *includeOrderIndexesArg = [CSCapArgument 
+        argumentWithName:@"include_order_indexes"
         argType:CSArgumentTypeBoolean
         argDescription:@"Include page numbers in the outline (default: true)"
-        cliFlag:@"--include-page-numbers"
+        cliFlag:@"--include-order-indexes"
         position:nil
         validation:nil
         defaultValue:@YES];
-    [arguments addOptionalArgument:includePageNumbersArg];
+    [arguments addOptionalArgument:includeOrderIndexesArg];
     
     // Optional output argument
     CSArgumentValidation *outputValidation = [CSArgumentValidation 

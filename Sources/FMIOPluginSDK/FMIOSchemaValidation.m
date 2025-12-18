@@ -256,7 +256,7 @@
                 @"items": @{
                     @"type": @"object",
                     @"properties": @{
-                        @"pageNumber": @{
+                        @"orderIndex": @{
                             @"type": @"integer",
                             @"minimum": @1,
                             @"description": @"Page number (1-indexed)"
@@ -280,7 +280,7 @@
                             @"description": @"Number of characters on this page"
                         }
                     },
-                    @"required": @[@"pageNumber", @"textContent"],
+                    @"required": @[@"orderIndex", @"textContent"],
                     @"additionalProperties": @NO
                 }
             },

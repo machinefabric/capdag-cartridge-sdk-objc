@@ -549,19 +549,19 @@
 
 @implementation FMIODocumentPage
 
-- (instancetype)initWithPageNumber:(NSUInteger)pageNumber {
+- (instancetype)initWithOrderIndex:(NSUInteger)orderIndex {
     self = [super init];
     if (self) {
-        _pageNumber = pageNumber;
+        _orderIndex = orderIndex;
         _textContent = @"";
     }
     return self;
 }
 
-- (instancetype)initWithPageNumber:(NSUInteger)pageNumber textContent:(NSString *)textContent {
+- (instancetype)initWithOrderIndex:(NSUInteger)orderIndex textContent:(NSString *)textContent {
     self = [super init];
     if (self) {
-        _pageNumber = pageNumber;
+        _orderIndex = orderIndex;
         _textContent = [textContent copy];
         [self updateWordAndCharacterCounts];
     }

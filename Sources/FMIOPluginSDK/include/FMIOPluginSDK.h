@@ -185,13 +185,13 @@ typedef CSCapManifest FMIOPluginManifest;
 @end
 
 @interface FMIODocumentPage : NSObject
-@property (nonatomic, assign) NSUInteger pageNumber; // 1-indexed
+@property (nonatomic, assign) NSUInteger orderIndex; // 1-indexed
 @property (nonatomic, strong) NSString *textContent;
 @property (nonatomic, strong, nullable) NSString *sourceRef;
 @property (nonatomic, strong, nullable) NSNumber *wordCount;
 @property (nonatomic, strong, nullable) NSNumber *characterCount;
-- (instancetype)initWithPageNumber:(NSUInteger)pageNumber;
-- (instancetype)initWithPageNumber:(NSUInteger)pageNumber textContent:(NSString *)textContent;
+- (instancetype)initWithOrderIndex:(NSUInteger)orderIndex;
+- (instancetype)initWithOrderIndex:(NSUInteger)orderIndex textContent:(NSString *)textContent;
 - (void)setTextContent:(NSString *)textContent;
 @end
 
