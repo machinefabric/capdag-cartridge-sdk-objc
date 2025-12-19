@@ -171,7 +171,6 @@
     
     return [CSCap capWithUrn:capUrn
                        title:@"Generic Plugin Capability"
-                    category:@"Plugin"
                      command:[cap componentsSeparatedByString:@":"][0]
                  description:@"Generic plugin capability"
                     metadata:@{}
