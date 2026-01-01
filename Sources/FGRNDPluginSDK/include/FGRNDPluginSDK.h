@@ -1,6 +1,6 @@
 //
-//  FMIOPluginSDK.h
-//  FMIO Plugin SDK for Objective-C
+//  FGRNDPluginSDK.h
+//  FGRND Plugin SDK for Objective-C
 //
 //  Unified cap-based plugin interface with standardized command-line calling
 //
@@ -9,17 +9,17 @@
 #import "CapNs.h"
 #import "CSPluginCaps.h"
 #import "CSStandardCaps.h"
-#import "FMIOStandardCaps.h"
-#import "FMIORegistryManager.h"
+#import "FGRNDStandardCaps.h"
+#import "FGRNDRegistryManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 // MARK: - Unified Plugin Registry
 
-@class FMIOPluginEntry;
-@class FMIOPluginCapHost;
+@class FGRNDPluginEntry;
+@class FGRNDPluginCapHost;
 
-@interface FMIOPluginRegistry : NSObject
+@interface FGRNDPluginRegistry : NSObject
 
 + (instancetype)sharedRegistry;
 - (void)registerPlugin:(NSString *)name
@@ -34,14 +34,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: - Plugin Cap Host
 
-@interface FMIOPluginCapHost : NSObject <CSCapHost>
+@interface FGRNDPluginCapHost : NSObject <CSCapHost>
 @property (nonatomic, strong) NSString *binaryPath;
 - (instancetype)initWithBinaryPath:(NSString *)binaryPath;
 @end
 
 // MARK: - Plugin Entry
 
-@interface FMIOPluginEntry : NSObject
+@interface FGRNDPluginEntry : NSObject
 
 @property (nonatomic, strong) NSString *binaryPath;
 @property (nonatomic, strong) NSArray<NSString *> *caps;
@@ -55,12 +55,12 @@ NS_ASSUME_NONNULL_BEGIN
 // Use CSPluginCaps from CapNs instead of the old string-based system
 
 // MARK: - Plugin Manifest (for --manifest output)
-// Re-export CSCapManifest as FMIOPluginManifest for backward compatibility
+// Re-export CSCapManifest as FGRNDPluginManifest for backward compatibility
 
-typedef CSCapManifest FMIOPluginManifest;
+typedef CSCapManifest FGRNDPluginManifest;
 
 // Convenience constructors for plugins
-@interface CSCapManifest (FMIOPluginSDK)
+@interface CSCapManifest (FGRNDPluginSDK)
 
 + (instancetype)pluginWithName:(NSString *)name
                    description:(NSString *)description
@@ -70,7 +70,7 @@ typedef CSCapManifest FMIOPluginManifest;
 
 // MARK: - Document Metadata (conforms to file-metadata.json schema)
 
-@interface FMIODocumentMetadata : NSObject
+@interface FGRNDDocumentMetadata : NSObject
 // Basic file info (required)
 @property (nonatomic, strong) NSString *filePath;
 @property (nonatomic, assign) unsigned long long fileSizeBytes;
@@ -137,7 +137,7 @@ typedef CSCapManifest FMIOPluginManifest;
 
 // MARK: - Document Outline (conforms to document-outline.json schema)
 
-@interface FMIOExtractionInfo : NSObject
+@interface FGRNDExtractionInfo : NSObject
 @property (nonatomic, strong) NSString *extractorName;
 @property (nonatomic, strong) NSString *extractorVersion;
 @property (nonatomic, strong, nullable) NSDate *extractedAt;
@@ -146,36 +146,36 @@ typedef CSCapManifest FMIOPluginManifest;
                      extractorVersion:(NSString *)extractorVersion;
 @end
 
-@interface FMIOOutlineEntry : NSObject
+@interface FGRNDOutlineEntry : NSObject
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, assign) NSUInteger level;
 @property (nonatomic, assign) NSUInteger page; // 1-indexed, 0 if no destination
 @property (nonatomic, strong, nullable) NSString *sourceRef;
-@property (nonatomic, strong) NSMutableArray<FMIOOutlineEntry *> *children;
+@property (nonatomic, strong) NSMutableArray<FGRNDOutlineEntry *> *children;
 - (instancetype)initWithTitle:(NSString *)title level:(NSUInteger)level;
 + (instancetype)entryWithTitle:(NSString *)title level:(NSUInteger)level;
-- (FMIOOutlineEntry *)withPage:(NSUInteger)page;
-- (void)addChild:(FMIOOutlineEntry *)child;
+- (FGRNDOutlineEntry *)withPage:(NSUInteger)page;
+- (void)addChild:(FGRNDOutlineEntry *)child;
 @end
 
-@interface FMIODocumentOutline : NSObject
+@interface FGRNDDocumentOutline : NSObject
 @property (nonatomic, strong) NSString *sourceFile;
 @property (nonatomic, strong, nullable) NSString *title;
 @property (nonatomic, strong) NSString *documentType;
 @property (nonatomic, assign) NSUInteger totalPages;
-@property (nonatomic, strong) NSMutableArray<FMIOOutlineEntry *> *outlineEntries;
+@property (nonatomic, strong) NSMutableArray<FGRNDOutlineEntry *> *outlineEntries;
 @property (nonatomic, assign) BOOL hasOutline;
-@property (nonatomic, strong) FMIOExtractionInfo *extractionInfo;
+@property (nonatomic, strong) FGRNDExtractionInfo *extractionInfo;
 - (instancetype)initWithSourceFile:(NSString *)sourceFile 
                       documentType:(NSString *)documentType 
                         totalPages:(NSUInteger)totalPages;
-- (FMIODocumentOutline *)withTitle:(NSString *)title;
-- (void)addEntry:(FMIOOutlineEntry *)entry;
+- (FGRNDDocumentOutline *)withTitle:(NSString *)title;
+- (void)addEntry:(FGRNDOutlineEntry *)entry;
 @end
 
 // MARK: - Document Pages (conforms to document-pages.json schema)
 
-@interface FMIODocumentParagraph : NSObject
+@interface FGRNDDocumentParagraph : NSObject
 @property (nonatomic, assign) NSUInteger paragraphNumber; // 1-indexed
 @property (nonatomic, strong) NSString *textContent;
 @property (nonatomic, strong, nullable) NSString *sourceRef;
@@ -184,7 +184,7 @@ typedef CSCapManifest FMIOPluginManifest;
 - (instancetype)initWithParagraphNumber:(NSUInteger)paragraphNumber textContent:(NSString *)textContent;
 @end
 
-@interface FMIODocumentPage : NSObject
+@interface FGRNDDocumentPage : NSObject
 @property (nonatomic, assign) NSUInteger orderIndex; // 1-indexed
 @property (nonatomic, strong) NSString *textContent;
 @property (nonatomic, strong, nullable) NSString *sourceRef;
@@ -195,33 +195,33 @@ typedef CSCapManifest FMIOPluginManifest;
 - (void)setTextContent:(NSString *)textContent;
 @end
 
-@interface FMIODocumentPages : NSObject
+@interface FGRNDDocumentPages : NSObject
 @property (nonatomic, strong) NSString *sourceFile;
 @property (nonatomic, strong, nullable) NSString *title;
 @property (nonatomic, strong) NSString *documentType;
 @property (nonatomic, assign) NSUInteger totalPages;
-@property (nonatomic, strong) NSMutableArray<FMIODocumentPage *> *pages;
-@property (nonatomic, strong) FMIOExtractionInfo *extractionInfo;
+@property (nonatomic, strong) NSMutableArray<FGRNDDocumentPage *> *pages;
+@property (nonatomic, strong) FGRNDExtractionInfo *extractionInfo;
 - (instancetype)initWithSourceFile:(NSString *)sourceFile 
                       documentType:(NSString *)documentType;
-- (FMIODocumentPages *)withTitle:(NSString *)title;
-- (void)addPage:(FMIODocumentPage *)page;
+- (FGRNDDocumentPages *)withTitle:(NSString *)title;
+- (void)addPage:(FGRNDDocumentPage *)page;
 @end
 
 // MARK: - File Info (for quick file information)
 
-@interface FMIOQuickMetadata : NSObject
+@interface FGRNDQuickMetadata : NSObject
 @property (nonatomic, strong, nullable) NSString *title;
 @property (nonatomic, strong, nullable) NSString *author;
 @property (nonatomic, strong, nullable) NSNumber *pageCount;
 @end
 
-@interface FMIOFileInfo : NSObject
+@interface FGRNDFileInfo : NSObject
 @property (nonatomic, strong) NSString *path;
 @property (nonatomic, assign) unsigned long long size;
 @property (nonatomic, strong) NSString *documentType;
 @property (nonatomic, assign) BOOL isValid;
-@property (nonatomic, strong, nullable) FMIOQuickMetadata *quickMetadata;
+@property (nonatomic, strong, nullable) FGRNDQuickMetadata *quickMetadata;
 - (instancetype)initWithPath:(NSString *)path 
                         size:(unsigned long long)size 
                 documentType:(NSString *)documentType 
@@ -230,39 +230,39 @@ typedef CSCapManifest FMIOPluginManifest;
 
 // MARK: - Document Handler Protocol
 
-@class FMIOProcessingResult;
+@class FGRNDProcessingResult;
 
 /**
  * Document handler protocol that defines the contract for document processing plugins
  */
-@protocol FMIODocumentHandler <NSObject>
+@protocol FGRNDDocumentHandler <NSObject>
 
 /**
  * Get plugin manifest including caps
  * @return Plugin manifest
  */
-- (FMIOPluginManifest *)getPluginManifest;
+- (FGRNDPluginManifest *)getPluginManifest;
 
 /**
  * Extract metadata from a document
  * @param filePath Path to the document file
  * @return Processing result with metadata
  */
-- (FMIOProcessingResult *)extractMetadata:(NSString *)filePath;
+- (FGRNDProcessingResult *)extractMetadata:(NSString *)filePath;
 
 /**
  * Extract outline/table of contents from a document
  * @param filePath Path to the document file
  * @return Processing result with outline
  */
-- (FMIOProcessingResult *)extractOutline:(NSString *)filePath;
+- (FGRNDProcessingResult *)extractOutline:(NSString *)filePath;
 
 /**
  * Extract pages with text content from a document
  * @param filePath Path to the document file
  * @return Processing result with document pages
  */
-- (FMIOProcessingResult *)extractPages:(NSString *)filePath;
+- (FGRNDProcessingResult *)extractPages:(NSString *)filePath;
 
 /**
  * Generate thumbnail image from a document
@@ -272,19 +272,19 @@ typedef CSCapManifest FMIOPluginManifest;
  * @param page Page number to generate thumbnail from (1-based)
  * @return Processing result with thumbnail data
  */
-- (FMIOProcessingResult *)generateThumbnail:(NSString *)filePath width:(NSInteger)width height:(NSInteger)height page:(NSInteger)page;
+- (FGRNDProcessingResult *)generateThumbnail:(NSString *)filePath width:(NSInteger)width height:(NSInteger)height page:(NSInteger)page;
 
 @end
 
 // MARK: - Processing Result
 
-@interface FMIOProcessingResult : NSObject
+@interface FGRNDProcessingResult : NSObject
 
 @property (nonatomic, assign) BOOL success;
 @property (nonatomic, strong, nullable) id data;
 @property (nonatomic, strong, nullable) NSString *error;
 @property (nonatomic, strong, nullable) NSNumber *processingTimeMs;
-@property (nonatomic, strong, nullable) FMIOFileInfo *fileInfo;
+@property (nonatomic, strong, nullable) FGRNDFileInfo *fileInfo;
 
 + (instancetype)successWithData:(id)data;
 + (instancetype)failureWithError:(NSString *)error NS_SWIFT_NAME(failure(withError:));
@@ -293,7 +293,7 @@ typedef CSCapManifest FMIOPluginManifest;
 
 // MARK: - Standardized Caps
 
-@interface FMIOStandardizedCaps : NSObject
+@interface FGRNDStandardizedCaps : NSObject
 
 @property (class, nonatomic, strong, readonly) NSString *extractMetadata;
 @property (class, nonatomic, strong, readonly) NSString *extractOutline;
@@ -306,7 +306,7 @@ typedef CSCapManifest FMIOPluginManifest;
 
 // MARK: - CLI Helper
 
-@interface FMIOCLIHelper : NSObject
+@interface FGRNDCLIHelper : NSObject
 
 + (NSString *)capToFlag:(NSString *)cap;
 + (NSArray<NSString *> *)buildCommandArgs:(NSString *)cap args:(NSArray *)args;
@@ -321,7 +321,7 @@ typedef CSCapManifest FMIOPluginManifest;
 /**
  * Extension to CSCapArgument for plugin-specific schema validation
  */
-@interface CSCapArgument (FMIOPluginSDK)
+@interface CSCapArgument (FGRNDPluginSDK)
 
 /**
  * Create an object argument with embedded JSON schema for document metadata
@@ -354,7 +354,7 @@ typedef CSCapManifest FMIOPluginManifest;
 /**
  * Extension to CSCapOutput for plugin-specific schema validation
  */
-@interface CSCapOutput (FMIOPluginSDK)
+@interface CSCapOutput (FGRNDPluginSDK)
 
 /**
  * Create an object output with embedded JSON schema for document metadata
@@ -388,7 +388,7 @@ typedef CSCapManifest FMIOPluginManifest;
 /**
  * Schema validation utility for plugins
  */
-@interface FMIOSchemaValidationHelper : NSObject
+@interface FGRNDSchemaValidationHelper : NSObject
 
 /**
  * Shared schema validator instance with standard resolver
@@ -401,7 +401,7 @@ typedef CSCapManifest FMIOPluginManifest;
  * @param error Pointer to NSError for error reporting
  * @return YES if validation succeeds, NO if it fails
  */
-+ (BOOL)validatePluginManifest:(FMIOPluginManifest *)manifest error:(NSError **)error;
++ (BOOL)validatePluginManifest:(FGRNDPluginManifest *)manifest error:(NSError **)error;
 
 /**
  * Get standard document metadata schema

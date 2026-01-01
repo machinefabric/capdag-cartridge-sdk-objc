@@ -1,13 +1,13 @@
 //
-//  FMIORegistryManager.h
-//  FMIOPluginSDK
+//  FGRNDRegistryManager.h
+//  FGRNDPluginSDK
 //
 //  Registry integration for plugin cap validation
 //
 
 #import <Foundation/Foundation.h>
 #import "CapNs.h"
-#import "FMIOStandardCaps.h"
+#import "FGRNDStandardCaps.h"
 
 @class CSCap;
 
@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * Registry manager for plugin cap validation against canonical definitions
  */
-@interface FMIORegistryManager : NSObject
+@interface FGRNDRegistryManager : NSObject
 
 /**
  * Create a new registry manager
@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * Enhanced standard caps with registry integration
  */
-@interface FMIOStandardCaps (Registry)
+@interface FGRNDStandardCaps (Registry)
 
 /**
  * Get a standard cap by URN with canonical validation

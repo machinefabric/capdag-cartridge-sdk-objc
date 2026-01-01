@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "FMIOPluginSDK",
+    name: "FGRNDPluginSDK",
     platforms: [
         .macOS(.v11),
         .iOS(.v14)
@@ -12,8 +12,8 @@ let package = Package(
     products: [
         // The main plugin SDK library
         .library(
-            name: "FMIOPluginSDK",
-            targets: ["FMIOPluginSDK"]),
+            name: "FGRNDPluginSDK",
+            targets: ["FGRNDPluginSDK"]),
     ],
     dependencies: [
         // Depend on the cap definition package
@@ -22,11 +22,11 @@ let package = Package(
     targets: [
         // The main plugin SDK target
         .target(
-            name: "FMIOPluginSDK",
+            name: "FGRNDPluginSDK",
             dependencies: [
                 .product(name: "CapNs", package: "capns-objc"),
             ],
-            path: "Sources/FMIOPluginSDK",
+            path: "Sources/FGRNDPluginSDK",
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("include"),
@@ -39,9 +39,9 @@ let package = Package(
         
         // Tests target
         .testTarget(
-            name: "FMIOPluginSDKTests",
-            dependencies: ["FMIOPluginSDK"],
-            path: "Tests/FMIOPluginSDKTests"
+            name: "FGRNDPluginSDKTests",
+            dependencies: ["FGRNDPluginSDK"],
+            path: "Tests/FGRNDPluginSDKTests"
         ),
     ]
 )

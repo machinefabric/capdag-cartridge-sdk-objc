@@ -1,14 +1,14 @@
-# FMIO Plugin SDK for Objective-C
+# FGRND Plugin SDK for Objective-C
 
-A native Objective-C framework for building document processing plugins for the FMIO system.
+A native Objective-C framework for building document processing plugins for the FGRND system.
 
 ## Overview
 
-The FMIO Plugin SDK for Objective-C provides a complete framework for building document handlers that can extract metadata, outlines, pages, and generate thumbnails from various document formats. It conforms to the FMIO plugin schemas and provides full compatibility with the FMIO ecosystem.
+The FGRND Plugin SDK for Objective-C provides a complete framework for building document handlers that can extract metadata, outlines, pages, and generate thumbnails from various document formats. It conforms to the FGRND plugin schemas and provides full compatibility with the FGRND ecosystem.
 
 ## Features
 
-- ✅ **Schema Compliant**: Fully conforms to FMIO plugin schemas
+- ✅ **Schema Compliant**: Fully conforms to FGRND plugin schemas
 - ✅ **Async/Await Support**: Modern completion-handler based API
 - ✅ **JSON Serialization**: Built-in JSON serialization for all data types
 - ✅ **Type Safety**: Full Objective-C type safety with nullability annotations
@@ -21,8 +21,8 @@ The FMIO Plugin SDK for Objective-C provides a complete framework for building d
 
 1. Clone or download the SDK:
 ```bash
-git clone https://github.com/your-org/fmio-plugin-sdk-objc.git
-cd fmio-plugin-sdk-objc
+git clone https://github.com/your-org/fgrnd-plugin-sdk-objc.git
+cd fgrnd-plugin-sdk-objc
 ```
 
 2. Build the SDK:
@@ -40,8 +40,8 @@ make install
 Add the header and link the static library:
 
 ```objc
-#import "FMIOPluginSDK.h"
-// Link with: -lFMIOPluginSDK -framework Foundation
+#import "FGRNDPluginSDK.h"
+// Link with: -lFGRNDPluginSDK -framework Foundation
 ```
 
 ## Quick Start
@@ -49,9 +49,9 @@ Add the header and link the static library:
 ### 1. Implement a Document Handler
 
 ```objc
-#import "FMIOPluginSDK.h"
+#import "FGRNDPluginSDK.h"
 
-@interface HTMLDocumentHandler : NSObject <FMIODocumentHandler>
+@interface HTMLDocumentHandler : NSObject <FGRNDDocumentHandler>
 @end
 
 @implementation HTMLDocumentHandler
@@ -68,9 +68,9 @@ Add the header and link the static library:
     return @[@"html", @"htm"];
 }
 
-- (void)extractMetadata:(NSString *)filePath completion:(void (^)(FMIODocumentMetadata * _Nullable, NSError * _Nullable))completion {
+- (void)extractMetadata:(NSString *)filePath completion:(void (^)(FGRNDDocumentMetadata * _Nullable, NSError * _Nullable))completion {
     // Create extraction info
-    FMIOExtractionInfo *extractionInfo = [[FMIOExtractionInfo alloc] 
+    FGRNDExtractionInfo *extractionInfo = [[FGRNDExtractionInfo alloc] 
         initWithExtractorName:@"HTML Handler" 
              extractorVersion:@"1.0.0"];
     
@@ -87,7 +87,7 @@ Add the header and link the static library:
     long long fileSize = [[fileAttributes objectForKey:NSFileSize] longLongValue];
     
     // Create metadata
-    FMIODocumentMetadata *metadata = [[FMIODocumentMetadata alloc] 
+    FGRNDDocumentMetadata *metadata = [[FGRNDDocumentMetadata alloc] 
         initWithFilePath:filePath 
            fileSizeBytes:fileSize 
            contentLength:0 
@@ -133,11 +133,11 @@ Add the header and link the static library:
 ```objc
 // Register the handler
 HTMLDocumentHandler *htmlHandler = [[HTMLDocumentHandler alloc] init];
-[[FMIOPluginManager sharedManager] registerHandler:htmlHandler 
+[[FGRNDPluginManager sharedManager] registerHandler:htmlHandler 
                                   forFileExtensions:@[@"html", @"htm"]];
 
 // Process a document
-FMIOPluginOutput *output = [[FMIOPluginManager sharedManager] 
+FGRNDPluginOutput *output = [[FGRNDPluginManager sharedManager] 
     processDocument:@"/path/to/document.html"];
 
 if (output.success) {
@@ -152,36 +152,36 @@ if (output.success) {
 
 ```objc
 // Serialize results to JSON
-NSString *metadataJSON = [FMIOJSONSerializer serializeMetadata:output.metadata];
-NSString *outlineJSON = [FMIOJSONSerializer serializeOutline:output.outline];
-NSString *pagesJSON = [FMIOJSONSerializer serializePages:output.pages];
+NSString *metadataJSON = [FGRNDJSONSerializer serializeMetadata:output.metadata];
+NSString *outlineJSON = [FGRNDJSONSerializer serializeOutline:output.outline];
+NSString *pagesJSON = [FGRNDJSONSerializer serializePages:output.pages];
 
 // Full output serialization
-NSString *outputJSON = [FMIOJSONSerializer serializePluginOutput:output];
+NSString *outputJSON = [FGRNDJSONSerializer serializePluginOutput:output];
 ```
 
 ## Architecture
 
 ### Core Classes
 
-- **`FMIODocumentMetadata`**: Document metadata (conforms to `file-metadata.json` schema)
-- **`FMIODocumentOutline`**: Document outline (conforms to `document-outline.json` schema)  
-- **`FMIODocumentPages`**: Document pages with paragraphs (conforms to `document-pages.json` schema)
-- **`FMIOPluginOutput`**: Combined output from document processing
-- **`FMIOPluginManager`**: Central plugin registration and management
+- **`FGRNDDocumentMetadata`**: Document metadata (conforms to `file-metadata.json` schema)
+- **`FGRNDDocumentOutline`**: Document outline (conforms to `document-outline.json` schema)  
+- **`FGRNDDocumentPages`**: Document pages with paragraphs (conforms to `document-pages.json` schema)
+- **`FGRNDPluginOutput`**: Combined output from document processing
+- **`FGRNDPluginManager`**: Central plugin registration and management
 
 ### Protocol
 
-- **`FMIODocumentHandler`**: Main protocol that document handlers must implement
+- **`FGRNDDocumentHandler`**: Main protocol that document handlers must implement
 
 ### Helpers
 
-- **`FMIOJSONSerializer`**: JSON serialization utilities
-- **`FMIOExtractionInfo`**: Metadata about the extraction process
+- **`FGRNDJSONSerializer`**: JSON serialization utilities
+- **`FGRNDExtractionInfo`**: Metadata about the extraction process
 
 ## Document Handler Protocol
 
-All document handlers must implement the `FMIODocumentHandler` protocol:
+All document handlers must implement the `FGRNDDocumentHandler` protocol:
 
 ### Required Methods
 
@@ -192,11 +192,11 @@ All document handlers must implement the `FMIODocumentHandler` protocol:
 - (NSArray<NSString *> *)supportedExtensions;
 
 // Core functionality
-- (void)extractMetadata:(NSString *)filePath completion:(void (^)(FMIODocumentMetadata *, NSError *))completion;
-- (void)extractOutline:(NSString *)filePath completion:(void (^)(FMIODocumentOutline *, NSError *))completion;
-- (void)extractPages:(NSString *)filePath completion:(void (^)(FMIODocumentPages *, NSError *))completion;
+- (void)extractMetadata:(NSString *)filePath completion:(void (^)(FGRNDDocumentMetadata *, NSError *))completion;
+- (void)extractOutline:(NSString *)filePath completion:(void (^)(FGRNDDocumentOutline *, NSError *))completion;
+- (void)extractPages:(NSString *)filePath completion:(void (^)(FGRNDDocumentPages *, NSError *))completion;
 - (void)validateFile:(NSString *)filePath completion:(void (^)(BOOL, NSError *))completion;
-- (void)getFileInfo:(NSString *)filePath completion:(void (^)(FMIOFileInfo *, NSError *))completion;
+- (void)getFileInfo:(NSString *)filePath completion:(void (^)(FGRNDFileInfo *, NSError *))completion;
 - (void)generateThumbnail:(NSString *)filePath width:(NSUInteger)width height:(NSUInteger)height completion:(void (^)(NSData *, NSError *))completion;
 ```
 
@@ -205,12 +205,12 @@ All document handlers must implement the `FMIODocumentHandler` protocol:
 ```objc
 // Default implementations provided
 - (BOOL)canHandle:(NSString *)filePath;
-- (FMIOPluginCaps *)getCaps;
+- (FGRNDPluginCaps *)getCaps;
 ```
 
 ## Schema Compliance
 
-This SDK fully conforms to the FMIO plugin schemas:
+This SDK fully conforms to the FGRND plugin schemas:
 
 - ✅ `file-metadata.json` - Document metadata structure
 - ✅ `document-outline.json` - Document outline structure  

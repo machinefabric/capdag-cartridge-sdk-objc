@@ -1,23 +1,23 @@
 import XCTest
-@testable import FMIOPluginSDK
+@testable import FGRNDPluginSDK
 @testable import CapNs
 
-final class FMIOPluginSDKTests: XCTestCase {
+final class FGRNDPluginSDKTests: XCTestCase {
     func testStandardCaps() throws {
         // Test that standard caps can be created
-        let extractMetadata = FMIOStandardCaps.extractMetadataCap()
+        let extractMetadata = FGRNDStandardCaps.extractMetadataCap()
         XCTAssertNotNil(extractMetadata)
         XCTAssertNotNil(extractMetadata.command)
         
-        let generateThumbnail = FMIOStandardCaps.generateThumbnailCap()
+        let generateThumbnail = FGRNDStandardCaps.generateThumbnailCap()
         XCTAssertNotNil(generateThumbnail)
         XCTAssertNotNil(generateThumbnail.command)
         
-        let extractOutline = FMIOStandardCaps.extractOutlineCap()
+        let extractOutline = FGRNDStandardCaps.extractOutlineCap()
         XCTAssertNotNil(extractOutline)
         XCTAssertNotNil(extractOutline.command)
         
-        let extractPages = FMIOStandardCaps.extractPagesCap()
+        let extractPages = FGRNDStandardCaps.extractPagesCap()
         XCTAssertNotNil(extractPages)
         XCTAssertNotNil(extractPages.command)
     }
@@ -28,7 +28,7 @@ final class FMIOPluginSDKTests: XCTestCase {
         XCTAssertNotNil(caps)
         XCTAssertTrue(caps.isEmpty())
         
-        let extractMetadata = FMIOStandardCaps.extractMetadataCap()
+        let extractMetadata = FGRNDStandardCaps.extractMetadataCap()
         caps.addCap(extractMetadata)
         XCTAssertFalse(caps.isEmpty())
         XCTAssertEqual(caps.count(), 1)
@@ -36,12 +36,12 @@ final class FMIOPluginSDKTests: XCTestCase {
     
     func testProcessingResult() throws {
         // Test processing result creation
-        let successResult = FMIOProcessingResult.success(withData: "test data")
+        let successResult = FGRNDProcessingResult.success(withData: "test data")
         XCTAssertTrue(successResult.success)
         XCTAssertEqual(successResult.data as? String, "test data")
         XCTAssertNil(successResult.error)
         
-        let failureResult = FMIOProcessingResult.failure(withError: "test error")
+        let failureResult = FGRNDProcessingResult.failure(withError: "test error")
         XCTAssertFalse(failureResult.success)
         XCTAssertNil(failureResult.data)
         XCTAssertEqual(failureResult.error, "test error")
@@ -49,7 +49,7 @@ final class FMIOPluginSDKTests: XCTestCase {
     
     func testCapNsIntegration() throws {
         // Test that we can use CSCapCaller and CSResponseWrapper from capns-objc
-        let registry = FMIOPluginRegistry.shared()
+        let registry = FGRNDPluginRegistry.shared()
         
         // Register a dummy plugin for testing
         registry.registerPlugin("test-plugin", 
@@ -63,7 +63,7 @@ final class FMIOPluginSDKTests: XCTestCase {
     
     func testManifestWithoutVersion() throws {
         // Test creating manifest without explicit version parameter
-        let caps = FMIOStandardCaps.allStandardCaps()
+        let caps = FGRNDStandardCaps.allStandardCaps()
         let manifest = CSCapManifest.plugin(withName: "test-plugin",
                                           description: "Test plugin",
                                           caps: caps)

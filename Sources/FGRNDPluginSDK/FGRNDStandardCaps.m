@@ -1,11 +1,11 @@
 //
-//  FMIOStandardCaps.m
+//  FGRNDStandardCaps.m
 //  Standard cap definitions implementation
 //
 
-#import "include/FMIOStandardCaps.h"
+#import "include/FGRNDStandardCaps.h"
 
-@implementation FMIOStandardCaps
+@implementation FGRNDStandardCaps
 
 + (CSCap *)extractMetadataCap {
     NSError *error;

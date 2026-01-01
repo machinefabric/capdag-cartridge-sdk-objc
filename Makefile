@@ -1,4 +1,4 @@
-# Makefile for FMIO Plugin SDK Objective-C
+# Makefile for FGRND Plugin SDK Objective-C
 # This SDK now depends on capns-objc for formal cap management
 
 # Directories
@@ -8,7 +8,7 @@ DIST_DIR = dist
 
 help:
 	@echo "Usage: make <target>\n\n\
-	  build\t\tBuild the FMIO Plugin SDK with cap SDK integration\n\
+	  build\t\tBuild the FGRND Plugin SDK with cap SDK integration\n\
 	  build-capns\tBuild only the cap SDK\n\
 	  clean\t\tRemove built artifacts\n\
 	  install\tInstall the library to system paths\n\
@@ -27,7 +27,7 @@ build-capns:
 
 .PHONY: build-plugin-sdk
 build-plugin-sdk: build-capns
-	@echo "Building fmio-plugin-sdk-objc..."
+	@echo "Building fgrnd-plugin-sdk-objc..."
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(DIST_DIR)
 	
@@ -35,30 +35,30 @@ build-plugin-sdk: build-capns
 	@cp -r $(CAP_SDK_DIR)/Sources/CapNs/include/* $(DIST_DIR)/
 	
 	# Compile our plugin SDK with cap SDK integration (now from Sources directory)
-	/usr/bin/clang -c -o $(BUILD_DIR)/FMIOPluginSDK.o Sources/FMIOPluginSDK/FMIOPluginSDK.m \
+	/usr/bin/clang -c -o $(BUILD_DIR)/FGRNDPluginSDK.o Sources/FGRNDPluginSDK/FGRNDPluginSDK.m \
 		-I$(DIST_DIR) \
 		-I$(CAP_SDK_DIR)/Sources/CapNs/include \
-		-ISources/FMIOPluginSDK/include \
+		-ISources/FGRNDPluginSDK/include \
 		-fobjc-arc -fno-modules
 	
-	/usr/bin/clang -c -o $(BUILD_DIR)/FMIOStandardCaps.o Sources/FMIOPluginSDK/FMIOStandardCaps.m \
+	/usr/bin/clang -c -o $(BUILD_DIR)/FGRNDStandardCaps.o Sources/FGRNDPluginSDK/FGRNDStandardCaps.m \
 		-I$(DIST_DIR) \
 		-I$(CAP_SDK_DIR)/Sources/CapNs/include \
-		-ISources/FMIOPluginSDK/include \
+		-ISources/FGRNDPluginSDK/include \
 		-fobjc-arc -fno-modules
 	
-	/usr/bin/clang -c -o $(BUILD_DIR)/CSPluginCaps.o Sources/FMIOPluginSDK/CSPluginCaps.m \
+	/usr/bin/clang -c -o $(BUILD_DIR)/CSPluginCaps.o Sources/FGRNDPluginSDK/CSPluginCaps.m \
 		-I$(DIST_DIR) \
 		-I$(CAP_SDK_DIR)/Sources/CapNs/include \
-		-ISources/FMIOPluginSDK/include \
+		-ISources/FGRNDPluginSDK/include \
 		-fobjc-arc -fno-modules
 	
 	# Create static library with all object files including CapNs
-	ar rcs $(DIST_DIR)/libFMIOPluginSDK.a $(BUILD_DIR)/*.o $(CAP_SDK_DIR)/.build/release/CapNs.build/*.o
+	ar rcs $(DIST_DIR)/libFGRNDPluginSDK.a $(BUILD_DIR)/*.o $(CAP_SDK_DIR)/.build/release/CapNs.build/*.o
 	
 	# Copy plugin SDK headers
-	@cp Sources/FMIOPluginSDK/include/*.h $(DIST_DIR)/
-	@echo "✅ FMIO Plugin SDK built successfully with cap SDK integration in $(DIST_DIR)/"
+	@cp Sources/FGRNDPluginSDK/include/*.h $(DIST_DIR)/
+	@echo "✅ FGRND Plugin SDK built successfully with cap SDK integration in $(DIST_DIR)/"
 
 .PHONY: clean
 clean:
@@ -68,10 +68,10 @@ clean:
 
 .PHONY: install
 install: build
-	@echo "Installing FMIO Plugin SDK with cap SDK..."
-	sudo cp $(DIST_DIR)/libFMIOPluginSDK.a /usr/local/lib/
+	@echo "Installing FGRND Plugin SDK with cap SDK..."
+	sudo cp $(DIST_DIR)/libFGRNDPluginSDK.a /usr/local/lib/
 	sudo cp $(DIST_DIR)/*.h /usr/local/include/
-	@echo "✅ FMIO Plugin SDK installed to system paths"
+	@echo "✅ FGRND Plugin SDK installed to system paths"
 
 .PHONY: test
 test: build
@@ -85,7 +85,7 @@ example:
 	@echo ""
 	@echo "1. Add both SDKs to your project:"
 	@echo "   #import \"CapNs.h\""
-	@echo "   #import \"FMIOPluginSDK.h\""
+	@echo "   #import \"FGRNDPluginSDK.h\""
 	@echo ""
 	@echo "2. Create formal cap definitions:"
 	@echo "   NSError *error;"
@@ -97,7 +97,7 @@ example:
 	@echo "   [caps addCap:cap];"
 	@echo ""
 	@echo "4. Create plugin manifest with formal caps:"
-	@echo "   FMIOPluginManifest *pluginManifest = [[FMIOPluginManifest alloc]"
+	@echo "   FGRNDPluginManifest *pluginManifest = [[FGRNDPluginManifest alloc]"
 	@echo "       initWithName:@\"MyPlugin\""
 	@echo "       version:@\"1.0.0\""
 	@echo "       pluginDescription:@\"Example plugin\""

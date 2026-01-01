@@ -1,14 +1,14 @@
 //
-//  FMIOSchemaValidation.m
-//  Schema validation extensions for FMIO Plugin SDK
+//  FGRNDSchemaValidation.m
+//  Schema validation extensions for FGRND Plugin SDK
 //
 //  Provides convenience methods for creating schema-enabled capabilities
 //  and standard schemas for document processing.
 //
 
-#import "FMIOPluginSDK.h"
+#import "FGRNDPluginSDK.h"
 
-@implementation CSCapArgument (FMIOPluginSDK)
+@implementation CSCapArgument (FGRNDPluginSDK)
 
 + (instancetype)documentMetadataArgumentWithName:(NSString *)name
                                      description:(NSString *)description
@@ -34,7 +34,7 @@
 
 @end
 
-@implementation CSCapOutput (FMIOPluginSDK)
+@implementation CSCapOutput (FGRNDPluginSDK)
 
 + (instancetype)documentMetadataOutputWithSchema:(NSDictionary *)schema
                                      description:(NSString *)description {
@@ -59,7 +59,7 @@
 
 @end
 
-@implementation FMIOSchemaValidationHelper
+@implementation FGRNDSchemaValidationHelper
 
 + (CSJSONSchemaValidator *)sharedValidator {
     static CSJSONSchemaValidator *_sharedValidator = nil;
@@ -70,10 +70,10 @@
     return _sharedValidator;
 }
 
-+ (BOOL)validatePluginManifest:(FMIOPluginManifest *)manifest error:(NSError **)error {
++ (BOOL)validatePluginManifest:(FGRNDPluginManifest *)manifest error:(NSError **)error {
     if (!manifest) {
         if (error) {
-            *error = [NSError errorWithDomain:@"FMIOSchemaValidationError"
+            *error = [NSError errorWithDomain:@"FGRNDSchemaValidationError"
                                          code:1001
                                      userInfo:@{NSLocalizedDescriptionKey: @"Plugin manifest is nil"}];
         }
@@ -112,7 +112,7 @@
             if (error) {
                 NSString *message = [NSString stringWithFormat:@"Argument '%@' of type '%@' requires schema or schemaRef",
                                    argument.name, argument.argType == CSArgumentTypeObject ? @"object" : @"array"];
-                *error = [NSError errorWithDomain:@"FMIOSchemaValidationError"
+                *error = [NSError errorWithDomain:@"FGRNDSchemaValidationError"
                                              code:1002
                                          userInfo:@{NSLocalizedDescriptionKey: message}];
             }
@@ -129,7 +129,7 @@
             if (error) {
                 NSString *message = [NSString stringWithFormat:@"Output of type '%@' requires schema or schemaRef",
                                    output.outputType == CSOutputTypeObject ? @"object" : @"array"];
-                *error = [NSError errorWithDomain:@"FMIOSchemaValidationError"
+                *error = [NSError errorWithDomain:@"FGRNDSchemaValidationError"
                                              code:1003
                                          userInfo:@{NSLocalizedDescriptionKey: message}];
             }
