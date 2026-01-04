@@ -8,12 +8,12 @@ The FGRND Plugin SDK for Objective-C provides a complete framework for building 
 
 ## Features
 
-- ✅ **Schema Compliant**: Fully conforms to FGRND plugin schemas
-- ✅ **Async/Await Support**: Modern completion-handler based API
-- ✅ **JSON Serialization**: Built-in JSON serialization for all data types
-- ✅ **Type Safety**: Full Objective-C type safety with nullability annotations
-- ✅ **Plugin Management**: Built-in plugin registration and discovery
-- ✅ **Extensible**: Easy to extend for new document formats
+- OK **Schema Compliant**: Fully conforms to FGRND plugin schemas
+- OK **Async/Await Support**: Modern completion-handler based API
+- OK **JSON Serialization**: Built-in JSON serialization for all data types
+- OK **Type Safety**: Full Objective-C type safety with nullability annotations
+- OK **Plugin Management**: Built-in plugin registration and discovery
+- OK **Extensible**: Easy to extend for new document formats
 
 ## Installation
 
@@ -212,10 +212,10 @@ All document handlers must implement the `FGRNDDocumentHandler` protocol:
 
 This SDK fully conforms to the FGRND plugin schemas:
 
-- ✅ `file-metadata.json` - Document metadata structure
-- ✅ `document-outline.json` - Document outline structure  
-- ✅ `document-pages.json` - Document pages with paragraphs
-- ✅ `handler-interface.json` - Document handler interface requirements
+- OK `file-metadata.json` - Document metadata structure
+- OK `document-outline.json` - Document outline structure  
+- OK `document-pages.json` - Document pages with paragraphs
+- OK `handler-interface.json` - Document handler interface requirements
 
 ## Building
 

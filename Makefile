@@ -58,7 +58,7 @@ build-plugin-sdk: build-capns
 	
 	# Copy plugin SDK headers
 	@cp Sources/FGRNDPluginSDK/include/*.h $(DIST_DIR)/
-	@echo "✅ FGRND Plugin SDK built successfully with cap SDK integration in $(DIST_DIR)/"
+	@echo "OK FGRND Plugin SDK built successfully with cap SDK integration in $(DIST_DIR)/"
 
 .PHONY: clean
 clean:
@@ -71,13 +71,13 @@ install: build
 	@echo "Installing FGRND Plugin SDK with cap SDK..."
 	sudo cp $(DIST_DIR)/libFGRNDPluginSDK.a /usr/local/lib/
 	sudo cp $(DIST_DIR)/*.h /usr/local/include/
-	@echo "✅ FGRND Plugin SDK installed to system paths"
+	@echo "OK FGRND Plugin SDK installed to system paths"
 
 .PHONY: test
 test: build
 	@echo "Testing cap SDK..."
 	cd $(CAP_SDK_DIR) && swift test
-	@echo "✅ All tests passed"
+	@echo "OK All tests passed"
 
 .PHONY: example
 example:
