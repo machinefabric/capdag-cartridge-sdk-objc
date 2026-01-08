@@ -1,23 +1,23 @@
 import XCTest
-@testable import FGRNDPluginSDK
+@testable import FGNDPluginSDK
 @testable import CapNs
 
-final class FGRNDPluginSDKTests: XCTestCase {
+final class FGNDPluginSDKTests: XCTestCase {
     func testStandardCaps() throws {
         // Test that standard caps can be created
-        let extractMetadata = FGRNDStandardCaps.extractMetadataCap()
+        let extractMetadata = FGNDStandardCaps.extractMetadataCap()
         XCTAssertNotNil(extractMetadata)
         XCTAssertNotNil(extractMetadata.command)
         
-        let generateThumbnail = FGRNDStandardCaps.generateThumbnailCap()
+        let generateThumbnail = FGNDStandardCaps.generateThumbnailCap()
         XCTAssertNotNil(generateThumbnail)
         XCTAssertNotNil(generateThumbnail.command)
         
-        let extractOutline = FGRNDStandardCaps.extractOutlineCap()
+        let extractOutline = FGNDStandardCaps.extractOutlineCap()
         XCTAssertNotNil(extractOutline)
         XCTAssertNotNil(extractOutline.command)
         
-        let extractPages = FGRNDStandardCaps.extractPagesCap()
+        let extractPages = FGNDStandardCaps.extractPagesCap()
         XCTAssertNotNil(extractPages)
         XCTAssertNotNil(extractPages.command)
     }
@@ -28,7 +28,7 @@ final class FGRNDPluginSDKTests: XCTestCase {
         XCTAssertNotNil(caps)
         XCTAssertTrue(caps.isEmpty())
         
-        let extractMetadata = FGRNDStandardCaps.extractMetadataCap()
+        let extractMetadata = FGNDStandardCaps.extractMetadataCap()
         caps.addCap(extractMetadata)
         XCTAssertFalse(caps.isEmpty())
         XCTAssertEqual(caps.count(), 1)
@@ -36,12 +36,12 @@ final class FGRNDPluginSDKTests: XCTestCase {
     
     func testProcessingResult() throws {
         // Test processing result creation
-        let successResult = FGRNDProcessingResult.success(withData: "test data")
+        let successResult = FGNDProcessingResult.success(withData: "test data")
         XCTAssertTrue(successResult.success)
         XCTAssertEqual(successResult.data as? String, "test data")
         XCTAssertNil(successResult.error)
         
-        let failureResult = FGRNDProcessingResult.failure(withError: "test error")
+        let failureResult = FGNDProcessingResult.failure(withError: "test error")
         XCTAssertFalse(failureResult.success)
         XCTAssertNil(failureResult.data)
         XCTAssertEqual(failureResult.error, "test error")
@@ -49,7 +49,7 @@ final class FGRNDPluginSDKTests: XCTestCase {
     
     func testCapNsIntegration() throws {
         // Test that we can use CSCapCaller and CSResponseWrapper from capns-objc
-        let registry = FGRNDPluginRegistry.shared()
+        let registry = FGNDPluginRegistry.shared()
         
         // Register a dummy plugin for testing
         registry.registerPlugin("test-plugin", 
@@ -63,7 +63,7 @@ final class FGRNDPluginSDKTests: XCTestCase {
     
     func testManifestWithoutVersion() throws {
         // Test creating manifest without explicit version parameter
-        let caps = FGRNDStandardCaps.allStandardCaps()
+        let caps = FGNDStandardCaps.allStandardCaps()
         let manifest = CSCapManifest.plugin(withName: "test-plugin",
                                           description: "Test plugin",
                                           caps: caps)

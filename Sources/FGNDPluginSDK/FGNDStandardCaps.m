@@ -1,5 +1,5 @@
 //
-//  FGRNDStandardCaps.m
+//  FGNDStandardCaps.m
 //  Standard cap definitions implementation
 //
 //  Updated to use spec ID-based mediaSpec system per capns modernization.
@@ -7,7 +7,7 @@
 //  via the mediaSpecs table.
 //
 
-#import "include/FGRNDStandardCaps.h"
+#import "include/FGNDStandardCaps.h"
 
 // Well-known spec IDs (built-in primitives)
 static NSString * const kSpecIdStr = @"std:str.v1";
@@ -23,12 +23,12 @@ static NSString * const kSpecIdExtractOutlineOutput = @"capns:extract-outline-ou
 static NSString * const kSpecIdExtractPagesOutput = @"capns:extract-pages-output.v1";
 
 // Custom spec IDs for document processing outputs (used in mediaSpecs tables)
-static NSString * const kSpecIdFileMetadata = @"fgrnd:file-metadata.v1";
-static NSString * const kSpecIdThumbnailImage = @"fgrnd:thumbnail-image.v1";
-static NSString * const kSpecIdDocumentOutline = @"fgrnd:document-outline.v1";
-static NSString * const kSpecIdDocumentPages = @"fgrnd:document-pages.v1";
+static NSString * const kSpecIdFileMetadata = @"fgnd:file-metadata.v1";
+static NSString * const kSpecIdThumbnailImage = @"fgnd:thumbnail-image.v1";
+static NSString * const kSpecIdDocumentOutline = @"fgnd:document-outline.v1";
+static NSString * const kSpecIdDocumentPages = @"fgnd:document-pages.v1";
 
-@implementation FGRNDStandardCaps
+@implementation FGNDStandardCaps
 
 #pragma mark - Spec ID Helper Functions
 

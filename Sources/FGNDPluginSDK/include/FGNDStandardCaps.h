@@ -1,9 +1,9 @@
 //
-//  FGRNDStandardCaps.h
+//  FGNDStandardCaps.h
 //  Standard cap definitions with arguments
 //
 //  This provides the standard cap definitions used across
-//  all FGRND plugins, including their formal argument specifications.
+//  all FGND plugins, including their formal argument specifications.
 //
 
 #import <Foundation/Foundation.h>
@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * Standard cap factory methods
  */
-@interface FGRNDStandardCaps : NSObject
+@interface FGNDStandardCaps : NSObject
 
 /**
  * Create the standard extract-metadata cap with full argument definition

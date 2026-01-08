@@ -1,14 +1,14 @@
-# FGRND Plugin SDK for Objective-C
+# FGND Plugin SDK for Objective-C
 
-A native Objective-C framework for building document processing plugins for the FGRND system.
+A native Objective-C framework for building document processing plugins for the FGND system.
 
 ## Overview
 
-The FGRND Plugin SDK for Objective-C provides a complete framework for building document handlers that can extract metadata, outlines, pages, and generate thumbnails from various document formats. It conforms to the FGRND plugin schemas and provides full compatibility with the FGRND ecosystem.
+The FGND Plugin SDK for Objective-C provides a complete framework for building document handlers that can extract metadata, outlines, pages, and generate thumbnails from various document formats. It conforms to the FGND plugin schemas and provides full compatibility with the FGND ecosystem.
 
 ## Features
 
-- OK **Schema Compliant**: Fully conforms to FGRND plugin schemas
+- OK **Schema Compliant**: Fully conforms to FGND plugin schemas
 - OK **Async/Await Support**: Modern completion-handler based API
 - OK **JSON Serialization**: Built-in JSON serialization for all data types
 - OK **Type Safety**: Full Objective-C type safety with nullability annotations
@@ -21,8 +21,8 @@ The FGRND Plugin SDK for Objective-C provides a complete framework for building 
 
 1. Clone or download the SDK:
 ```bash
-git clone https://github.com/your-org/fgrnd-plugin-sdk-objc.git
-cd fgrnd-plugin-sdk-objc
+git clone https://github.com/your-org/fgnd-plugin-sdk-objc.git
+cd fgnd-plugin-sdk-objc
 ```
 
 2. Build the SDK:
@@ -40,8 +40,8 @@ make install
 Add the header and link the static library:
 
 ```objc
-#import "FGRNDPluginSDK.h"
-// Link with: -lFGRNDPluginSDK -framework Foundation
+#import "FGNDPluginSDK.h"
+// Link with: -lFGNDPluginSDK -framework Foundation
 ```
 
 ## Quick Start
@@ -49,9 +49,9 @@ Add the header and link the static library:
 ### 1. Implement a Document Handler
 
 ```objc
-#import "FGRNDPluginSDK.h"
+#import "FGNDPluginSDK.h"
 
-@interface HTMLDocumentHandler : NSObject <FGRNDDocumentHandler>
+@interface HTMLDocumentHandler : NSObject <FGNDDocumentHandler>
 @end
 
 @implementation HTMLDocumentHandler
@@ -68,9 +68,9 @@ Add the header and link the static library:
     return @[@"html", @"htm"];
 }
 
-- (void)extractMetadata:(NSString *)filePath completion:(void (^)(FGRNDDocumentMetadata * _Nullable, NSError * _Nullable))completion {
+- (void)extractMetadata:(NSString *)filePath completion:(void (^)(FGNDDocumentMetadata * _Nullable, NSError * _Nullable))completion {
     // Create extraction info
-    FGRNDExtractionInfo *extractionInfo = [[FGRNDExtractionInfo alloc] 
+    FGNDExtractionInfo *extractionInfo = [[FGNDExtractionInfo alloc] 
         initWithExtractorName:@"HTML Handler" 
              extractorVersion:@"1.0.0"];
     
@@ -87,7 +87,7 @@ Add the header and link the static library:
     long long fileSize = [[fileAttributes objectForKey:NSFileSize] longLongValue];
     
     // Create metadata
-    FGRNDDocumentMetadata *metadata = [[FGRNDDocumentMetadata alloc] 
+    FGNDDocumentMetadata *metadata = [[FGNDDocumentMetadata alloc] 
         initWithFilePath:filePath 
            fileSizeBytes:fileSize 
            contentLength:0 
@@ -133,11 +133,11 @@ Add the header and link the static library:
 ```objc
 // Register the handler
 HTMLDocumentHandler *htmlHandler = [[HTMLDocumentHandler alloc] init];
-[[FGRNDPluginManager sharedManager] registerHandler:htmlHandler 
+[[FGNDPluginManager sharedManager] registerHandler:htmlHandler 
                                   forFileExtensions:@[@"html", @"htm"]];
 
 // Process a document
-FGRNDPluginOutput *output = [[FGRNDPluginManager sharedManager] 
+FGNDPluginOutput *output = [[FGNDPluginManager sharedManager] 
     processDocument:@"/path/to/document.html"];
 
 if (output.success) {
@@ -152,36 +152,36 @@ if (output.success) {
 
 ```objc
 // Serialize results to JSON
-NSString *metadataJSON = [FGRNDJSONSerializer serializeMetadata:output.metadata];
-NSString *outlineJSON = [FGRNDJSONSerializer serializeOutline:output.outline];
-NSString *pagesJSON = [FGRNDJSONSerializer serializePages:output.pages];
+NSString *metadataJSON = [FGNDJSONSerializer serializeMetadata:output.metadata];
+NSString *outlineJSON = [FGNDJSONSerializer serializeOutline:output.outline];
+NSString *pagesJSON = [FGNDJSONSerializer serializePages:output.pages];
 
 // Full output serialization
-NSString *outputJSON = [FGRNDJSONSerializer serializePluginOutput:output];
+NSString *outputJSON = [FGNDJSONSerializer serializePluginOutput:output];
 ```
 
 ## Architecture
 
 ### Core Classes
 
-- **`FGRNDDocumentMetadata`**: Document metadata (conforms to `file-metadata.json` schema)
-- **`FGRNDDocumentOutline`**: Document outline (conforms to `document-outline.json` schema)  
-- **`FGRNDDocumentPages`**: Document pages with paragraphs (conforms to `document-pages.json` schema)
-- **`FGRNDPluginOutput`**: Combined output from document processing
-- **`FGRNDPluginManager`**: Central plugin registration and management
+- **`FGNDDocumentMetadata`**: Document metadata (conforms to `file-metadata.json` schema)
+- **`FGNDDocumentOutline`**: Document outline (conforms to `document-outline.json` schema)  
+- **`FGNDDocumentPages`**: Document pages with paragraphs (conforms to `document-pages.json` schema)
+- **`FGNDPluginOutput`**: Combined output from document processing
+- **`FGNDPluginManager`**: Central plugin registration and management
 
 ### Protocol
 
-- **`FGRNDDocumentHandler`**: Main protocol that document handlers must implement
+- **`FGNDDocumentHandler`**: Main protocol that document handlers must implement
 
 ### Helpers
 
-- **`FGRNDJSONSerializer`**: JSON serialization utilities
-- **`FGRNDExtractionInfo`**: Metadata about the extraction process
+- **`FGNDJSONSerializer`**: JSON serialization utilities
+- **`FGNDExtractionInfo`**: Metadata about the extraction process
 
 ## Document Handler Protocol
 
-All document handlers must implement the `FGRNDDocumentHandler` protocol:
+All document handlers must implement the `FGNDDocumentHandler` protocol:
 
 ### Required Methods
 
@@ -192,11 +192,11 @@ All document handlers must implement the `FGRNDDocumentHandler` protocol:
 - (NSArray<NSString *> *)supportedExtensions;
 
 // Core functionality
-- (void)extractMetadata:(NSString *)filePath completion:(void (^)(FGRNDDocumentMetadata *, NSError *))completion;
-- (void)extractOutline:(NSString *)filePath completion:(void (^)(FGRNDDocumentOutline *, NSError *))completion;
-- (void)extractPages:(NSString *)filePath completion:(void (^)(FGRNDDocumentPages *, NSError *))completion;
+- (void)extractMetadata:(NSString *)filePath completion:(void (^)(FGNDDocumentMetadata *, NSError *))completion;
+- (void)extractOutline:(NSString *)filePath completion:(void (^)(FGNDDocumentOutline *, NSError *))completion;
+- (void)extractPages:(NSString *)filePath completion:(void (^)(FGNDDocumentPages *, NSError *))completion;
 - (void)validateFile:(NSString *)filePath completion:(void (^)(BOOL, NSError *))completion;
-- (void)getFileInfo:(NSString *)filePath completion:(void (^)(FGRNDFileInfo *, NSError *))completion;
+- (void)getFileInfo:(NSString *)filePath completion:(void (^)(FGNDFileInfo *, NSError *))completion;
 - (void)generateThumbnail:(NSString *)filePath width:(NSUInteger)width height:(NSUInteger)height completion:(void (^)(NSData *, NSError *))completion;
 ```
 
@@ -205,12 +205,12 @@ All document handlers must implement the `FGRNDDocumentHandler` protocol:
 ```objc
 // Default implementations provided
 - (BOOL)canHandle:(NSString *)filePath;
-- (FGRNDPluginCaps *)getCaps;
+- (FGNDPluginCaps *)getCaps;
 ```
 
 ## Schema Compliance
 
-This SDK fully conforms to the FGRND plugin schemas:
+This SDK fully conforms to the FGND plugin schemas:
 
 - OK `file-metadata.json` - Document metadata structure
 - OK `document-outline.json` - Document outline structure  

@@ -1,6 +1,6 @@
 //
-//  FGRNDSchemaValidation.m
-//  Schema validation extensions for FGRND Plugin SDK
+//  FGNDSchemaValidation.m
+//  Schema validation extensions for FGND Plugin SDK
 //
 //  Provides convenience methods for creating schema-enabled capabilities
 //  and standard schemas for document processing.
@@ -9,7 +9,7 @@
 //  Schema validation now resolves spec IDs through the cap's mediaSpecs table.
 //
 
-#import "FGRNDPluginSDK.h"
+#import "FGNDPluginSDK.h"
 
 // Well-known spec IDs
 static NSString * const kSpecIdStr = @"std:str.v1";
@@ -17,7 +17,7 @@ static NSString * const kSpecIdInt = @"std:int.v1";
 static NSString * const kSpecIdObj = @"std:obj.v1";
 static NSString * const kSpecIdObjArray = @"std:obj-array.v1";
 
-@implementation CSCapArgument (FGRNDPluginSDK)
+@implementation CSCapArgument (FGNDPluginSDK)
 
 + (instancetype)documentMetadataArgumentWithName:(NSString *)name
                                      description:(NSString *)description
@@ -49,7 +49,7 @@ static NSString * const kSpecIdObjArray = @"std:obj-array.v1";
 
 @end
 
-@implementation CSCapOutput (FGRNDPluginSDK)
+@implementation CSCapOutput (FGNDPluginSDK)
 
 + (instancetype)documentMetadataOutputWithMediaSpec:(NSString *)mediaSpec
                                         description:(NSString *)description {
@@ -74,7 +74,7 @@ static NSString * const kSpecIdObjArray = @"std:obj-array.v1";
 
 @end
 
-@implementation FGRNDSchemaValidationHelper
+@implementation FGNDSchemaValidationHelper
 
 + (CSJSONSchemaValidator *)sharedValidator {
     static CSJSONSchemaValidator *_sharedValidator = nil;
@@ -85,10 +85,10 @@ static NSString * const kSpecIdObjArray = @"std:obj-array.v1";
     return _sharedValidator;
 }
 
-+ (BOOL)validatePluginManifest:(FGRNDPluginManifest *)manifest error:(NSError **)error {
++ (BOOL)validatePluginManifest:(FGNDPluginManifest *)manifest error:(NSError **)error {
     if (!manifest) {
         if (error) {
-            *error = [NSError errorWithDomain:@"FGRNDSchemaValidationError"
+            *error = [NSError errorWithDomain:@"FGNDSchemaValidationError"
                                          code:1001
                                      userInfo:@{NSLocalizedDescriptionKey: @"Plugin manifest is nil"}];
         }
@@ -157,7 +157,7 @@ static NSString * const kSpecIdObjArray = @"std:obj-array.v1";
         if (error) {
             NSString *message = [NSString stringWithFormat:@"Argument '%@' uses spec ID '%@' which is not declared in mediaSpecs",
                                argument.name, specId];
-            *error = [NSError errorWithDomain:@"FGRNDSchemaValidationError"
+            *error = [NSError errorWithDomain:@"FGNDSchemaValidationError"
                                          code:1002
                                      userInfo:@{NSLocalizedDescriptionKey: message}];
         }
@@ -180,7 +180,7 @@ static NSString * const kSpecIdObjArray = @"std:obj-array.v1";
         if (error) {
             NSString *message = [NSString stringWithFormat:@"Output uses spec ID '%@' which is not declared in mediaSpecs",
                                specId];
-            *error = [NSError errorWithDomain:@"FGRNDSchemaValidationError"
+            *error = [NSError errorWithDomain:@"FGNDSchemaValidationError"
                                          code:1003
                                      userInfo:@{NSLocalizedDescriptionKey: message}];
         }
