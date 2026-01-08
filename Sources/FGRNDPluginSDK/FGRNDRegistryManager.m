@@ -88,10 +88,10 @@
     FGRNDRegistryManager *manager = [FGRNDRegistryManager manager];
     
     NSArray<NSString *> *standardUrns = @[
-        @"cap:action=extract;target=metadata;",
-        @"cap:action=generate;output=binary;target=thumbnail;",
-        @"cap:action=extract;target=outline;",
-        @"cap:action=extract;target=pages"
+        @"cap:op=extract;target=metadata;",
+        @"cap:op=generate;output=binary;target=thumbnail;",
+        @"cap:op=extract;target=outline;",
+        @"cap:op=extract;target=pages"
     ];
     
     NSMutableArray<CSCap *> *caps = [NSMutableArray array];

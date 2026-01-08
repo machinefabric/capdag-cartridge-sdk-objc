@@ -5,56 +5,71 @@
 //  Provides convenience methods for creating schema-enabled capabilities
 //  and standard schemas for document processing.
 //
+//  Updated to use spec ID-based mediaSpec system per capns modernization.
+//  Schema validation now resolves spec IDs through the cap's mediaSpecs table.
+//
 
 #import "FGRNDPluginSDK.h"
+
+// Well-known spec IDs
+static NSString * const kSpecIdStr = @"std:str.v1";
+static NSString * const kSpecIdInt = @"std:int.v1";
+static NSString * const kSpecIdObj = @"std:obj.v1";
+static NSString * const kSpecIdObjArray = @"std:obj-array.v1";
 
 @implementation CSCapArgument (FGRNDPluginSDK)
 
 + (instancetype)documentMetadataArgumentWithName:(NSString *)name
                                      description:(NSString *)description
                                          cliFlag:(NSString *)cliFlag
-                                          schema:(NSDictionary *)schema {
+                                       mediaSpec:(NSString *)mediaSpec {
+    // Create argument with spec ID (schema is in cap's mediaSpecs table)
     return [CSCapArgument argumentWithName:name
-                                   argType:CSArgumentTypeObject
+                                 mediaSpec:mediaSpec ?: kSpecIdObj
                              argDescription:description
                                    cliFlag:cliFlag
-                                    schema:schema];
+                                  position:nil
+                                validation:nil
+                              defaultValue:nil];
 }
 
 + (instancetype)documentPagesArgumentWithName:(NSString *)name
                                   description:(NSString *)description
                                       cliFlag:(NSString *)cliFlag
-                                       schema:(NSDictionary *)schema {
+                                    mediaSpec:(NSString *)mediaSpec {
+    // Create argument with spec ID (schema is in cap's mediaSpecs table)
     return [CSCapArgument argumentWithName:name
-                                   argType:CSArgumentTypeArray
+                                 mediaSpec:mediaSpec ?: kSpecIdObjArray
                              argDescription:description
                                    cliFlag:cliFlag
-                                    schema:schema];
+                                  position:nil
+                                validation:nil
+                              defaultValue:nil];
 }
 
 @end
 
 @implementation CSCapOutput (FGRNDPluginSDK)
 
-+ (instancetype)documentMetadataOutputWithSchema:(NSDictionary *)schema
++ (instancetype)documentMetadataOutputWithMediaSpec:(NSString *)mediaSpec
+                                        description:(NSString *)description {
+    return [CSCapOutput outputWithMediaSpec:mediaSpec ?: kSpecIdObj
+                                 validation:nil
+                          outputDescription:description];
+}
+
++ (instancetype)documentPagesOutputWithMediaSpec:(NSString *)mediaSpec
                                      description:(NSString *)description {
-    return [CSCapOutput outputWithType:CSOutputTypeObject
-                                 schema:schema
-                      outputDescription:description];
+    return [CSCapOutput outputWithMediaSpec:mediaSpec ?: kSpecIdObjArray
+                                 validation:nil
+                          outputDescription:description];
 }
 
-+ (instancetype)documentPagesOutputWithSchema:(NSDictionary *)schema
-                                  description:(NSString *)description {
-    return [CSCapOutput outputWithType:CSOutputTypeArray
-                                 schema:schema
-                      outputDescription:description];
-}
-
-+ (instancetype)documentOutlineOutputWithSchema:(NSDictionary *)schema
-                                    description:(NSString *)description {
-    return [CSCapOutput outputWithType:CSOutputTypeObject
-                                 schema:schema
-                      outputDescription:description];
++ (instancetype)documentOutlineOutputWithMediaSpec:(NSString *)mediaSpec
+                                       description:(NSString *)description {
+    return [CSCapOutput outputWithMediaSpec:mediaSpec ?: kSpecIdObj
+                                 validation:nil
+                          outputDescription:description];
 }
 
 @end
@@ -79,63 +94,99 @@
         }
         return NO;
     }
-    
-    // Validate that all caps in the manifest have proper schema definitions for structured types
+
+    // Validate that all caps in the manifest have proper media spec definitions
     for (CSCap *cap in manifest.caps) {
-        // Check arguments
+        // Check arguments - verify spec IDs can be resolved
         if (cap.arguments) {
             for (CSCapArgument *arg in cap.arguments.required) {
-                if (![[self class] validateCapArgumentSchemaDefinition:arg error:error]) {
+                if (![[self class] validateCapArgumentMediaSpec:arg cap:cap error:error]) {
                     return NO;
                 }
             }
             for (CSCapArgument *arg in cap.arguments.optional) {
-                if (![[self class] validateCapArgumentSchemaDefinition:arg error:error]) {
+                if (![[self class] validateCapArgumentMediaSpec:arg cap:cap error:error]) {
                     return NO;
                 }
             }
         }
-        
-        // Check output
-        if (cap.output && ![[self class] validateCapOutputSchemaDefinition:cap.output error:error]) {
+
+        // Check output - verify spec ID can be resolved
+        if (cap.output && ![[self class] validateCapOutputMediaSpec:cap.output cap:cap error:error]) {
             return NO;
         }
     }
-    
+
     return YES;
 }
 
-+ (BOOL)validateCapArgumentSchemaDefinition:(CSCapArgument *)argument error:(NSError **)error {
-    // For object and array types, require schema or schemaRef
-    if ((argument.argType == CSArgumentTypeObject || argument.argType == CSArgumentTypeArray)) {
-        if (!argument.schema && !argument.schemaRef) {
-            if (error) {
-                NSString *message = [NSString stringWithFormat:@"Argument '%@' of type '%@' requires schema or schemaRef",
-                                   argument.name, argument.argType == CSArgumentTypeObject ? @"object" : @"array"];
-                *error = [NSError errorWithDomain:@"FGRNDSchemaValidationError"
-                                             code:1002
-                                         userInfo:@{NSLocalizedDescriptionKey: message}];
-            }
-            return NO;
-        }
+/// Check if a spec ID is a well-known built-in (std:* namespace) that doesn't need declaration in mediaSpecs
++ (BOOL)isBuiltinSpecId:(NSString *)specId {
+    // The "std:" namespace is reserved for well-known spec IDs defined by capns
+    // These don't need to be declared in the cap's mediaSpecs table
+    static NSSet<NSString *> *wellKnownSpecIds = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        wellKnownSpecIds = [NSSet setWithArray:@[
+            @"std:str.v1",
+            @"std:int.v1",
+            @"std:num.v1",
+            @"std:bool.v1",
+            @"std:obj.v1",
+            @"std:binary.v1",
+            @"std:str-array.v1",
+            @"std:int-array.v1",
+            @"std:num-array.v1",
+            @"std:bool-array.v1",
+            @"std:obj-array.v1",
+        ]];
+    });
+    return [wellKnownSpecIds containsObject:specId];
+}
+
++ (BOOL)validateCapArgumentMediaSpec:(CSCapArgument *)argument cap:(CSCap *)cap error:(NSError **)error {
+    NSString *specId = argument.mediaSpec;
+
+    // Built-in spec IDs don't need to be declared in mediaSpecs
+    if ([self isBuiltinSpecId:specId]) {
+        return YES;
     }
+
+    // Custom spec IDs must be declared in the cap's mediaSpecs table
+    if (!cap.mediaSpecs[specId]) {
+        if (error) {
+            NSString *message = [NSString stringWithFormat:@"Argument '%@' uses spec ID '%@' which is not declared in mediaSpecs",
+                               argument.name, specId];
+            *error = [NSError errorWithDomain:@"FGRNDSchemaValidationError"
+                                         code:1002
+                                     userInfo:@{NSLocalizedDescriptionKey: message}];
+        }
+        return NO;
+    }
+
     return YES;
 }
 
-+ (BOOL)validateCapOutputSchemaDefinition:(CSCapOutput *)output error:(NSError **)error {
-    // For object and array types, require schema or schemaRef
-    if ((output.outputType == CSOutputTypeObject || output.outputType == CSOutputTypeArray)) {
-        if (!output.schema && !output.schemaRef) {
-            if (error) {
-                NSString *message = [NSString stringWithFormat:@"Output of type '%@' requires schema or schemaRef",
-                                   output.outputType == CSOutputTypeObject ? @"object" : @"array"];
-                *error = [NSError errorWithDomain:@"FGRNDSchemaValidationError"
-                                             code:1003
-                                         userInfo:@{NSLocalizedDescriptionKey: message}];
-            }
-            return NO;
-        }
++ (BOOL)validateCapOutputMediaSpec:(CSCapOutput *)output cap:(CSCap *)cap error:(NSError **)error {
+    NSString *specId = output.mediaSpec;
+
+    // Built-in spec IDs don't need to be declared in mediaSpecs
+    if ([self isBuiltinSpecId:specId]) {
+        return YES;
     }
+
+    // Custom spec IDs must be declared in the cap's mediaSpecs table
+    if (!cap.mediaSpecs[specId]) {
+        if (error) {
+            NSString *message = [NSString stringWithFormat:@"Output uses spec ID '%@' which is not declared in mediaSpecs",
+                               specId];
+            *error = [NSError errorWithDomain:@"FGRNDSchemaValidationError"
+                                         code:1003
+                                     userInfo:@{NSLocalizedDescriptionKey: message}];
+        }
+        return NO;
+    }
+
     return YES;
 }
 
@@ -342,7 +393,7 @@
         @"required": @[@"title", @"level"],
         @"additionalProperties": @NO
     };
-    
+
     return @{
         @"$schema": @"http://json-schema.org/draft-07/schema#",
         @"type": @"object",

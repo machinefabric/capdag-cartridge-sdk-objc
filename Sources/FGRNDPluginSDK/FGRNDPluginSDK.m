@@ -159,21 +159,22 @@
     CSCapUrn *capUrn = [CSCapUrn fromString:[cap lowercaseString] error:&error];
     if (!capUrn) {
         // Fallback to basic cap URN
-        capUrn = [CSCapUrn fromString:@"cap:action=generic;" error:nil];
+        capUrn = [CSCapUrn fromString:@"cap:op=generic;" error:nil];
     }
-    
+
     CSCapArguments *arguments = [CSCapArguments arguments];
-    CSCapOutput *output = [CSCapOutput outputWithType:CSOutputTypeObject
-                                             schemaRef:nil
-                                           contentType:@"application/json"
-                                            validation:nil
-                                     outputDescription:@"Generic plugin output"];
-    
+
+    // Use spec ID for output - std:obj.v1 is a well-known built-in
+    CSCapOutput *output = [CSCapOutput outputWithMediaSpec:@"std:obj.v1"
+                                               validation:nil
+                                        outputDescription:@"Generic plugin output"];
+
     return [CSCap capWithUrn:capUrn
                        title:@"Generic Plugin Capability"
                      command:[cap componentsSeparatedByString:@":"][0]
                  description:@"Generic plugin capability"
                     metadata:@{}
+                  mediaSpecs:@{}  // Built-in spec IDs don't need declaration
                    arguments:arguments
                       output:output
                 acceptsStdin:YES
