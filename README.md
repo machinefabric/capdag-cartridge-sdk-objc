@@ -166,7 +166,7 @@ NSString *outputJSON = [FGNDJSONSerializer serializePluginOutput:output];
 
 - **`FGNDDocumentMetadata`**: Document metadata (conforms to `file-metadata.json` schema)
 - **`FGNDDocumentOutline`**: Document outline (conforms to `document-outline.json` schema)  
-- **`FGNDDocumentPages`**: Document pages with paragraphs (conforms to `document-pages.json` schema)
+- **`FGNDGroundChips`**: File chips with paragraphs (conforms to `file-chips.json` schema)
 - **`FGNDPluginOutput`**: Combined output from document processing
 - **`FGNDPluginManager`**: Central plugin registration and management
 
@@ -194,7 +194,7 @@ All document handlers must implement the `FGNDDocumentHandler` protocol:
 // Core functionality
 - (void)extractMetadata:(NSString *)filePath completion:(void (^)(FGNDDocumentMetadata *, NSError *))completion;
 - (void)extractOutline:(NSString *)filePath completion:(void (^)(FGNDDocumentOutline *, NSError *))completion;
-- (void)extractPages:(NSString *)filePath completion:(void (^)(FGNDDocumentPages *, NSError *))completion;
+- (void)grind:(NSString *)filePath completion:(void (^)(FGNDGroundChips *, NSError *))completion;
 - (void)validateFile:(NSString *)filePath completion:(void (^)(BOOL, NSError *))completion;
 - (void)getFileInfo:(NSString *)filePath completion:(void (^)(FGNDFileInfo *, NSError *))completion;
 - (void)generateThumbnail:(NSString *)filePath width:(NSUInteger)width height:(NSUInteger)height completion:(void (^)(NSData *, NSError *))completion;
@@ -214,7 +214,7 @@ This SDK fully conforms to the FGND plugin schemas:
 
 - OK `file-metadata.json` - Document metadata structure
 - OK `document-outline.json` - Document outline structure  
-- OK `document-pages.json` - Document pages with paragraphs
+- OK `file-chips.json` - File chips with paragraphs
 - OK `handler-interface.json` - Document handler interface requirements
 
 ## Building

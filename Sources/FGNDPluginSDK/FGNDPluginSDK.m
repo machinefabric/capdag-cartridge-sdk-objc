@@ -317,8 +317,8 @@
     return @"extract-outline";
 }
 
-+ (NSString *)extractPages {
-    return @"extract-pages";
++ (NSString *)grind {
+    return @"grind";
 }
 
 + (NSString *)generateThumbnail {
@@ -510,7 +510,7 @@
 
 @end
 
-@implementation FGNDDocumentPages
+@implementation FGNDGroundChips
 
 - (instancetype)initWithSourceFile:(NSString *)sourceFile
                        documentType:(NSString *)documentType {
@@ -524,12 +524,12 @@
     return self;
 }
 
-- (FGNDDocumentPages *)withTitle:(NSString *)title {
+- (FGNDGroundChips *)withTitle:(NSString *)title {
     self.title = [title copy];
     return self;
 }
 
-- (void)addPage:(FGNDDocumentPage *)page {
+- (void)addPage:(FGNDFileChip *)page {
     [_pages addObject:page];
     _totalPages = _pages.count;
 }
@@ -549,7 +549,7 @@
 
 @end
 
-@implementation FGNDDocumentPage
+@implementation FGNDFileChip
 
 - (instancetype)initWithOrderIndex:(NSUInteger)orderIndex {
     self = [super init];

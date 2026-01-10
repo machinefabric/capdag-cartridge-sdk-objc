@@ -17,9 +17,9 @@ final class FGNDPluginSDKTests: XCTestCase {
         XCTAssertNotNil(extractOutline)
         XCTAssertNotNil(extractOutline.command)
         
-        let extractPages = FGNDStandardCaps.extractPagesCap()
-        XCTAssertNotNil(extractPages)
-        XCTAssertNotNil(extractPages.command)
+        let grind = FGNDStandardCaps.grindCap()
+        XCTAssertNotNil(grind)
+        XCTAssertNotNil(grind.command)
     }
     
     func testPluginCaps() throws {

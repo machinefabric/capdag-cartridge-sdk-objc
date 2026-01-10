@@ -35,10 +35,10 @@ NS_ASSUME_NONNULL_BEGIN
 + (CSCap *)extractOutlineCap;
 
 /**
- * Create the standard extract-pages cap with full argument definition
- * @return A fully configured extract-pages cap
+ * Create the standard grind cap with full argument definition
+ * @return A fully configured grind cap
  */
-+ (CSCap *)extractPagesCap;
++ (CSCap *)grindCap;
 
 /**
  * Get all standard caps
@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * Get a standard cap by name
- * @param name The cap name (e.g., "extract-metadata", "extract-pages")
+ * @param name The cap name (e.g., "extract-metadata", "grind")
  * @return The cap or nil if not found
  */
 + (nullable CSCap *)standardCapWithName:(NSString *)name;
@@ -82,11 +82,11 @@ NS_ASSUME_NONNULL_BEGIN
 + (CSCap *)extractOutlineCapSubbedWith:(NSArray<NSString *> *)fileTypes;
 
 /**
- * Create extract-pages cap subbed with file types
+ * Create grind cap subbed with file types
  * @param fileTypes Array of supported file extensions (e.g., @[@"txt"])
  * @return Extract-pages cap subbed with file type metadata
  */
-+ (CSCap *)extractPagesCapSubbedWith:(NSArray<NSString *> *)fileTypes;
++ (CSCap *)grindCapSubbedWith:(NSArray<NSString *> *)fileTypes;
 
 /**
  * Get all standard caps subbed with file types

@@ -173,7 +173,7 @@ typedef CSCapManifest FGNDPluginManifest;
 - (void)addEntry:(FGNDOutlineEntry *)entry;
 @end
 
-// MARK: - Document Pages (conforms to document-pages.json schema)
+// MARK: - File Chips (conforms to file-chips.json schema)
 
 @interface FGNDDocumentParagraph : NSObject
 @property (nonatomic, assign) NSUInteger paragraphNumber; // 1-indexed
@@ -184,7 +184,7 @@ typedef CSCapManifest FGNDPluginManifest;
 - (instancetype)initWithParagraphNumber:(NSUInteger)paragraphNumber textContent:(NSString *)textContent;
 @end
 
-@interface FGNDDocumentPage : NSObject
+@interface FGNDFileChip : NSObject
 @property (nonatomic, assign) NSUInteger orderIndex; // 1-indexed
 @property (nonatomic, strong) NSString *textContent;
 @property (nonatomic, strong, nullable) NSString *sourceRef;
@@ -195,17 +195,17 @@ typedef CSCapManifest FGNDPluginManifest;
 - (void)setTextContent:(NSString *)textContent;
 @end
 
-@interface FGNDDocumentPages : NSObject
+@interface FGNDGroundChips : NSObject
 @property (nonatomic, strong) NSString *sourceFile;
 @property (nonatomic, strong, nullable) NSString *title;
 @property (nonatomic, strong) NSString *documentType;
 @property (nonatomic, assign) NSUInteger totalPages;
-@property (nonatomic, strong) NSMutableArray<FGNDDocumentPage *> *pages;
+@property (nonatomic, strong) NSMutableArray<FGNDFileChip *> *pages;
 @property (nonatomic, strong) FGNDExtractionInfo *extractionInfo;
 - (instancetype)initWithSourceFile:(NSString *)sourceFile 
                       documentType:(NSString *)documentType;
-- (FGNDDocumentPages *)withTitle:(NSString *)title;
-- (void)addPage:(FGNDDocumentPage *)page;
+- (FGNDGroundChips *)withTitle:(NSString *)title;
+- (void)addPage:(FGNDFileChip *)page;
 @end
 
 // MARK: - File Info (for quick file information)
@@ -258,11 +258,11 @@ typedef CSCapManifest FGNDPluginManifest;
 - (FGNDProcessingResult *)extractOutline:(NSString *)filePath;
 
 /**
- * Extract pages with text content from a document
+ * Grind with text content from a document
  * @param filePath Path to the document file
- * @return Processing result with document pages
+ * @return Processing result with file chips
  */
-- (FGNDProcessingResult *)extractPages:(NSString *)filePath;
+- (FGNDProcessingResult *)grind:(NSString *)filePath;
 
 /**
  * Generate thumbnail image from a document
@@ -297,7 +297,7 @@ typedef CSCapManifest FGNDPluginManifest;
 
 @property (class, nonatomic, strong, readonly) NSString *extractMetadata;
 @property (class, nonatomic, strong, readonly) NSString *extractOutline;
-@property (class, nonatomic, strong, readonly) NSString *extractPages;
+@property (class, nonatomic, strong, readonly) NSString *grind;
 @property (class, nonatomic, strong, readonly) NSString *generateThumbnail;
 @property (class, nonatomic, strong, readonly) NSString *validateFile;
 
@@ -337,14 +337,14 @@ typedef CSCapManifest FGNDPluginManifest;
                                           schema:(NSDictionary *)schema;
 
 /**
- * Create an array argument with embedded JSON schema for document pages
+ * Create an array argument with embedded JSON schema for file chips
  * @param name Argument name
  * @param description Argument description
  * @param cliFlag CLI flag
  * @param schema JSON schema for validation
- * @return A new CSCapArgument instance configured for document pages
+ * @return A new CSCapArgument instance configured for file chips
  */
-+ (instancetype)documentPagesArgumentWithName:(NSString *)name
++ (instancetype)fileChipsArgumentWithName:(NSString *)name
                                   description:(NSString *)description
                                       cliFlag:(NSString *)cliFlag
                                        schema:(NSDictionary *)schema;
@@ -366,12 +366,12 @@ typedef CSCapManifest FGNDPluginManifest;
                                      description:(NSString *)description;
 
 /**
- * Create an array output with embedded JSON schema for document pages
+ * Create an array output with embedded JSON schema for file chips
  * @param schema JSON schema for validation
  * @param description Output description
- * @return A new CSCapOutput instance configured for document pages
+ * @return A new CSCapOutput instance configured for file chips
  */
-+ (instancetype)documentPagesOutputWithSchema:(NSDictionary *)schema
++ (instancetype)fileChipsOutputWithSchema:(NSDictionary *)schema
                                   description:(NSString *)description;
 
 /**
@@ -410,10 +410,10 @@ typedef CSCapManifest FGNDPluginManifest;
 + (NSDictionary *)standardDocumentMetadataSchema;
 
 /**
- * Get standard document pages schema
- * @return Standard JSON schema for document pages
+ * Get standard file chips schema
+ * @return Standard JSON schema for file chips
  */
-+ (NSDictionary *)standardDocumentPagesSchema;
++ (NSDictionary *)standardGroundChipsSchema;
 
 /**
  * Get standard document outline schema

@@ -20,13 +20,13 @@ static NSString * const kSpecIdBinary = @"std:binary.v1";
 // Output spec IDs for PDF document processing (with full schemas)
 static NSString * const kSpecIdExtractMetadataOutput = @"capns:extract-metadata-output.v1";
 static NSString * const kSpecIdExtractOutlineOutput = @"capns:extract-outline-output.v1";
-static NSString * const kSpecIdExtractPagesOutput = @"capns:extract-pages-output.v1";
+static NSString * const kSpecIdGrindOutput = @"capns:grind-output.v1";
 
 // Custom spec IDs for document processing outputs (used in mediaSpecs tables)
 static NSString * const kSpecIdFileMetadata = @"fgnd:file-metadata.v1";
 static NSString * const kSpecIdThumbnailImage = @"fgnd:thumbnail-image.v1";
 static NSString * const kSpecIdDocumentOutline = @"fgnd:document-outline.v1";
-static NSString * const kSpecIdDocumentPages = @"fgnd:document-pages.v1";
+static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
 
 @implementation FGNDStandardCaps
 
@@ -62,12 +62,12 @@ static NSString * const kSpecIdDocumentPages = @"fgnd:document-pages.v1";
     return kSpecIdObj;
 }
 
-/// Get the output spec ID for extract-pages by extension
-/// - PDF files: capns:extract-pages-output.v1 (has full schema)
+/// Get the output spec ID for grind by extension
+/// - PDF files: capns:grind-output.v1 (has full schema)
 /// - Text files: std:obj.v1 (generic JSON object)
-+ (NSString *)extractPagesOutputSpecIdForExt:(NSString *)ext {
++ (NSString *)grindOutputSpecIdForExt:(NSString *)ext {
     if ([ext isEqualToString:@"pdf"]) {
-        return kSpecIdExtractPagesOutput;
+        return kSpecIdGrindOutput;
     }
     return kSpecIdObj;
 }
@@ -101,12 +101,12 @@ static NSString * const kSpecIdDocumentPages = @"fgnd:document-pages.v1";
     };
 }
 
-/// Build media specs table for extract-pages cap
-+ (NSDictionary<NSString *, id> *)extractPagesMediaSpecs {
+/// Build media specs table for grind cap
++ (NSDictionary<NSString *, id> *)grindMediaSpecs {
     return @{
-        kSpecIdDocumentPages: @{
+        kSpecIdGroundChips: @{
             @"media_type": @"application/json",
-            @"profile_uri": @"https://capns.org/schema/document-pages"
+            @"profile_uri": @"https://capns.org/schema/file-chips"
         }
     };
 }
@@ -407,16 +407,16 @@ static NSString * const kSpecIdDocumentPages = @"fgnd:document-pages.v1";
         metadataJSON:nil];
 }
 
-+ (CSCap *)extractPagesCap {
++ (CSCap *)grindCap {
     NSError *error;
     CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:op=extract;target=pages" error:&error];
     if (!capUrn) {
         @throw [NSException exceptionWithName:@"InvalidCapUrn"
-                                       reason:@"Failed to create cap URN for extract-pages"
+                                       reason:@"Failed to create cap URN for grind"
                                      userInfo:nil];
     }
 
-    NSString *command = @"extract-pages";
+    NSString *command = @"grind";
 
     CSCapArguments *arguments = [CSCapArguments arguments];
 
@@ -478,17 +478,17 @@ static NSString * const kSpecIdDocumentPages = @"fgnd:document-pages.v1";
     [arguments addOptionalArgument:pageRangeArg];
 
     CSCapOutput *output = [CSCapOutput
-        outputWithMediaSpec:kSpecIdDocumentPages
+        outputWithMediaSpec:kSpecIdGroundChips
         validation:nil
-        outputDescription:@"Document pages with text content organized by pages and paragraphs"];
+        outputDescription:@"File chips with text content organized by pages and paragraphs"];
 
     return [CSCap
         capWithUrn:capUrn
-        title:@"Extract Document Pages"
+        title:@"Extract File Chips"
         command:command
-        description:@"Extract document pages with text content organized by pages and paragraphs"
+        description:@"Extract file chips with text content organized by pages and paragraphs"
         metadata:@{}
-        mediaSpecs:[self extractPagesMediaSpecs]
+        mediaSpecs:[self grindMediaSpecs]
         arguments:arguments
         output:output
         acceptsStdin:YES
@@ -502,7 +502,7 @@ static NSString * const kSpecIdDocumentPages = @"fgnd:document-pages.v1";
         [self extractMetadataCap],
         [self generateThumbnailCap],
         [self extractOutlineCap],
-        [self extractPagesCap]
+        [self grindCap]
     ];
 }
 
@@ -513,8 +513,8 @@ static NSString * const kSpecIdDocumentPages = @"fgnd:document-pages.v1";
         return [self generateThumbnailCap];
     } else if ([name isEqualToString:@"extract-outline"]) {
         return [self extractOutlineCap];
-    } else if ([name isEqualToString:@"extract-pages"]) {
-        return [self extractPagesCap];
+    } else if ([name isEqualToString:@"grind"]) {
+        return [self grindCap];
     }
     return nil;
 }
@@ -527,7 +527,7 @@ static NSString * const kSpecIdDocumentPages = @"fgnd:document-pages.v1";
     } else if ([urnString isEqualToString:@"cap:op=extract;target=outline"]) {
         return [self extractOutlineCap];
     } else if ([urnString isEqualToString:@"cap:op=extract;target=pages"]) {
-        return [self extractPagesCap];
+        return [self grindCap];
     }
     return nil;
 }
@@ -660,16 +660,16 @@ static NSString * const kSpecIdDocumentPages = @"fgnd:document-pages.v1";
     }
 }
 
-+ (CSCap *)extractPagesCapSubbedWith:(NSArray<NSString *> *)fileTypes {
-    CSCap *baseCap = [self extractPagesCap];
++ (CSCap *)grindCapSubbedWith:(NSArray<NSString *> *)fileTypes {
+    CSCap *baseCap = [self grindCap];
 
     NSMutableArray<CSCap *> *caps = [NSMutableArray array];
 
     for (NSString *fileType in fileTypes) {
         NSError *error;
         NSString *inSpecId = [self inputSpecIdForExt:fileType];
-        NSString *outSpecId = [self extractPagesOutputSpecIdForExt:fileType];
-        NSString *newUrnString = [NSString stringWithFormat:@"cap:ext=%@;in=%@;op=extract_pages;out=%@",
+        NSString *outSpecId = [self grindOutputSpecIdForExt:fileType];
+        NSString *newUrnString = [NSString stringWithFormat:@"cap:ext=%@;in=%@;op=grind;out=%@",
                                   fileType, inSpecId, outSpecId];
         CSCapUrn *newId = [CSCapUrn fromString:newUrnString error:&error];
         if (!newId) {
@@ -697,7 +697,7 @@ static NSString * const kSpecIdDocumentPages = @"fgnd:document-pages.v1";
         return caps[0];
     } else {
         @throw [NSException exceptionWithName:@"MultipleFileTypes"
-                                       reason:@"extractPagesCapSubbedWith should only be called with a single file type"
+                                       reason:@"grindCapSubbedWith should only be called with a single file type"
                                      userInfo:nil];
     }
 }
@@ -709,7 +709,7 @@ static NSString * const kSpecIdDocumentPages = @"fgnd:document-pages.v1";
         [allCaps addObject:[self extractMetadataCapSubbedWith:@[fileType]]];
         [allCaps addObject:[self generateThumbnailCapSubbedWith:@[fileType]]];
         [allCaps addObject:[self extractOutlineCapSubbedWith:@[fileType]]];
-        [allCaps addObject:[self extractPagesCapSubbedWith:@[fileType]]];
+        [allCaps addObject:[self grindCapSubbedWith:@[fileType]]];
     }
 
     return allCaps;

@@ -33,7 +33,7 @@ static NSString * const kSpecIdObjArray = @"std:obj-array.v1";
                               defaultValue:nil];
 }
 
-+ (instancetype)documentPagesArgumentWithName:(NSString *)name
++ (instancetype)fileChipsArgumentWithName:(NSString *)name
                                   description:(NSString *)description
                                       cliFlag:(NSString *)cliFlag
                                     mediaSpec:(NSString *)mediaSpec {
@@ -58,7 +58,7 @@ static NSString * const kSpecIdObjArray = @"std:obj-array.v1";
                           outputDescription:description];
 }
 
-+ (instancetype)documentPagesOutputWithMediaSpec:(NSString *)mediaSpec
++ (instancetype)fileChipsOutputWithMediaSpec:(NSString *)mediaSpec
                                      description:(NSString *)description {
     return [CSCapOutput outputWithMediaSpec:mediaSpec ?: kSpecIdObjArray
                                  validation:nil
@@ -276,12 +276,12 @@ static NSString * const kSpecIdObjArray = @"std:obj-array.v1";
     };
 }
 
-+ (NSDictionary *)standardDocumentPagesSchema {
++ (NSDictionary *)standardGroundChipsSchema {
     return @{
         @"$schema": @"http://json-schema.org/draft-07/schema#",
         @"type": @"object",
-        @"title": @"Document Pages Schema",
-        @"description": @"Standard schema for document pages extraction",
+        @"title": @"File Chips Schema",
+        @"description": @"Standard schema for file chips extraction",
         @"properties": @{
             @"sourceFile": @{
                 @"type": @"string",
@@ -303,7 +303,7 @@ static NSString * const kSpecIdObjArray = @"std:obj-array.v1";
             },
             @"pages": @{
                 @"type": @"array",
-                @"description": @"Array of document pages",
+                @"description": @"Array of file chips",
                 @"items": @{
                     @"type": @"object",
                     @"properties": @{
