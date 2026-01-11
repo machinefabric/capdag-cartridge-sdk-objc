@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * Get a standard cap by cap URN string
- * @param urnString The cap URN string (e.g., "cap:action=extract;target=metadata;", "cap:action=extract;target=pages")
+ * @param urnString The cap URN string (e.g., "cap:op=extract;target=metadata;", "cap:op=extract;target=pages")
  * @return The cap or nil if not found
  */
 + (nullable CSCap *)standardCapWithUrn:(NSString *)urnString;
