@@ -458,8 +458,8 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
         defaultValue:nil];
     [arguments addOptionalArgument:outputArg];
 
-    // Optional page_range argument
-    CSArgumentValidation *pageRangeValidation = [CSArgumentValidation
+    // Optional index_range argument
+    CSArgumentValidation *indexRangeValidation = [CSArgumentValidation
         validationWithMin:nil
         max:nil
         minLength:nil
@@ -467,15 +467,15 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
         pattern:@"^\\d+(-\\d*)?$"
         allowedValues:nil];
 
-    CSCapArgument *pageRangeArg = [CSCapArgument
-        argumentWithName:@"page_range"
+    CSCapArgument *indexRangeArg = [CSCapArgument
+        argumentWithName:@"index_range"
         mediaSpec:kSpecIdStr
-        argDescription:@"Page range to extract (e.g., '1-5' or '10-')"
-        cliFlag:@"--page-range"
+        argDescription:@"Index Range to extract (e.g., '1-5' or '10-')"
+        cliFlag:@"--index-range"
         position:nil
-        validation:pageRangeValidation
+        validation:indexRangeValidation
         defaultValue:nil];
-    [arguments addOptionalArgument:pageRangeArg];
+    [arguments addOptionalArgument:indexRangeArg];
 
     CSCapOutput *output = [CSCapOutput
         outputWithMediaSpec:kSpecIdGroundChips
