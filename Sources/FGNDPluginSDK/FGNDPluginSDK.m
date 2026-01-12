@@ -74,12 +74,12 @@
     }
     
     // Create a cap host adapter for the plugin binary
-    FGNDPluginCapHost *capHost = [[FGNDPluginCapHost alloc] initWithBinaryPath:plugin.binaryPath];
+    FGNDPluginCapSet *capSet = [[FGNDPluginCapSet alloc] initWithBinaryPath:plugin.binaryPath];
     
     // Get cap definition (for now, create a basic one - in production this would come from registry)
     CSCap *capDefinition = [self createBasicCapDefinitionForCap:cap];
     
-    return [CSCapCaller callerWithCap:cap capHost:capHost capDefinition:capDefinition];
+    return [CSCapCaller callerWithCap:cap capSet:capSet capDefinition:capDefinition];
 }
 
 - (CSCapCaller *)can:(NSString *)cap {
@@ -185,7 +185,7 @@
 
 // MARK: - Plugin Cap Host Implementation
 
-@implementation FGNDPluginCapHost
+@implementation FGNDPluginCapSet
 
 - (instancetype)initWithBinaryPath:(NSString *)binaryPath {
     self = [super init];

@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 // MARK: - Unified Plugin Registry
 
 @class FGNDPluginEntry;
-@class FGNDPluginCapHost;
+@class FGNDPluginCapSet;
 
 @interface FGNDPluginRegistry : NSObject
 
@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: - Plugin Cap Host
 
-@interface FGNDPluginCapHost : NSObject <CSCapHost>
+@interface FGNDPluginCapSet : NSObject <CSCapSet>
 @property (nonatomic, strong) NSString *binaryPath;
 - (instancetype)initWithBinaryPath:(NSString *)binaryPath;
 @end
