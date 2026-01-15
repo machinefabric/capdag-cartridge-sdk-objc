@@ -3,24 +3,24 @@
 //  Standard cap definitions implementation
 //
 //  Updated to use spec ID-based mediaSpec system per capns modernization.
-//  All types are expressed via spec IDs (e.g., "std:str.v1") which resolve
+//  All types are expressed via spec IDs (e.g., "media:type=string;v=1") which resolve
 //  via the mediaSpecs table.
 //
 
 #import "include/FGNDStandardCaps.h"
 
 // Well-known spec IDs (built-in primitives)
-static NSString * const kSpecIdStr = @"std:str.v1";
-static NSString * const kSpecIdInt = @"std:int.v1";
-static NSString * const kSpecIdNum = @"std:num.v1";
-static NSString * const kSpecIdBool = @"std:bool.v1";
-static NSString * const kSpecIdObj = @"std:obj.v1";
-static NSString * const kSpecIdBinary = @"std:binary.v1";
+static NSString * const kSpecIdStr = @"media:type=string;v=1";
+static NSString * const kSpecIdInt = @"media:type=integer;v=1";
+static NSString * const kSpecIdNum = @"media:type=number;v=1";
+static NSString * const kSpecIdBool = @"media:type=boolean;v=1";
+static NSString * const kSpecIdObj = @"media:type=object;v=1";
+static NSString * const kSpecIdBinary = @"media:type=binary;v=1";
 
 // Output spec IDs for PDF document processing (with full schemas)
-static NSString * const kSpecIdExtractMetadataOutput = @"capns:extract-metadata-output.v1";
-static NSString * const kSpecIdExtractOutlineOutput = @"capns:extract-outline-output.v1";
-static NSString * const kSpecIdGrindOutput = @"capns:grind-output.v1";
+static NSString * const kSpecIdExtractMetadataOutput = @"media:type=extract-metadata-output;v=1";
+static NSString * const kSpecIdExtractOutlineOutput = @"media:type=extract-outline-output;v=1";
+static NSString * const kSpecIdGrindOutput = @"media:type=grind-output;v=1";
 
 // Custom spec IDs for document processing outputs (used in mediaSpecs tables)
 static NSString * const kSpecIdFileMetadata = @"fgnd:file-metadata.v1";
@@ -33,8 +33,8 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
 #pragma mark - Spec ID Helper Functions
 
 /// Get the input spec ID for a given file extension
-/// - PDF files: std:binary.v1
-/// - Text files (md, rst, log, txt): std:str.v1
+/// - PDF files: media:type=binary;v=1
+/// - Text files (md, rst, log, txt): media:type=string;v=1
 + (NSString *)inputSpecIdForExt:(NSString *)ext {
     if ([ext isEqualToString:@"pdf"]) {
         return kSpecIdBinary;
@@ -43,8 +43,8 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
 }
 
 /// Get the output spec ID for extract-metadata by extension
-/// - PDF files: capns:extract-metadata-output.v1 (has full schema)
-/// - Text files: std:obj.v1 (generic JSON object)
+/// - PDF files: media:type=extract-metadata-output;v=1 (has full schema)
+/// - Text files: media:type=object;v=1 (generic JSON object)
 + (NSString *)extractMetadataOutputSpecIdForExt:(NSString *)ext {
     if ([ext isEqualToString:@"pdf"]) {
         return kSpecIdExtractMetadataOutput;
@@ -53,8 +53,8 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
 }
 
 /// Get the output spec ID for extract-outline by extension
-/// - PDF files: capns:extract-outline-output.v1 (has full schema)
-/// - Text files: std:obj.v1 (generic JSON object)
+/// - PDF files: media:type=extract-outline-output;v=1 (has full schema)
+/// - Text files: media:type=object;v=1 (generic JSON object)
 + (NSString *)extractOutlineOutputSpecIdForExt:(NSString *)ext {
     if ([ext isEqualToString:@"pdf"]) {
         return kSpecIdExtractOutlineOutput;
@@ -63,8 +63,8 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
 }
 
 /// Get the output spec ID for grind by extension
-/// - PDF files: capns:grind-output.v1 (has full schema)
-/// - Text files: std:obj.v1 (generic JSON object)
+/// - PDF files: media:type=grind-output;v=1 (has full schema)
+/// - Text files: media:type=object;v=1 (generic JSON object)
 + (NSString *)grindOutputSpecIdForExt:(NSString *)ext {
     if ([ext isEqualToString:@"pdf"]) {
         return kSpecIdGrindOutput;
@@ -584,8 +584,8 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
     for (NSString *fileType in fileTypes) {
         NSError *error;
         NSString *inSpecId = [self inputSpecIdForExt:fileType];
-        // Thumbnail output is always binary (std:binary.v1)
-        NSString *newUrnString = [NSString stringWithFormat:@"cap:ext=%@;in=%@;op=generate_thumbnail;out=std:binary.v1",
+        // Thumbnail output is always binary (media:type=binary;v=1)
+        NSString *newUrnString = [NSString stringWithFormat:@"cap:ext=%@;in=%@;op=generate_thumbnail;out=media:type=binary;v=1",
                                   fileType, inSpecId];
         CSCapUrn *newId = [CSCapUrn fromString:newUrnString error:&error];
         if (!newId) {

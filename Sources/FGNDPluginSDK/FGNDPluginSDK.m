@@ -164,8 +164,8 @@
 
     CSCapArguments *arguments = [CSCapArguments arguments];
 
-    // Use spec ID for output - std:obj.v1 is a well-known built-in
-    CSCapOutput *output = [CSCapOutput outputWithMediaSpec:@"std:obj.v1"
+    // Use spec ID for output - media:type=object;v=1 is a well-known built-in
+    CSCapOutput *output = [CSCapOutput outputWithMediaSpec:@"media:type=object;v=1"
                                                validation:nil
                                         outputDescription:@"Generic plugin output"];
 
