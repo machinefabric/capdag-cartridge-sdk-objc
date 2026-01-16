@@ -85,7 +85,7 @@ typedef CSCapManifest FGNDPluginManifest;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, id> *extendedMetadata;
 
 // Optional fields
-@property (nonatomic, strong, nullable) NSString *mimeType;
+@property (nonatomic, strong, nullable) NSString *mediaUrn;
 @property (nonatomic, strong, nullable) NSString *encoding;
 @property (nonatomic, strong, nullable) NSString *title;
 @property (nonatomic, strong, nullable) NSString *subject;

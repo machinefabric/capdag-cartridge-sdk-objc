@@ -94,7 +94,7 @@ Add the header and link the static library:
             documentType:@"HTML"];
     
     // Set additional properties
-    metadata.mimeType = @"text/html";
+    metadata.mediaUrn = @"media:type=text;subtype=html";
     metadata.title = @"HTML Document";
     
     completion(metadata, nil);
