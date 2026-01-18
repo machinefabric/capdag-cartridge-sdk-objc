@@ -276,7 +276,7 @@ static NSString * const kSpecIdObjArray = @"media:type=object-array;v=1";
     };
 }
 
-+ (NSDictionary *)standardGroundChipsSchema {
++ (NSDictionary *)standardDisboundPagesSchema {
     return @{
         @"$schema": @"http://json-schema.org/draft-07/schema#",
         @"type": @"object",

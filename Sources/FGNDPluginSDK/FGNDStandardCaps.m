@@ -17,16 +17,11 @@ static NSString * const kSpecIdBool = @"media:type=boolean;v=1";
 static NSString * const kSpecIdObj = @"media:type=object;v=1";
 static NSString * const kSpecIdBinary = @"media:type=binary;v=1";
 
-// Output spec IDs for PDF document processing (with full schemas)
-static NSString * const kSpecIdExtractMetadataOutput = @"media:type=extract-metadata-output;v=1";
-static NSString * const kSpecIdExtractOutlineOutput = @"media:type=extract-outline-output;v=1";
-static NSString * const kSpecIdGrindOutput = @"media:type=grind-output;v=1";
-
 // Custom spec IDs for document processing outputs (used in mediaSpecs tables)
-static NSString * const kSpecIdFileMetadata = @"fgnd:file-metadata.v1";
-static NSString * const kSpecIdThumbnailImage = @"fgnd:thumbnail-image.v1";
-static NSString * const kSpecIdDocumentOutline = @"fgnd:document-outline.v1";
-static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
+static NSString * const kSpecIdFileMetadata = @"media:type=file-metadata;v=1";
+static NSString * const kSpecIdThumbnailImage = @"media:type=thumbnail-image;v=1";
+static NSString * const kSpecIdDocumentOutline = @"media:type=document-outline;v=1";
+static NSString * const kSpecIdDisboundPages = @"media:type=disbound-pages;v=1";
 
 @implementation FGNDStandardCaps
 
@@ -47,7 +42,7 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
 /// - Text files: media:type=object;v=1 (generic JSON object)
 + (NSString *)extractMetadataOutputSpecIdForExt:(NSString *)ext {
     if ([ext isEqualToString:@"pdf"]) {
-        return kSpecIdExtractMetadataOutput;
+        return kSpecIdFileMetadata;
     }
     return kSpecIdObj;
 }
@@ -57,17 +52,17 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
 /// - Text files: media:type=object;v=1 (generic JSON object)
 + (NSString *)extractOutlineOutputSpecIdForExt:(NSString *)ext {
     if ([ext isEqualToString:@"pdf"]) {
-        return kSpecIdExtractOutlineOutput;
+        return kSpecIdDocumentOutline;
     }
     return kSpecIdObj;
 }
 
 /// Get the output spec ID for grind by extension
-/// - PDF files: media:type=grind-output;v=1 (has full schema)
+/// - PDF files: media:type=disbound-pages;v=1 (has full schema)
 /// - Text files: media:type=object;v=1 (generic JSON object)
-+ (NSString *)grindOutputSpecIdForExt:(NSString *)ext {
++ (NSString *)disboundPagesSpecIdForExt:(NSString *)ext {
     if ([ext isEqualToString:@"pdf"]) {
-        return kSpecIdGrindOutput;
+        return kSpecIdDisboundPages;
     }
     return kSpecIdObj;
 }
@@ -104,9 +99,9 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
 /// Build media specs table for grind cap
 + (NSDictionary<NSString *, id> *)grindMediaSpecs {
     return @{
-        kSpecIdGroundChips: @{
+        kSpecIdDisboundPages: @{
             @"media_type": @"application/json",
-            @"profile_uri": @"https://capns.org/schema/file-chips"
+            @"profile_uri": @"https://capns.org/schema/disbound-pages"
         }
     };
 }
@@ -407,7 +402,7 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
         metadataJSON:nil];
 }
 
-+ (CSCap *)grindCap {
++ (CSCap *)disbindCap {
     NSError *error;
     CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:op=extract;target=pages" error:&error];
     if (!capUrn) {
@@ -478,7 +473,7 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
     [arguments addOptionalArgument:indexRangeArg];
 
     CSCapOutput *output = [CSCapOutput
-        outputWithMediaSpec:kSpecIdGroundChips
+        outputWithMediaSpec:kSpecIdDisboundPages
         validation:nil
         outputDescription:@"File chips with text content organized by pages and paragraphs"];
 
@@ -502,7 +497,7 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
         [self extractMetadataCap],
         [self generateThumbnailCap],
         [self extractOutlineCap],
-        [self grindCap]
+        [self disbindCap]
     ];
 }
 
@@ -514,7 +509,7 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
     } else if ([name isEqualToString:@"extract-outline"]) {
         return [self extractOutlineCap];
     } else if ([name isEqualToString:@"grind"]) {
-        return [self grindCap];
+        return [self disbindCap];
     }
     return nil;
 }
@@ -527,7 +522,7 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
     } else if ([urnString isEqualToString:@"cap:op=extract;target=outline"]) {
         return [self extractOutlineCap];
     } else if ([urnString isEqualToString:@"cap:op=extract;target=pages"]) {
-        return [self grindCap];
+        return [self disbindCap];
     }
     return nil;
 }
@@ -660,15 +655,15 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
     }
 }
 
-+ (CSCap *)grindCapSubbedWith:(NSArray<NSString *> *)fileTypes {
-    CSCap *baseCap = [self grindCap];
++ (CSCap *)disbindCapSubbedWith:(NSArray<NSString *> *)fileTypes {
+    CSCap *baseCap = [self disbindCap];
 
     NSMutableArray<CSCap *> *caps = [NSMutableArray array];
 
     for (NSString *fileType in fileTypes) {
         NSError *error;
         NSString *inSpecId = [self inputSpecIdForExt:fileType];
-        NSString *outSpecId = [self grindOutputSpecIdForExt:fileType];
+        NSString *outSpecId = [self disboundPagesSpecIdForExt:fileType];
         NSString *newUrnString = [NSString stringWithFormat:@"cap:ext=%@;in=%@;op=grind;out=%@",
                                   fileType, inSpecId, outSpecId];
         CSCapUrn *newId = [CSCapUrn fromString:newUrnString error:&error];
@@ -697,7 +692,7 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
         return caps[0];
     } else {
         @throw [NSException exceptionWithName:@"MultipleFileTypes"
-                                       reason:@"grindCapSubbedWith should only be called with a single file type"
+                                       reason:@"disbindCapSubbedWith should only be called with a single file type"
                                      userInfo:nil];
     }
 }
@@ -709,7 +704,7 @@ static NSString * const kSpecIdGroundChips = @"fgnd:file-chips.v1";
         [allCaps addObject:[self extractMetadataCapSubbedWith:@[fileType]]];
         [allCaps addObject:[self generateThumbnailCapSubbedWith:@[fileType]]];
         [allCaps addObject:[self extractOutlineCapSubbedWith:@[fileType]]];
-        [allCaps addObject:[self grindCapSubbedWith:@[fileType]]];
+        [allCaps addObject:[self disbindCapSubbedWith:@[fileType]]];
     }
 
     return allCaps;

@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
  * Create the standard grind cap with full argument definition
  * @return A fully configured grind cap
  */
-+ (CSCap *)grindCap;
++ (CSCap *)disbindCap;
 
 /**
  * Get all standard caps
@@ -86,7 +86,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param fileTypes Array of supported file extensions (e.g., @[@"txt"])
  * @return Extract-pages cap subbed with file type metadata
  */
-+ (CSCap *)grindCapSubbedWith:(NSArray<NSString *> *)fileTypes;
++ (CSCap *)disbindCapSubbedWith:(NSArray<NSString *> *)fileTypes;
 
 /**
  * Get all standard caps subbed with file types

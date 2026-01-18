@@ -173,7 +173,7 @@ typedef CSCapManifest FGNDPluginManifest;
 - (void)addEntry:(FGNDOutlineEntry *)entry;
 @end
 
-// MARK: - File Chips (conforms to file-chips.json schema)
+// MARK: - File Chips (conforms to disbound-pages.json schema)
 
 @interface FGNDDocumentParagraph : NSObject
 @property (nonatomic, assign) NSUInteger paragraphNumber; // 1-indexed
@@ -195,7 +195,7 @@ typedef CSCapManifest FGNDPluginManifest;
 - (void)setTextContent:(NSString *)textContent;
 @end
 
-@interface FGNDGroundChips : NSObject
+@interface FGNDDisboundPages : NSObject
 @property (nonatomic, strong) NSString *sourceFile;
 @property (nonatomic, strong, nullable) NSString *title;
 @property (nonatomic, strong) NSString *documentType;
@@ -204,7 +204,7 @@ typedef CSCapManifest FGNDPluginManifest;
 @property (nonatomic, strong) FGNDExtractionInfo *extractionInfo;
 - (instancetype)initWithSourceFile:(NSString *)sourceFile 
                       documentType:(NSString *)documentType;
-- (FGNDGroundChips *)withTitle:(NSString *)title;
+- (FGNDDisboundPages *)withTitle:(NSString *)title;
 - (void)addPage:(FGNDFileChip *)page;
 @end
 
@@ -413,7 +413,7 @@ typedef CSCapManifest FGNDPluginManifest;
  * Get standard file chips schema
  * @return Standard JSON schema for file chips
  */
-+ (NSDictionary *)standardGroundChipsSchema;
++ (NSDictionary *)standardDisboundPagesSchema;
 
 /**
  * Get standard document outline schema

@@ -510,7 +510,7 @@
 
 @end
 
-@implementation FGNDGroundChips
+@implementation FGNDDisboundPages
 
 - (instancetype)initWithSourceFile:(NSString *)sourceFile
                        documentType:(NSString *)documentType {
@@ -524,7 +524,7 @@
     return self;
 }
 
-- (FGNDGroundChips *)withTitle:(NSString *)title {
+- (FGNDDisboundPages *)withTitle:(NSString *)title {
     self.title = [title copy];
     return self;
 }
