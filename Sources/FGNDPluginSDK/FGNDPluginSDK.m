@@ -177,7 +177,7 @@
                   mediaSpecs:@{}  // Built-in spec IDs don't need declaration
                    arguments:arguments
                       output:output
-                acceptsStdin:YES
+                   stdinType:@"media:type=binary;v=1"
                 metadataJSON:nil];
 }
 

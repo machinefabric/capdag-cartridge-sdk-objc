@@ -173,7 +173,7 @@ static NSString * const kSpecIdDisboundPages = @"media:type=disbound-pages;v=1";
         mediaSpecs:[self extractMetadataMediaSpecs]
         arguments:arguments
         output:output
-        acceptsStdin:YES
+        stdinType:kSpecIdBinary
         metadataJSON:nil];
 }
 
@@ -299,7 +299,7 @@ static NSString * const kSpecIdDisboundPages = @"media:type=disbound-pages;v=1";
         mediaSpecs:[self generateThumbnailMediaSpecs]
         arguments:arguments
         output:output
-        acceptsStdin:YES
+        stdinType:kSpecIdBinary
         metadataJSON:nil];
 }
 
@@ -398,7 +398,7 @@ static NSString * const kSpecIdDisboundPages = @"media:type=disbound-pages;v=1";
         mediaSpecs:[self extractOutlineMediaSpecs]
         arguments:arguments
         output:output
-        acceptsStdin:YES
+        stdinType:kSpecIdBinary
         metadataJSON:nil];
 }
 
@@ -486,7 +486,7 @@ static NSString * const kSpecIdDisboundPages = @"media:type=disbound-pages;v=1";
         mediaSpecs:[self grindMediaSpecs]
         arguments:arguments
         output:output
-        acceptsStdin:YES
+        stdinType:kSpecIdBinary
         metadataJSON:nil];
 }
 
@@ -556,7 +556,7 @@ static NSString * const kSpecIdDisboundPages = @"media:type=disbound-pages;v=1";
             mediaSpecs:baseCap.mediaSpecs
             arguments:baseCap.arguments
             output:baseCap.output
-            acceptsStdin:baseCap.acceptsStdin
+            stdinType:baseCap.stdinType
             metadataJSON:baseCap.metadataJSON];
         [caps addObject:cap];
     }
@@ -598,7 +598,7 @@ static NSString * const kSpecIdDisboundPages = @"media:type=disbound-pages;v=1";
             mediaSpecs:baseCap.mediaSpecs
             arguments:baseCap.arguments
             output:baseCap.output
-            acceptsStdin:baseCap.acceptsStdin
+            stdinType:baseCap.stdinType
             metadataJSON:baseCap.metadataJSON];
         [caps addObject:cap];
     }
@@ -640,7 +640,7 @@ static NSString * const kSpecIdDisboundPages = @"media:type=disbound-pages;v=1";
             mediaSpecs:baseCap.mediaSpecs
             arguments:baseCap.arguments
             output:baseCap.output
-            acceptsStdin:baseCap.acceptsStdin
+            stdinType:baseCap.stdinType
             metadataJSON:baseCap.metadataJSON];
         [caps addObject:cap];
     }
@@ -682,7 +682,7 @@ static NSString * const kSpecIdDisboundPages = @"media:type=disbound-pages;v=1";
             mediaSpecs:baseCap.mediaSpecs
             arguments:baseCap.arguments
             output:baseCap.output
-            acceptsStdin:baseCap.acceptsStdin
+            stdinType:baseCap.stdinType
             metadataJSON:baseCap.metadataJSON];
         [caps addObject:cap];
     }
