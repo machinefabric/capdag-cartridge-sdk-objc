@@ -12,10 +12,10 @@
 #import "FGNDPluginSDK.h"
 
 // Well-known spec IDs
-static NSString * const kSpecIdStr = @"media:type=string;v=1";
-static NSString * const kSpecIdInt = @"media:type=integer;v=1";
-static NSString * const kSpecIdObj = @"media:type=object;v=1";
-static NSString * const kSpecIdObjArray = @"media:type=object-array;v=1";
+static NSString * const kSpecIdStr = @"media:string";
+static NSString * const kSpecIdInt = @"media:integer";
+static NSString * const kSpecIdObj = @"media:object";
+static NSString * const kSpecIdObjArray = @"media:object-array";
 
 @implementation CSCapArgument (FGNDPluginSDK)
 
@@ -128,17 +128,17 @@ static NSString * const kSpecIdObjArray = @"media:type=object-array;v=1";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         wellKnownSpecIds = [NSSet setWithArray:@[
-            @"media:type=string;v=1",
-            @"media:type=integer;v=1",
-            @"media:type=number;v=1",
-            @"media:type=boolean;v=1",
-            @"media:type=object;v=1",
-            @"media:type=binary;v=1",
-            @"media:type=string-array;v=1",
-            @"media:type=integer-array;v=1",
-            @"media:type=number-array;v=1",
-            @"media:type=boolean-array;v=1",
-            @"media:type=object-array;v=1",
+            @"media:string",
+            @"media:integer",
+            @"media:number",
+            @"media:boolean",
+            @"media:object",
+            @"media:binary",
+            @"media:string-array",
+            @"media:integer-array",
+            @"media:number-array",
+            @"media:boolean-array",
+            @"media:object-array",
         ]];
     });
     return [wellKnownSpecIds containsObject:specId];

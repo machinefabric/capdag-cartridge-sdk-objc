@@ -164,8 +164,8 @@
 
     CSCapArguments *arguments = [CSCapArguments arguments];
 
-    // Use spec ID for output - media:type=object;v=1 is a well-known built-in
-    CSCapOutput *output = [CSCapOutput outputWithMediaSpec:@"media:type=object;v=1"
+    // Use spec ID for output - media:object is a well-known built-in
+    CSCapOutput *output = [CSCapOutput outputWithMediaSpec:@"media:object"
                                                validation:nil
                                         outputDescription:@"Generic plugin output"];
 
@@ -177,7 +177,7 @@
                   mediaSpecs:@{}  // Built-in spec IDs don't need declaration
                    arguments:arguments
                       output:output
-                   stdinType:@"media:type=binary;v=1"
+                   stdinType:@"media:binary"
                 metadataJSON:nil];
 }
 
