@@ -162,10 +162,11 @@
         capUrn = [CSCapUrn fromString:@"cap:op=generic;" error:nil];
     }
 
-    CSCapArguments *arguments = [CSCapArguments arguments];
+    // Args are empty by default (new model uses args array)
+    NSArray<CSCapArg *> *args = @[];
 
-    // Use spec ID for output - media:object is a well-known built-in
-    CSCapOutput *output = [CSCapOutput outputWithMediaSpec:@"media:object"
+    // Use media URN for output - media:object is a well-known built-in
+    CSCapOutput *output = [CSCapOutput outputWithMediaUrn:@"media:object"
                                                validation:nil
                                         outputDescription:@"Generic plugin output"];
 
@@ -174,11 +175,10 @@
                      command:[cap componentsSeparatedByString:@":"][0]
                  description:@"Generic plugin capability"
                     metadata:@{}
-                  mediaSpecs:@{}  // Built-in spec IDs don't need declaration
-                   arguments:arguments
-                      output:output
-                   stdinType:@"media:binary"
-                metadataJSON:nil];
+                  mediaSpecs:@{}  // Built-in media URNs don't need declaration
+                          args:args
+                        output:output
+                  metadataJSON:nil];
 }
 
 @end

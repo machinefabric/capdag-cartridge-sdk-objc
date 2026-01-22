@@ -17,57 +17,53 @@ static NSString * const kSpecIdInt = @"media:integer";
 static NSString * const kSpecIdObj = @"media:object";
 static NSString * const kSpecIdObjArray = @"media:object-array";
 
-@implementation CSCapArgument (FGNDPluginSDK)
+@implementation CSCapArg (FGNDPluginSDK)
 
-+ (instancetype)documentMetadataArgumentWithName:(NSString *)name
-                                     description:(NSString *)description
-                                         cliFlag:(NSString *)cliFlag
-                                       mediaSpec:(NSString *)mediaSpec {
-    // Create argument with spec ID (schema is in cap's mediaSpecs table)
-    return [CSCapArgument argumentWithName:name
-                                 mediaSpec:mediaSpec ?: kSpecIdObj
-                             argDescription:description
-                                   cliFlag:cliFlag
-                                  position:nil
-                                validation:nil
-                              defaultValue:nil];
++ (instancetype)documentMetadataArgWithMediaUrn:(NSString *)mediaUrn
+                                        required:(BOOL)required
+                                         sources:(NSArray<CSArgSource *> *)sources
+                                   argDescription:(NSString *)description {
+    return [CSCapArg argWithMediaUrn:mediaUrn ?: kSpecIdObj
+                             required:required
+                              sources:sources
+                       argDescription:description
+                           validation:nil
+                         defaultValue:nil];
 }
 
-+ (instancetype)fileChipsArgumentWithName:(NSString *)name
-                                  description:(NSString *)description
-                                      cliFlag:(NSString *)cliFlag
-                                    mediaSpec:(NSString *)mediaSpec {
-    // Create argument with spec ID (schema is in cap's mediaSpecs table)
-    return [CSCapArgument argumentWithName:name
-                                 mediaSpec:mediaSpec ?: kSpecIdObjArray
-                             argDescription:description
-                                   cliFlag:cliFlag
-                                  position:nil
-                                validation:nil
-                              defaultValue:nil];
++ (instancetype)fileChipsArgWithMediaUrn:(NSString *)mediaUrn
+                                 required:(BOOL)required
+                                  sources:(NSArray<CSArgSource *> *)sources
+                            argDescription:(NSString *)description {
+    return [CSCapArg argWithMediaUrn:mediaUrn ?: kSpecIdObjArray
+                             required:required
+                              sources:sources
+                       argDescription:description
+                           validation:nil
+                         defaultValue:nil];
 }
 
 @end
 
 @implementation CSCapOutput (FGNDPluginSDK)
 
-+ (instancetype)documentMetadataOutputWithMediaSpec:(NSString *)mediaSpec
-                                        description:(NSString *)description {
-    return [CSCapOutput outputWithMediaSpec:mediaSpec ?: kSpecIdObj
-                                 validation:nil
-                          outputDescription:description];
-}
-
-+ (instancetype)fileChipsOutputWithMediaSpec:(NSString *)mediaSpec
-                                     description:(NSString *)description {
-    return [CSCapOutput outputWithMediaSpec:mediaSpec ?: kSpecIdObjArray
-                                 validation:nil
-                          outputDescription:description];
-}
-
-+ (instancetype)documentOutlineOutputWithMediaSpec:(NSString *)mediaSpec
++ (instancetype)documentMetadataOutputWithMediaUrn:(NSString *)mediaUrn
                                        description:(NSString *)description {
-    return [CSCapOutput outputWithMediaSpec:mediaSpec ?: kSpecIdObj
+    return [CSCapOutput outputWithMediaUrn:mediaUrn ?: kSpecIdObj
+                                 validation:nil
+                          outputDescription:description];
+}
+
++ (instancetype)fileChipsOutputWithMediaUrn:(NSString *)mediaUrn
+                                   description:(NSString *)description {
+    return [CSCapOutput outputWithMediaUrn:mediaUrn ?: kSpecIdObjArray
+                                 validation:nil
+                          outputDescription:description];
+}
+
++ (instancetype)documentOutlineOutputWithMediaUrn:(NSString *)mediaUrn
+                                         description:(NSString *)description {
+    return [CSCapOutput outputWithMediaUrn:mediaUrn ?: kSpecIdObj
                                  validation:nil
                           outputDescription:description];
 }
@@ -97,22 +93,15 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
 
     // Validate that all caps in the manifest have proper media spec definitions
     for (CSCap *cap in manifest.caps) {
-        // Check arguments - verify spec IDs can be resolved
-        if (cap.arguments) {
-            for (CSCapArgument *arg in cap.arguments.required) {
-                if (![[self class] validateCapArgumentMediaSpec:arg cap:cap error:error]) {
-                    return NO;
-                }
-            }
-            for (CSCapArgument *arg in cap.arguments.optional) {
-                if (![[self class] validateCapArgumentMediaSpec:arg cap:cap error:error]) {
-                    return NO;
-                }
+        // Check arguments - verify media URNs can be resolved
+        for (CSCapArg *arg in cap.args) {
+            if (![[self class] validateCapArgMediaUrn:arg cap:cap error:error]) {
+                return NO;
             }
         }
 
         // Check output - verify spec ID can be resolved
-        if (cap.output && ![[self class] validateCapOutputMediaSpec:cap.output cap:cap error:error]) {
+        if (cap.output && ![[self class] validateCapOutputMediaUrn:cap.output cap:cap error:error]) {
             return NO;
         }
     }
@@ -144,8 +133,8 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
     return [wellKnownSpecIds containsObject:specId];
 }
 
-+ (BOOL)validateCapArgumentMediaSpec:(CSCapArgument *)argument cap:(CSCap *)cap error:(NSError **)error {
-    NSString *specId = argument.mediaSpec;
++ (BOOL)validateCapArgMediaUrn:(CSCapArg *)argument cap:(CSCap *)cap error:(NSError **)error {
+    NSString *specId = argument.mediaUrn;
 
     // Built-in spec IDs don't need to be declared in mediaSpecs
     if ([self isBuiltinSpecId:specId]) {
@@ -155,8 +144,8 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
     // Custom spec IDs must be declared in the cap's mediaSpecs table
     if (!cap.mediaSpecs[specId]) {
         if (error) {
-            NSString *message = [NSString stringWithFormat:@"Argument '%@' uses spec ID '%@' which is not declared in mediaSpecs",
-                               argument.name, specId];
+            NSString *message = [NSString stringWithFormat:@"Argument uses media URN '%@' which is not declared in mediaSpecs",
+                               specId];
             *error = [NSError errorWithDomain:@"FGNDSchemaValidationError"
                                          code:1002
                                      userInfo:@{NSLocalizedDescriptionKey: message}];
@@ -167,8 +156,8 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
     return YES;
 }
 
-+ (BOOL)validateCapOutputMediaSpec:(CSCapOutput *)output cap:(CSCap *)cap error:(NSError **)error {
-    NSString *specId = output.mediaSpec;
++ (BOOL)validateCapOutputMediaUrn:(CSCapOutput *)output cap:(CSCap *)cap error:(NSError **)error {
+    NSString *specId = output.mediaUrn;
 
     // Built-in spec IDs don't need to be declared in mediaSpecs
     if ([self isBuiltinSpecId:specId]) {

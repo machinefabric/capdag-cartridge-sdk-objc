@@ -319,40 +319,38 @@ typedef CSCapManifest FGNDPluginManifest;
 // MARK: - Schema-Enabled Cap Constructors
 
 /**
- * Extension to CSCapArgument for plugin-specific schema validation
+ * Extension to CSCapArg for plugin-specific helpers
  */
-@interface CSCapArgument (FGNDPluginSDK)
+@interface CSCapArg (FGNDPluginSDK)
 
 /**
- * Create an object argument with embedded JSON schema for document metadata
- * @param name Argument name
- * @param description Argument description
- * @param cliFlag CLI flag
- * @param schema JSON schema for validation
- * @return A new CSCapArgument instance configured for document metadata
+ * Create a document metadata argument using the new args+sources model
+ * @param mediaUrn Media URN identifier (e.g., media:file-metadata;textable;keyed)
+ * @param required Whether the argument is required
+ * @param sources Array of CSArgSource specifying how the argument can be provided
+ * @param description Human-readable description
  */
-+ (instancetype)documentMetadataArgumentWithName:(NSString *)name
-                                     description:(NSString *)description
-                                         cliFlag:(NSString *)cliFlag
-                                          schema:(NSDictionary *)schema;
++ (instancetype)documentMetadataArgWithMediaUrn:(NSString *)mediaUrn
+                                        required:(BOOL)required
+                                         sources:(NSArray<CSArgSource *> *)sources
+                                   argDescription:(NSString *)description;
 
 /**
- * Create an array argument with embedded JSON schema for file chips
- * @param name Argument name
- * @param description Argument description
- * @param cliFlag CLI flag
- * @param schema JSON schema for validation
- * @return A new CSCapArgument instance configured for file chips
+ * Create a file chips argument using the new args+sources model
+ * @param mediaUrn Media URN identifier (e.g., media:disbound-pages;textable;keyed;sequence)
+ * @param required Whether the argument is required
+ * @param sources Array of CSArgSource specifying how the argument can be provided
+ * @param description Human-readable description
  */
-+ (instancetype)fileChipsArgumentWithName:(NSString *)name
-                                  description:(NSString *)description
-                                      cliFlag:(NSString *)cliFlag
-                                       schema:(NSDictionary *)schema;
++ (instancetype)fileChipsArgWithMediaUrn:(NSString *)mediaUrn
+                                 required:(BOOL)required
+                                  sources:(NSArray<CSArgSource *> *)sources
+                            argDescription:(NSString *)description;
 
 @end
 
 /**
- * Extension to CSCapOutput for plugin-specific schema validation
+ * Extension to CSCapOutput helpers with media URN
  */
 @interface CSCapOutput (FGNDPluginSDK)
 
@@ -362,8 +360,8 @@ typedef CSCapManifest FGNDPluginManifest;
  * @param description Output description
  * @return A new CSCapOutput instance configured for document metadata
  */
-+ (instancetype)documentMetadataOutputWithSchema:(NSDictionary *)schema
-                                     description:(NSString *)description;
++ (instancetype)documentMetadataOutputWithMediaUrn:(NSString *)mediaUrn
+                                       description:(NSString *)description;
 
 /**
  * Create an array output with embedded JSON schema for file chips
@@ -371,8 +369,8 @@ typedef CSCapManifest FGNDPluginManifest;
  * @param description Output description
  * @return A new CSCapOutput instance configured for file chips
  */
-+ (instancetype)fileChipsOutputWithSchema:(NSDictionary *)schema
-                                  description:(NSString *)description;
++ (instancetype)fileChipsOutputWithMediaUrn:(NSString *)mediaUrn
+                                   description:(NSString *)description;
 
 /**
  * Create an object output with embedded JSON schema for document outline
@@ -380,8 +378,8 @@ typedef CSCapManifest FGNDPluginManifest;
  * @param description Output description
  * @return A new CSCapOutput instance configured for document outline
  */
-+ (instancetype)documentOutlineOutputWithSchema:(NSDictionary *)schema
-                                    description:(NSString *)description;
++ (instancetype)documentOutlineOutputWithMediaUrn:(NSString *)mediaUrn
+                                      description:(NSString *)description;
 
 @end
 
