@@ -167,7 +167,6 @@
 
     // Use media URN for output - media:object is a well-known built-in
     CSCapOutput *output = [CSCapOutput outputWithMediaUrn:@"media:object"
-                                               validation:nil
                                         outputDescription:@"Generic plugin output"];
 
     return [CSCap capWithUrn:capUrn

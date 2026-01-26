@@ -122,45 +122,26 @@ static NSString * const kSpecIdDisboundPages = @"media:disbound-pages";
     NSMutableArray<CSCapArg *> *args = [NSMutableArray array];
 
     // Required file_path argument
-    CSArgumentValidation *filePathValidation = [CSArgumentValidation
-        validationWithMin:nil
-        max:nil
-        minLength:@1
-        maxLength:nil
-        pattern:@"^[^\\0]+$"
-        allowedValues:nil];
-
     CSArgSource *stdinSource = [CSArgSource stdinSourceWithMediaUrn:kSpecIdStr];
     CSArgSource *pos0 = [CSArgSource positionSource:0];
     CSCapArg *filePathArg = [CSCapArg argWithMediaUrn:kSpecIdStr
                                             required:YES
                                              sources:@[stdinSource, pos0]
                                       argDescription:@"Path to the document file to process"
-                                          validation:filePathValidation
                                         defaultValue:nil];
     [args addObject:filePathArg];
 
     // Optional output argument
-    CSArgumentValidation *outputValidation = [CSArgumentValidation
-        validationWithMin:nil
-        max:nil
-        minLength:nil
-        maxLength:nil
-        pattern:@"^[^\\0]+$"
-        allowedValues:nil];
-
     CSArgSource *flagOut = [CSArgSource cliFlagSource:@"--output"];
     CSCapArg *outputArg = [CSCapArg argWithMediaUrn:kSpecIdStr
                                            required:NO
                                             sources:@[flagOut]
                                      argDescription:@"Write output to specified file instead of stdout"
-                                         validation:outputValidation
                                        defaultValue:nil];
     [args addObject:outputArg];
 
     CSCapOutput *output = [CSCapOutput
         outputWithMediaUrn:kSpecIdFileMetadata
-        validation:nil
         outputDescription:@"Structured metadata including file properties, document properties, and format-specific metadata"];
 
     return [CSCap
@@ -189,7 +170,6 @@ static NSString * const kSpecIdDisboundPages = @"media:disbound-pages";
 
     CSCapOutput *output = [CSCapOutput
         outputWithMediaUrn:kSpecIdThumbnailImage
-        validation:nil
         outputDescription:@"PNG image data representing a thumbnail of the document"];
 
     return [CSCap
@@ -218,37 +198,21 @@ static NSString * const kSpecIdDisboundPages = @"media:disbound-pages";
     NSMutableArray<CSCapArg *> *args = [NSMutableArray array];
 
     // Required file path argument via stdin or position 0
-    CSArgumentValidation *filePathValidation = [CSArgumentValidation
-        validationWithMin:nil
-                      max:nil
-                minLength:@1
-                maxLength:nil
-                  pattern:@"^[^\\0]+$"
-            allowedValues:nil];
     CSArgSource *stdinSource = [CSArgSource stdinSourceWithMediaUrn:kSpecIdStr];
     CSArgSource *pos0 = [CSArgSource positionSource:0];
     CSCapArg *filePathArg = [CSCapArg argWithMediaUrn:kSpecIdStr
                                              required:YES
                                               sources:@[stdinSource, pos0]
                                        argDescription:@"Path to the document file to process"
-                                           validation:filePathValidation
                                          defaultValue:nil];
     [args addObject:filePathArg];
 
     // Optional max_depth argument via cli_flag
-    CSArgumentValidation *maxDepthValidation = [CSArgumentValidation
-        validationWithMin:@1.0
-                      max:@10.0
-                minLength:nil
-                maxLength:nil
-                  pattern:nil
-            allowedValues:nil];
     CSArgSource *flagMaxDepth = [CSArgSource cliFlagSource:@"--max-depth"];
     CSCapArg *maxDepthArg = [CSCapArg argWithMediaUrn:kSpecIdInt
                                             required:NO
                                              sources:@[flagMaxDepth]
                                       argDescription:@"Maximum outline depth to extract (1-10)"
-                                          validation:maxDepthValidation
                                         defaultValue:nil];
     [args addObject:maxDepthArg];
 
@@ -258,30 +222,20 @@ static NSString * const kSpecIdDisboundPages = @"media:disbound-pages";
                                                        required:NO
                                                         sources:@[flagInclude]
                                                  argDescription:@"Include page numbers in the outline (default: true)"
-                                                     validation:nil
                                                    defaultValue:@YES];
     [args addObject:includeOrderIndexesArg];
 
     // Optional output path argument via cli_flag
-    CSArgumentValidation *outputValidation = [CSArgumentValidation
-        validationWithMin:nil
-                      max:nil
-                minLength:nil
-                maxLength:nil
-                  pattern:@"^[^\\0]+$"
-            allowedValues:nil];
     CSArgSource *flagOut = [CSArgSource cliFlagSource:@"--output"];
     CSCapArg *outputArg = [CSCapArg argWithMediaUrn:kSpecIdStr
                                            required:NO
                                             sources:@[flagOut]
                                      argDescription:@"Write output to specified file instead of stdout"
-                                         validation:outputValidation
                                        defaultValue:nil];
     [args addObject:outputArg];
 
     CSCapOutput *output = [CSCapOutput
         outputWithMediaUrn:kSpecIdDocumentOutline
-        validation:nil
         outputDescription:@"Hierarchical document outline with section titles and optional page numbers"];
 
     return [CSCap capWithUrn:capUrn
@@ -308,63 +262,35 @@ static NSString * const kSpecIdDisboundPages = @"media:disbound-pages";
     NSMutableArray<CSCapArg *> *args = [NSMutableArray array];
 
     // Required file_path argument
-    CSArgumentValidation *filePathValidation = [CSArgumentValidation
-        validationWithMin:nil
-        max:nil
-        minLength:@1
-        maxLength:nil
-        pattern:@"^[^\\0]+$"
-        allowedValues:nil];
-
     CSArgSource *stdinSource2 = [CSArgSource stdinSourceWithMediaUrn:kSpecIdStr];
     CSArgSource *pos02 = [CSArgSource positionSource:0];
     CSCapArg *filePathArg = [CSCapArg argWithMediaUrn:kSpecIdStr
                                              required:YES
                                               sources:@[stdinSource2, pos02]
                                        argDescription:@"Path to the document file to process"
-                                           validation:filePathValidation
                                          defaultValue:nil];
     [args addObject:filePathArg];
 
     // Optional output argument
-    CSArgumentValidation *outputValidation = [CSArgumentValidation
-        validationWithMin:nil
-        max:nil
-        minLength:nil
-        maxLength:nil
-        pattern:@"^[^\\0]+$"
-        allowedValues:nil];
-
     CSArgSource *flagOut2 = [CSArgSource cliFlagSource:@"--output"];
     CSCapArg *outputArg = [CSCapArg argWithMediaUrn:kSpecIdStr
                                            required:NO
                                             sources:@[flagOut2]
                                      argDescription:@"Write output to specified file instead of stdout"
-                                         validation:outputValidation
                                        defaultValue:nil];
     [args addObject:outputArg];
 
     // Optional index_range argument
-    CSArgumentValidation *indexRangeValidation = [CSArgumentValidation
-        validationWithMin:nil
-        max:nil
-        minLength:nil
-        maxLength:nil
-        pattern:@"^\\d+(-\\d*)?$"
-        allowedValues:nil];
-
     CSArgSource *flagIndexRange = [CSArgSource cliFlagSource:@"--index-range"];
     CSCapArg *indexRangeArg = [CSCapArg argWithMediaUrn:kSpecIdStr
                                               required:NO
                                                sources:@[flagIndexRange]
                                         argDescription:@"Index Range to extract (e.g., '1-5' or '10-')"
-                                            validation:indexRangeValidation
                                           defaultValue:nil];
     [args addObject:indexRangeArg];
 
     CSCapOutput *output = [CSCapOutput
         outputWithMediaUrn:kSpecIdDisboundPages
-        validation:nil
         outputDescription:@"File chips with text content organized by pages and paragraphs"];
 
     return [CSCap capWithUrn:capUrn

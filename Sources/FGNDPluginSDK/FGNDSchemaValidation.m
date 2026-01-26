@@ -27,7 +27,6 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
                              required:required
                               sources:sources
                        argDescription:description
-                           validation:nil
                          defaultValue:nil];
 }
 
@@ -39,7 +38,6 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
                              required:required
                               sources:sources
                        argDescription:description
-                           validation:nil
                          defaultValue:nil];
 }
 
@@ -50,21 +48,18 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
 + (instancetype)documentMetadataOutputWithMediaUrn:(NSString *)mediaUrn
                                        description:(NSString *)description {
     return [CSCapOutput outputWithMediaUrn:mediaUrn ?: kSpecIdObj
-                                 validation:nil
                           outputDescription:description];
 }
 
 + (instancetype)fileChipsOutputWithMediaUrn:(NSString *)mediaUrn
                                    description:(NSString *)description {
     return [CSCapOutput outputWithMediaUrn:mediaUrn ?: kSpecIdObjArray
-                                 validation:nil
                           outputDescription:description];
 }
 
 + (instancetype)documentOutlineOutputWithMediaUrn:(NSString *)mediaUrn
                                          description:(NSString *)description {
     return [CSCapOutput outputWithMediaUrn:mediaUrn ?: kSpecIdObj
-                                 validation:nil
                           outputDescription:description];
 }
 
