@@ -28,7 +28,7 @@ static NSString * const kSpecIdDisboundPages = @"media:disbound-pages";
 #pragma mark - Spec ID Helper Functions
 
 /// Get the input spec ID for a given file extension
-/// - PDF files: media:binary
+/// - PDF files: media:bytes
 /// - Text files (md, rst, log, txt): media:string
 + (NSString *)inputSpecIdForExt:(NSString *)ext {
     if ([ext isEqualToString:@"pdf"]) {

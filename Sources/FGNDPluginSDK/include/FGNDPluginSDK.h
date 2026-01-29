@@ -325,7 +325,7 @@ typedef CSCapManifest FGNDPluginManifest;
 
 /**
  * Create a document metadata argument using the new args+sources model
- * @param mediaUrn Media URN identifier (e.g., media:file-metadata;textable;keyed)
+ * @param mediaUrn Media URN identifier (e.g., media:file-metadata;textable;form=map)
  * @param required Whether the argument is required
  * @param sources Array of CSArgSource specifying how the argument can be provided
  * @param description Human-readable description
@@ -337,7 +337,7 @@ typedef CSCapManifest FGNDPluginManifest;
 
 /**
  * Create a file chips argument using the new args+sources model
- * @param mediaUrn Media URN identifier (e.g., media:disbound-pages;textable;keyed;sequence)
+ * @param mediaUrn Media URN identifier (e.g., media:disbound-pages;textable;form=list)
  * @param required Whether the argument is required
  * @param sources Array of CSArgSource specifying how the argument can be provided
  * @param description Human-readable description
