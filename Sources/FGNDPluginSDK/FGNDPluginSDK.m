@@ -528,7 +528,7 @@
     return self;
 }
 
-- (void)addPage:(FGNDFileChip *)page {
+- (void)addPage:(FGNDDisboundPage *)page {
     [_pages addObject:page];
     _totalPages = _pages.count;
 }
@@ -548,7 +548,7 @@
 
 @end
 
-@implementation FGNDFileChip
+@implementation FGNDDisboundPage
 
 - (instancetype)initWithOrderIndex:(NSUInteger)orderIndex {
     self = [super init];

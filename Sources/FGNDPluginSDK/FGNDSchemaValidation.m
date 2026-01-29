@@ -30,7 +30,7 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
                          defaultValue:nil];
 }
 
-+ (instancetype)fileChipsArgWithMediaUrn:(NSString *)mediaUrn
++ (instancetype)disboundPagesArgWithMediaUrn:(NSString *)mediaUrn
                                  required:(BOOL)required
                                   sources:(NSArray<CSArgSource *> *)sources
                             argDescription:(NSString *)description {
@@ -51,7 +51,7 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
                           outputDescription:description];
 }
 
-+ (instancetype)fileChipsOutputWithMediaUrn:(NSString *)mediaUrn
++ (instancetype)disboundPagesOutputWithMediaUrn:(NSString *)mediaUrn
                                    description:(NSString *)description {
     return [CSCapOutput outputWithMediaUrn:mediaUrn ?: kSpecIdObjArray
                           outputDescription:description];

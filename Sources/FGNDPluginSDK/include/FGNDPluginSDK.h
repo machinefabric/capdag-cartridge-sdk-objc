@@ -184,7 +184,7 @@ typedef CSCapManifest FGNDPluginManifest;
 - (instancetype)initWithParagraphNumber:(NSUInteger)paragraphNumber textContent:(NSString *)textContent;
 @end
 
-@interface FGNDFileChip : NSObject
+@interface FGNDDisboundPage : NSObject
 @property (nonatomic, assign) NSUInteger orderIndex; // 1-indexed
 @property (nonatomic, strong) NSString *textContent;
 @property (nonatomic, strong, nullable) NSString *sourceRef;
@@ -200,12 +200,12 @@ typedef CSCapManifest FGNDPluginManifest;
 @property (nonatomic, strong, nullable) NSString *title;
 @property (nonatomic, strong) NSString *documentType;
 @property (nonatomic, assign) NSUInteger totalPages;
-@property (nonatomic, strong) NSMutableArray<FGNDFileChip *> *pages;
+@property (nonatomic, strong) NSMutableArray<FGNDDisboundPage *> *pages;
 @property (nonatomic, strong) FGNDExtractionInfo *extractionInfo;
 - (instancetype)initWithSourceFile:(NSString *)sourceFile 
                       documentType:(NSString *)documentType;
 - (FGNDDisboundPages *)withTitle:(NSString *)title;
-- (void)addPage:(FGNDFileChip *)page;
+- (void)addPage:(FGNDDisboundPage *)page;
 @end
 
 // MARK: - File Info (for quick file information)
@@ -342,7 +342,7 @@ typedef CSCapManifest FGNDPluginManifest;
  * @param sources Array of CSArgSource specifying how the argument can be provided
  * @param description Human-readable description
  */
-+ (instancetype)fileChipsArgWithMediaUrn:(NSString *)mediaUrn
++ (instancetype)disboundPagesArgWithMediaUrn:(NSString *)mediaUrn
                                  required:(BOOL)required
                                   sources:(NSArray<CSArgSource *> *)sources
                             argDescription:(NSString *)description;
@@ -369,7 +369,7 @@ typedef CSCapManifest FGNDPluginManifest;
  * @param description Output description
  * @return A new CSCapOutput instance configured for file chips
  */
-+ (instancetype)fileChipsOutputWithMediaUrn:(NSString *)mediaUrn
++ (instancetype)disboundPagesOutputWithMediaUrn:(NSString *)mediaUrn
                                    description:(NSString *)description;
 
 /**
