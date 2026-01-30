@@ -21,7 +21,7 @@ static NSString * const kSpecIdBinary = @"media:binary";
 static NSString * const kSpecIdFileMetadata = @"media:file-metadata";
 static NSString * const kSpecIdThumbnailImage = @"media:thumbnail-image";
 static NSString * const kSpecIdDocumentOutline = @"media:document-outline";
-static NSString * const kSpecIdDisboundPages = @"media:disbound-pages";
+static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
 
 @implementation FGNDStandardCaps
 
@@ -57,12 +57,12 @@ static NSString * const kSpecIdDisboundPages = @"media:disbound-pages";
     return kSpecIdObj;
 }
 
-/// Get the output spec ID for grind by extension
-/// - PDF files: media:disbound-pages (has full schema)
+/// Get the output spec ID for disbind by extension
+/// - PDF files: media:disbound-page (has full schema, output is array)
 /// - Text files: media:object (generic JSON object)
-+ (NSString *)disboundPagesSpecIdForExt:(NSString *)ext {
++ (NSString *)disboundPageSpecIdForExt:(NSString *)ext {
     if ([ext isEqualToString:@"pdf"]) {
-        return kSpecIdDisboundPages;
+        return kSpecIdDisboundPage;
     }
     return kSpecIdObj;
 }
@@ -96,12 +96,12 @@ static NSString * const kSpecIdDisboundPages = @"media:disbound-pages";
     };
 }
 
-/// Build media specs table for grind cap
+/// Build media specs table for disbind cap
 + (NSDictionary<NSString *, id> *)grindMediaSpecs {
     return @{
-        kSpecIdDisboundPages: @{
+        kSpecIdDisboundPage: @{
             @"media_type": @"application/json",
-            @"profile_uri": @"https://capns.org/schema/disbound-pages"
+            @"profile_uri": @"https://capns.org/schema/disbound-page"
         }
     };
 }
@@ -290,8 +290,8 @@ static NSString * const kSpecIdDisboundPages = @"media:disbound-pages";
     [args addObject:indexRangeArg];
 
     CSCapOutput *output = [CSCapOutput
-        outputWithMediaUrn:kSpecIdDisboundPages
-        outputDescription:@"File chips with text content organized by pages and paragraphs"];
+        outputWithMediaUrn:kSpecIdDisboundPage
+        outputDescription:@"Array of disbound pages with text content"];
 
     return [CSCap capWithUrn:capUrn
                         title:@"Extract File Chips"
@@ -471,7 +471,7 @@ static NSString * const kSpecIdDisboundPages = @"media:disbound-pages";
     for (NSString *fileType in fileTypes) {
         NSError *error;
         NSString *inSpecId = [self inputSpecIdForExt:fileType];
-        NSString *outSpecId = [self disboundPagesSpecIdForExt:fileType];
+        NSString *outSpecId = [self disboundPageSpecIdForExt:fileType];
         NSString *newUrnString = [NSString stringWithFormat:@"cap:ext=%@;in=%@;op=grind;out=%@",
                                   fileType, inSpecId, outSpecId];
         CSCapUrn *newId = [CSCapUrn fromString:newUrnString error:&error];

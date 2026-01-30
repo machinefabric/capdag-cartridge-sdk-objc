@@ -166,7 +166,7 @@ NSString *outputJSON = [FGNDJSONSerializer serializePluginOutput:output];
 
 - **`FGNDDocumentMetadata`**: Document metadata (conforms to `file-metadata.json` schema)
 - **`FGNDDocumentOutline`**: Document outline (conforms to `document-outline.json` schema)  
-- **`FGNDDisboundPages`**: File chips with paragraphs (conforms to `disbound-pages.json` schema)
+- **`FGNDDisboundPage`**: Single page with text content (output is NSArray of these, conforms to `disbound-page.json` schema)
 - **`FGNDPluginOutput`**: Combined output from document processing
 - **`FGNDPluginManager`**: Central plugin registration and management
 
@@ -194,7 +194,7 @@ All document handlers must implement the `FGNDDocumentHandler` protocol:
 // Core functionality
 - (void)extractMetadata:(NSString *)filePath completion:(void (^)(FGNDDocumentMetadata *, NSError *))completion;
 - (void)extractOutline:(NSString *)filePath completion:(void (^)(FGNDDocumentOutline *, NSError *))completion;
-- (void)grind:(NSString *)filePath completion:(void (^)(FGNDDisboundPages *, NSError *))completion;
+- (void)disbind:(NSString *)filePath completion:(void (^)(NSArray<FGNDDisboundPage *> *, NSError *))completion;
 - (void)validateFile:(NSString *)filePath completion:(void (^)(BOOL, NSError *))completion;
 - (void)getFileInfo:(NSString *)filePath completion:(void (^)(FGNDFileInfo *, NSError *))completion;
 - (void)generateThumbnail:(NSString *)filePath width:(NSUInteger)width height:(NSUInteger)height completion:(void (^)(NSData *, NSError *))completion;

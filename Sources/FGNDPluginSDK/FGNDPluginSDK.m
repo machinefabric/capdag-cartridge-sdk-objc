@@ -509,31 +509,6 @@
 
 @end
 
-@implementation FGNDDisboundPages
-
-- (instancetype)initWithSourceFile:(NSString *)sourceFile
-                       documentType:(NSString *)documentType {
-    self = [super init];
-    if (self) {
-        _sourceFile = [sourceFile copy];
-        _documentType = [documentType copy];
-        _pages = [[NSMutableArray alloc] init];
-        _totalPages = 0;
-    }
-    return self;
-}
-
-- (FGNDDisboundPages *)withTitle:(NSString *)title {
-    self.title = [title copy];
-    return self;
-}
-
-- (void)addPage:(FGNDDisboundPage *)page {
-    [_pages addObject:page];
-    _totalPages = _pages.count;
-}
-
-@end
 
 @implementation FGNDDocumentParagraph
 

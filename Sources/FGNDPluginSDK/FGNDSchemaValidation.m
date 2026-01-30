@@ -30,10 +30,10 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
                          defaultValue:nil];
 }
 
-+ (instancetype)disboundPagesArgWithMediaUrn:(NSString *)mediaUrn
-                                 required:(BOOL)required
-                                  sources:(NSArray<CSArgSource *> *)sources
-                            argDescription:(NSString *)description {
++ (instancetype)disboundPageArgWithMediaUrn:(NSString *)mediaUrn
+                                   required:(BOOL)required
+                                    sources:(NSArray<CSArgSource *> *)sources
+                             argDescription:(NSString *)description {
     return [CSCapArg argWithMediaUrn:mediaUrn ?: kSpecIdObjArray
                              required:required
                               sources:sources
@@ -51,7 +51,7 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
                           outputDescription:description];
 }
 
-+ (instancetype)disboundPagesOutputWithMediaUrn:(NSString *)mediaUrn
++ (instancetype)disboundPageOutputWithMediaUrn:(NSString *)mediaUrn
                                    description:(NSString *)description {
     return [CSCapOutput outputWithMediaUrn:mediaUrn ?: kSpecIdObjArray
                           outputDescription:description];
@@ -260,92 +260,38 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
     };
 }
 
-+ (NSDictionary *)standardDisboundPagesSchema {
++ (NSDictionary *)standardDisboundPageSchema {
     return @{
         @"$schema": @"http://json-schema.org/draft-07/schema#",
         @"type": @"object",
-        @"title": @"File Chips Schema",
-        @"description": @"Standard schema for file chips extraction",
+        @"title": @"Disbound Page Schema",
+        @"description": @"Standard schema for a single disbound page",
         @"properties": @{
-            @"sourceFile": @{
-                @"type": @"string",
-                @"description": @"Source document file path"
+            @"orderIndex": @{
+                @"type": @"integer",
+                @"minimum": @1,
+                @"description": @"Page number (1-indexed)"
             },
-            @"title": @{
+            @"textContent": @{
                 @"type": @"string",
-                @"description": @"Document title"
+                @"description": @"Extracted text content"
             },
-            @"documentType": @{
+            @"sourceRef": @{
                 @"type": @"string",
-                @"enum": @[@"pdf", @"epub", @"docx", @"txt", @"md", @"html"],
-                @"description": @"Type of document"
+                @"description": @"Reference to source location"
             },
-            @"totalPages": @{
+            @"wordCount": @{
                 @"type": @"integer",
                 @"minimum": @0,
-                @"description": @"Total number of pages"
+                @"description": @"Number of words on this page"
             },
-            @"pages": @{
-                @"type": @"array",
-                @"description": @"Array of file chips",
-                @"items": @{
-                    @"type": @"object",
-                    @"properties": @{
-                        @"orderIndex": @{
-                            @"type": @"integer",
-                            @"minimum": @1,
-                            @"description": @"Page number (1-indexed)"
-                        },
-                        @"textContent": @{
-                            @"type": @"string",
-                            @"description": @"Extracted text content"
-                        },
-                        @"sourceRef": @{
-                            @"type": @"string",
-                            @"description": @"Reference to source location"
-                        },
-                        @"wordCount": @{
-                            @"type": @"integer",
-                            @"minimum": @0,
-                            @"description": @"Number of words on this page"
-                        },
-                        @"characterCount": @{
-                            @"type": @"integer",
-                            @"minimum": @0,
-                            @"description": @"Number of characters on this page"
-                        }
-                    },
-                    @"required": @[@"orderIndex", @"textContent"],
-                    @"additionalProperties": @NO
-                }
-            },
-            @"extractionInfo": @{
-                @"type": @"object",
-                @"properties": @{
-                    @"extractorName": @{
-                        @"type": @"string",
-                        @"description": @"Name of the extraction plugin"
-                    },
-                    @"extractorVersion": @{
-                        @"type": @"string",
-                        @"description": @"Version of the extraction plugin"
-                    },
-                    @"extractedAt": @{
-                        @"type": @"string",
-                        @"format": @"date-time",
-                        @"description": @"Timestamp of extraction"
-                    },
-                    @"warnings": @{
-                        @"type": @"array",
-                        @"items": @{@"type": @"string"},
-                        @"description": @"Extraction warnings"
-                    }
-                },
-                @"required": @[@"extractorName", @"extractorVersion"],
-                @"additionalProperties": @NO
+            @"characterCount": @{
+                @"type": @"integer",
+                @"minimum": @0,
+                @"description": @"Number of characters on this page"
             }
         },
-        @"required": @[@"sourceFile", @"documentType", @"totalPages", @"pages", @"extractionInfo"],
+        @"required": @[@"orderIndex", @"textContent"],
         @"additionalProperties": @NO
     };
 }

@@ -195,18 +195,6 @@ typedef CSCapManifest FGNDPluginManifest;
 - (void)setTextContent:(NSString *)textContent;
 @end
 
-@interface FGNDDisboundPages : NSObject
-@property (nonatomic, strong) NSString *sourceFile;
-@property (nonatomic, strong, nullable) NSString *title;
-@property (nonatomic, strong) NSString *documentType;
-@property (nonatomic, assign) NSUInteger totalPages;
-@property (nonatomic, strong) NSMutableArray<FGNDDisboundPage *> *pages;
-@property (nonatomic, strong) FGNDExtractionInfo *extractionInfo;
-- (instancetype)initWithSourceFile:(NSString *)sourceFile 
-                      documentType:(NSString *)documentType;
-- (FGNDDisboundPages *)withTitle:(NSString *)title;
-- (void)addPage:(FGNDDisboundPage *)page;
-@end
 
 // MARK: - File Info (for quick file information)
 
@@ -336,16 +324,16 @@ typedef CSCapManifest FGNDPluginManifest;
                                    argDescription:(NSString *)description;
 
 /**
- * Create a file chips argument using the new args+sources model
- * @param mediaUrn Media URN identifier (e.g., media:disbound-pages;textable;form=list)
+ * Create a disbound page argument using the new args+sources model
+ * @param mediaUrn Media URN identifier (e.g., media:disbound-page;textable;form=list)
  * @param required Whether the argument is required
  * @param sources Array of CSArgSource specifying how the argument can be provided
  * @param description Human-readable description
  */
-+ (instancetype)disboundPagesArgWithMediaUrn:(NSString *)mediaUrn
-                                 required:(BOOL)required
-                                  sources:(NSArray<CSArgSource *> *)sources
-                            argDescription:(NSString *)description;
++ (instancetype)disboundPageArgWithMediaUrn:(NSString *)mediaUrn
+                                   required:(BOOL)required
+                                    sources:(NSArray<CSArgSource *> *)sources
+                             argDescription:(NSString *)description;
 
 @end
 
@@ -364,12 +352,12 @@ typedef CSCapManifest FGNDPluginManifest;
                                        description:(NSString *)description;
 
 /**
- * Create an array output with embedded JSON schema for file chips
- * @param schema JSON schema for validation
+ * Create an array output with embedded JSON schema for disbound pages
+ * @param mediaUrn Media URN identifier
  * @param description Output description
- * @return A new CSCapOutput instance configured for file chips
+ * @return A new CSCapOutput instance configured for disbound pages array
  */
-+ (instancetype)disboundPagesOutputWithMediaUrn:(NSString *)mediaUrn
++ (instancetype)disboundPageOutputWithMediaUrn:(NSString *)mediaUrn
                                    description:(NSString *)description;
 
 /**
@@ -408,10 +396,10 @@ typedef CSCapManifest FGNDPluginManifest;
 + (NSDictionary *)standardDocumentMetadataSchema;
 
 /**
- * Get standard file chips schema
- * @return Standard JSON schema for file chips
+ * Get standard disbound page schema
+ * @return Standard JSON schema for disbound page
  */
-+ (NSDictionary *)standardDisboundPagesSchema;
++ (NSDictionary *)standardDisboundPageSchema;
 
 /**
  * Get standard document outline schema
