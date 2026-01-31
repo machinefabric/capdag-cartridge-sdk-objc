@@ -67,50 +67,57 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
     return kSpecIdObj;
 }
 
-#pragma mark - Media Specs Tables
+#pragma mark - Media Specs Arrays
 
-/// Build media specs table for extract-metadata cap
-+ (NSDictionary<NSString *, id> *)extractMetadataMediaSpecs {
-    return @{
-        kSpecIdFileMetadata: @{
+/// Build media specs array for extract-metadata cap
++ (NSArray<NSDictionary *> *)extractMetadataMediaSpecs {
+    return @[
+        @{
+            @"urn": kSpecIdFileMetadata,
             @"media_type": @"application/json",
             @"profile_uri": @"https://capns.org/schema/file-metadata"
         }
-    };
+    ];
 }
 
-/// Build media specs table for generate-thumbnail cap
-+ (NSDictionary<NSString *, id> *)generateThumbnailMediaSpecs {
-    return @{
-        kSpecIdThumbnailImage: @"image/png; profile=https://capns.org/schema/thumbnail-image"
-    };
+/// Build media specs array for generate-thumbnail cap
++ (NSArray<NSDictionary *> *)generateThumbnailMediaSpecs {
+    return @[
+        @{
+            @"urn": kSpecIdThumbnailImage,
+            @"media_type": @"image/png",
+            @"profile_uri": @"https://capns.org/schema/thumbnail-image"
+        }
+    ];
 }
 
-/// Build media specs table for extract-outline cap
-+ (NSDictionary<NSString *, id> *)extractOutlineMediaSpecs {
-    return @{
-        kSpecIdDocumentOutline: @{
+/// Build media specs array for extract-outline cap
++ (NSArray<NSDictionary *> *)extractOutlineMediaSpecs {
+    return @[
+        @{
+            @"urn": kSpecIdDocumentOutline,
             @"media_type": @"application/json",
             @"profile_uri": @"https://capns.org/schema/document-outline"
         }
-    };
+    ];
 }
 
-/// Build media specs table for disbind cap
-+ (NSDictionary<NSString *, id> *)grindMediaSpecs {
-    return @{
-        kSpecIdDisboundPage: @{
+/// Build media specs array for disbind cap
++ (NSArray<NSDictionary *> *)grindMediaSpecs {
+    return @[
+        @{
+            @"urn": kSpecIdDisboundPage,
             @"media_type": @"application/json",
             @"profile_uri": @"https://capns.org/schema/disbound-page"
         }
-    };
+    ];
 }
 
 #pragma mark - Standard Caps
 
 + (CSCap *)extractMetadataCap {
     NSError *error;
-    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:op=extract;target=metadata" error:&error];
+    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:in=\"media:textable;form=scalar\";op=extract;out=\"media:form=map;textable\";target=metadata" error:&error];
     if (!capUrn) {
         @throw [NSException exceptionWithName:@"InvalidCapUrn"
                                        reason:@"Failed to create cap URN for extract-metadata"
@@ -158,7 +165,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
 
 + (CSCap *)generateThumbnailCap {
     NSError *error;
-    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:op=generate;output=binary;target=thumbnail" error:&error];
+    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:in=media:void;op=generate;out=media:bytes;target=thumbnail" error:&error];
     if (!capUrn) {
         @throw [NSException exceptionWithName:@"InvalidCapUrn"
                                        reason:@"Failed to create cap URN for generate-thumbnail"
@@ -186,7 +193,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
 
 + (CSCap *)extractOutlineCap {
     NSError *error;
-    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:op=extract;target=outline" error:&error];
+    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:in=\"media:textable;form=scalar\";op=extract;out=\"media:form=map;textable\";target=outline" error:&error];
     if (!capUrn) {
         @throw [NSException exceptionWithName:@"InvalidCapUrn"
                                        reason:@"Failed to create cap URN for extract-outline"
@@ -251,7 +258,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
 
 + (CSCap *)disbindCap {
     NSError *error;
-    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:op=extract;target=pages" error:&error];
+    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:in=\"media:textable;form=scalar\";op=extract;out=\"media:form=list;textable\";target=pages" error:&error];
     if (!capUrn) {
         @throw [NSException exceptionWithName:@"InvalidCapUrn"
                                        reason:@"Failed to create cap URN for grind"

@@ -174,7 +174,7 @@
                      command:[cap componentsSeparatedByString:@":"][0]
                  description:@"Generic plugin capability"
                     metadata:@{}
-                  mediaSpecs:@{}  // Built-in media URNs don't need declaration
+                  mediaSpecs:@[]  // Built-in media URNs don't need declaration
                           args:args
                         output:output
                   metadataJSON:nil];

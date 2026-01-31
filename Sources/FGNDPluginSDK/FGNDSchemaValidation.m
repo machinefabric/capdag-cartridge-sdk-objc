@@ -136,8 +136,15 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
         return YES;
     }
 
-    // Custom spec IDs must be declared in the cap's mediaSpecs table
-    if (!cap.mediaSpecs[specId]) {
+    // Custom spec IDs must be declared in the cap's mediaSpecs array
+    BOOL found = NO;
+    for (NSDictionary *spec in cap.mediaSpecs) {
+        if ([spec[@"urn"] isEqualToString:specId]) {
+            found = YES;
+            break;
+        }
+    }
+    if (!found) {
         if (error) {
             NSString *message = [NSString stringWithFormat:@"Argument uses media URN '%@' which is not declared in mediaSpecs",
                                specId];
@@ -159,8 +166,15 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
         return YES;
     }
 
-    // Custom spec IDs must be declared in the cap's mediaSpecs table
-    if (!cap.mediaSpecs[specId]) {
+    // Custom spec IDs must be declared in the cap's mediaSpecs array
+    BOOL found = NO;
+    for (NSDictionary *spec in cap.mediaSpecs) {
+        if ([spec[@"urn"] isEqualToString:specId]) {
+            found = YES;
+            break;
+        }
+    }
+    if (!found) {
         if (error) {
             NSString *message = [NSString stringWithFormat:@"Output uses spec ID '%@' which is not declared in mediaSpecs",
                                specId];
