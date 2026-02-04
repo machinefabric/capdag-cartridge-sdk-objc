@@ -1,4 +1,4 @@
-// version: 0.67.12065
+// version: 0.67.12066
 // swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
@@ -15,10 +15,6 @@ let package = Package(
         .library(
             name: "FGNDPluginSDK",
             targets: ["FGNDPluginSDK"]),
-        // CBOR protocol library
-        .library(
-            name: "CapNsCbor",
-            targets: ["CapNsCborWrapper"]),
     ],
     dependencies: [
         // Depend on the cap definition package
@@ -30,6 +26,7 @@ let package = Package(
             name: "FGNDPluginSDK",
             dependencies: [
                 .product(name: "CapNs", package: "capns-objc"),
+                .product(name: "CapNsCbor", package: "capns-objc"),
             ],
             path: "Sources/FGNDPluginSDK",
             publicHeadersPath: "include",
@@ -40,15 +37,6 @@ let package = Package(
             linkerSettings: [
                 .linkedFramework("Foundation"),
             ]
-        ),
-        
-        // Wrapper target that re-exports CapNsCbor
-        .target(
-            name: "CapNsCborWrapper",
-            dependencies: [
-                .product(name: "CapNsCbor", package: "capns-objc"),
-            ],
-            path: "Sources/CapNsCborWrapper"
         ),
 
         // Tests target
