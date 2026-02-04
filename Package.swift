@@ -15,6 +15,10 @@ let package = Package(
         .library(
             name: "FGNDPluginSDK",
             targets: ["FGNDPluginSDK"]),
+        // CBOR protocol library
+        .library(
+            name: "CapNsCbor",
+            targets: ["CapNsCborWrapper"]),
     ],
     dependencies: [
         // Depend on the cap definition package
@@ -38,6 +42,15 @@ let package = Package(
             ]
         ),
         
+        // Wrapper target that re-exports CapNsCbor
+        .target(
+            name: "CapNsCborWrapper",
+            dependencies: [
+                .product(name: "CapNsCbor", package: "capns-objc"),
+            ],
+            path: "Sources/CapNsCborWrapper"
+        ),
+
         // Tests target
         .testTarget(
             name: "FGNDPluginSDKTests",
