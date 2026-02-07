@@ -1,24 +1,24 @@
 //
-//  FGNDPluginSDK.m
-//  FGND Plugin SDK for Objective-C
+//  MACINAPluginSDK.m
+//  MACINA Plugin SDK for Objective-C
 //
 //  Unified cap-based plugin interface with standardized command-line calling
 //
 
-#import "include/FGNDPluginSDK.h"
+#import "include/MACINAPluginSDK.h"
 
 // MARK: - Unified Plugin Registry
 
-@implementation FGNDPluginRegistry {
-    NSMutableDictionary<NSString *, FGNDPluginEntry *> *_plugins;
+@implementation MACINAPluginRegistry {
+    NSMutableDictionary<NSString *, MACINAPluginEntry *> *_plugins;
     NSMutableDictionary<NSString *, NSMutableArray<NSString *> *> *_capIndex;
 }
 
 + (instancetype)sharedRegistry {
-    static FGNDPluginRegistry *sharedInstance = nil;
+    static MACINAPluginRegistry *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[FGNDPluginRegistry alloc] init];
+        sharedInstance = [[MACINAPluginRegistry alloc] init];
     });
     return sharedInstance;
 }
@@ -36,7 +36,7 @@
             binaryPath:(NSString *)binaryPath
           caps:(NSArray<NSString *> *)caps {
     
-    FGNDPluginEntry *entry = [[FGNDPluginEntry alloc] initWithBinaryPath:binaryPath
+    MACINAPluginEntry *entry = [[MACINAPluginEntry alloc] initWithBinaryPath:binaryPath
                                                             caps:caps];
     
     // Update cap index
@@ -56,17 +56,17 @@
     NSString *bestPlugin = [self findBestPluginForCap:cap];
     if (!bestPlugin) {
         if (error) {
-            *error = [NSError errorWithDomain:@"FGNDPluginSDK"
+            *error = [NSError errorWithDomain:@"MACINAPluginSDK"
                                          code:1001
                                      userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Cap '%@' is not available in any registered plugin", cap]}];
         }
         return nil;
     }
     
-    FGNDPluginEntry *plugin = _plugins[bestPlugin];
+    MACINAPluginEntry *plugin = _plugins[bestPlugin];
     if (!plugin) {
         if (error) {
-            *error = [NSError errorWithDomain:@"FGNDPluginSDK"
+            *error = [NSError errorWithDomain:@"MACINAPluginSDK"
                                          code:1002
                                      userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Plugin '%@' not found in registry", bestPlugin]}];
         }
@@ -74,7 +74,7 @@
     }
     
     // Create a cap host adapter for the plugin binary
-    FGNDPluginCapSet *capSet = [[FGNDPluginCapSet alloc] initWithBinaryPath:plugin.binaryPath];
+    MACINAPluginCapSet *capSet = [[MACINAPluginCapSet alloc] initWithBinaryPath:plugin.binaryPath];
     
     // Get cap definition (for now, create a basic one - in production this would come from registry)
     CSCap *capDefinition = [self createBasicCapDefinitionForCap:cap];
@@ -100,7 +100,7 @@
     NSInteger bestScore = -1;
     
     for (NSString *pluginName in candidates) {
-        FGNDPluginEntry *plugin = _plugins[pluginName];
+        MACINAPluginEntry *plugin = _plugins[pluginName];
         NSInteger score = [self calculateCapScore:plugin forCap:cap];
         if (score > bestScore) {
             bestPlugin = pluginName;
@@ -133,7 +133,7 @@
     return @[];
 }
 
-- (NSInteger)calculateCapScore:(FGNDPluginEntry *)plugin forCap:(NSString *)cap {
+- (NSInteger)calculateCapScore:(MACINAPluginEntry *)plugin forCap:(NSString *)cap {
     NSInteger score = 0;
     
     // Add specificity score
@@ -184,7 +184,7 @@
 
 // MARK: - Plugin Cap Host Implementation
 
-@implementation FGNDPluginCapSet
+@implementation MACINAPluginCapSet
 
 - (instancetype)initWithBinaryPath:(NSString *)binaryPath {
     self = [super init];
@@ -251,7 +251,7 @@
                     completion(response, nil);
                 });
             } else {
-                NSError *error = [NSError errorWithDomain:@"FGNDPluginSDK"
+                NSError *error = [NSError errorWithDomain:@"MACINAPluginSDK"
                                                      code:1003
                                                  userInfo:@{NSLocalizedDescriptionKey: @"Plugin execution failed"}];
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -259,7 +259,7 @@
                 });
             }
         } @catch (NSException *exception) {
-            NSError *error = [NSError errorWithDomain:@"FGNDPluginSDK"
+            NSError *error = [NSError errorWithDomain:@"MACINAPluginSDK"
                                                  code:1004
                                              userInfo:@{NSLocalizedDescriptionKey: exception.reason ?: @"Plugin execution exception"}];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -275,7 +275,7 @@
 
 // MARK: - Plugin Entry
 
-@implementation FGNDPluginEntry
+@implementation MACINAPluginEntry
 
 - (instancetype)initWithBinaryPath:(NSString *)binaryPath
                       caps:(NSArray<NSString *> *)caps {
@@ -291,7 +291,7 @@
 
 // MARK: - Plugin Manifest Category
 
-@implementation CSCapManifest (FGNDPluginSDK)
+@implementation CSCapManifest (MACINAPluginSDK)
 
 + (instancetype)pluginWithName:(NSString *)name
                    description:(NSString *)description
@@ -306,7 +306,7 @@
 
 // MARK: - Standardized Caps
 
-@implementation FGNDStandardizedCaps
+@implementation MACINAStandardizedCaps
 
 + (NSString *)extractMetadata {
     return @"extract-metadata";
@@ -332,7 +332,7 @@
 
 // MARK: - CLI Helper
 
-@implementation FGNDCLIHelper
+@implementation MACINACLIHelper
 
 + (NSString *)capToFlag:(NSString *)cap {
     NSString *operation = [cap componentsSeparatedByString:@":"][0];
@@ -376,7 +376,7 @@
                     completion(outputData, nil);
                 });
             } else {
-                NSError *error = [NSError errorWithDomain:@"FGNDPluginSDK"
+                NSError *error = [NSError errorWithDomain:@"MACINAPluginSDK"
                                                      code:1003
                                                  userInfo:@{NSLocalizedDescriptionKey: @"Plugin execution failed"}];
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -384,7 +384,7 @@
                 });
             }
         } @catch (NSException *exception) {
-            NSError *error = [NSError errorWithDomain:@"FGNDPluginSDK"
+            NSError *error = [NSError errorWithDomain:@"MACINAPluginSDK"
                                                  code:1004
                                              userInfo:@{NSLocalizedDescriptionKey: exception.reason ?: @"Plugin execution exception"}];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -398,7 +398,7 @@
 
 // MARK: - Extraction Info
 
-@implementation FGNDExtractionInfo
+@implementation MACINAExtractionInfo
 
 - (instancetype)initWithExtractorName:(NSString *)extractorName extractorVersion:(NSString *)extractorVersion {
     self = [super init];
@@ -415,7 +415,7 @@
 
 // MARK: - Document Metadata (schemas remain the same)
 
-@implementation FGNDDocumentMetadata
+@implementation MACINADocumentMetadata
 
 - (instancetype)initWithFilePath:(NSString *)filePath
                    fileSizeBytes:(unsigned long long)fileSizeBytes
@@ -454,7 +454,7 @@
 
 @end
 
-@implementation FGNDDocumentOutline
+@implementation MACINADocumentOutline
 
 - (instancetype)initWithSourceFile:(NSString *)sourceFile
                        documentType:(NSString *)documentType
@@ -470,19 +470,19 @@
     return self;
 }
 
-- (FGNDDocumentOutline *)withTitle:(NSString *)title {
+- (MACINADocumentOutline *)withTitle:(NSString *)title {
     self.title = [title copy];
     return self;
 }
 
-- (void)addEntry:(FGNDOutlineEntry *)entry {
+- (void)addEntry:(MACINAOutlineEntry *)entry {
     [_outlineEntries addObject:entry];
     _hasOutline = YES;
 }
 
 @end
 
-@implementation FGNDOutlineEntry
+@implementation MACINAOutlineEntry
 
 - (instancetype)initWithTitle:(NSString *)title level:(NSUInteger)level {
     self = [super init];
@@ -498,19 +498,19 @@
     return [[self alloc] initWithTitle:title level:level];
 }
 
-- (FGNDOutlineEntry *)withPage:(NSUInteger)page {
+- (MACINAOutlineEntry *)withPage:(NSUInteger)page {
     self.page = page;
     return self;
 }
 
-- (void)addChild:(FGNDOutlineEntry *)child {
+- (void)addChild:(MACINAOutlineEntry *)child {
     [_children addObject:child];
 }
 
 @end
 
 
-@implementation FGNDDocumentParagraph
+@implementation MACINADocumentParagraph
 
 - (instancetype)initWithParagraphNumber:(NSUInteger)paragraphNumber textContent:(NSString *)textContent {
     self = [super init];
@@ -523,7 +523,7 @@
 
 @end
 
-@implementation FGNDDisboundPage
+@implementation MACINADisboundPage
 
 - (instancetype)initWithOrderIndex:(NSUInteger)orderIndex {
     self = [super init];
@@ -567,10 +567,10 @@
 
 // MARK: - File Info
 
-@implementation FGNDQuickMetadata
+@implementation MACINAQuickMetadata
 @end
 
-@implementation FGNDFileInfo
+@implementation MACINAFileInfo
 
 - (instancetype)initWithPath:(NSString *)path
                         size:(unsigned long long)size
@@ -591,17 +591,17 @@
 
 // MARK: - Processing Result Implementation
 
-@implementation FGNDProcessingResult
+@implementation MACINAProcessingResult
 
 + (instancetype)successWithData:(id)data {
-    FGNDProcessingResult *result = [[FGNDProcessingResult alloc] init];
+    MACINAProcessingResult *result = [[MACINAProcessingResult alloc] init];
     result.success = YES;
     result.data = data;
     return result;
 }
 
 + (instancetype)failureWithError:(NSString *)error {
-    FGNDProcessingResult *result = [[FGNDProcessingResult alloc] init];
+    MACINAProcessingResult *result = [[MACINAProcessingResult alloc] init];
     result.success = NO;
     result.error = error;
     return result;

@@ -1,9 +1,9 @@
 //
-//  FGNDStandardCaps.h
+//  MACINAStandardCaps.h
 //  Standard cap definitions with arguments
 //
 //  This provides the standard cap definitions used across
-//  all FGND plugins, including their formal argument specifications.
+//  all MACINA plugins, including their formal argument specifications.
 //
 
 #import <Foundation/Foundation.h>
@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * Standard cap factory methods
  */
-@interface FGNDStandardCaps : NSObject
+@interface MACINAStandardCaps : NSObject
 
 /**
  * Create the standard extract-metadata cap with full argument definition

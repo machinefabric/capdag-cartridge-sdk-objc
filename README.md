@@ -1,14 +1,14 @@
-# FGND Plugin SDK for Objective-C
+# MACINA Plugin SDK for Objective-C
 
-A native Objective-C framework for building document processing plugins for the FGND system.
+A native Objective-C framework for building document processing plugins for the MACINA system.
 
 ## Overview
 
-The FGND Plugin SDK for Objective-C provides a complete framework for building document handlers that can extract metadata, outlines, pages, and generate thumbnails from various document formats. It conforms to the FGND plugin schemas and provides full compatibility with the FGND ecosystem.
+The MACINA Plugin SDK for Objective-C provides a complete framework for building document handlers that can extract metadata, outlines, pages, and generate thumbnails from various document formats. It conforms to the MACINA plugin schemas and provides full compatibility with the MACINA ecosystem.
 
 ## Features
 
-- OK **Schema Compliant**: Fully conforms to FGND plugin schemas
+- OK **Schema Compliant**: Fully conforms to MACINA plugin schemas
 - OK **Async/Await Support**: Modern completion-handler based API
 - OK **JSON Serialization**: Built-in JSON serialization for all data types
 - OK **Type Safety**: Full Objective-C type safety with nullability annotations
@@ -21,8 +21,8 @@ The FGND Plugin SDK for Objective-C provides a complete framework for building d
 
 1. Clone or download the SDK:
 ```bash
-git clone https://github.com/your-org/fgnd-plugin-sdk-objc.git
-cd fgnd-plugin-sdk-objc
+git clone https://github.com/your-org/macina-plugin-sdk-objc.git
+cd macina-plugin-sdk-objc
 ```
 
 2. Build the SDK:
@@ -40,8 +40,8 @@ make install
 Add the header and link the static library:
 
 ```objc
-#import "FGNDPluginSDK.h"
-// Link with: -lFGNDPluginSDK -framework Foundation
+#import "MACINAPluginSDK.h"
+// Link with: -lMACINAPluginSDK -framework Foundation
 ```
 
 ## Quick Start
@@ -49,9 +49,9 @@ Add the header and link the static library:
 ### 1. Implement a Document Handler
 
 ```objc
-#import "FGNDPluginSDK.h"
+#import "MACINAPluginSDK.h"
 
-@interface HTMLDocumentHandler : NSObject <FGNDDocumentHandler>
+@interface HTMLDocumentHandler : NSObject <MACINADocumentHandler>
 @end
 
 @implementation HTMLDocumentHandler
@@ -68,9 +68,9 @@ Add the header and link the static library:
     return @[@"html", @"htm"];
 }
 
-- (void)extractMetadata:(NSString *)filePath completion:(void (^)(FGNDDocumentMetadata * _Nullable, NSError * _Nullable))completion {
+- (void)extractMetadata:(NSString *)filePath completion:(void (^)(MACINADocumentMetadata * _Nullable, NSError * _Nullable))completion {
     // Create extraction info
-    FGNDExtractionInfo *extractionInfo = [[FGNDExtractionInfo alloc] 
+    MACINAExtractionInfo *extractionInfo = [[MACINAExtractionInfo alloc] 
         initWithExtractorName:@"HTML Handler" 
              extractorVersion:@"1.0.0"];
     
@@ -87,7 +87,7 @@ Add the header and link the static library:
     long long fileSize = [[fileAttributes objectForKey:NSFileSize] longLongValue];
     
     // Create metadata
-    FGNDDocumentMetadata *metadata = [[FGNDDocumentMetadata alloc] 
+    MACINADocumentMetadata *metadata = [[MACINADocumentMetadata alloc] 
         initWithFilePath:filePath 
            fileSizeBytes:fileSize 
            contentLength:0 
@@ -133,11 +133,11 @@ Add the header and link the static library:
 ```objc
 // Register the handler
 HTMLDocumentHandler *htmlHandler = [[HTMLDocumentHandler alloc] init];
-[[FGNDPluginManager sharedManager] registerHandler:htmlHandler 
+[[MACINAPluginManager sharedManager] registerHandler:htmlHandler 
                                   forFileExtensions:@[@"html", @"htm"]];
 
 // Process a document
-FGNDPluginOutput *output = [[FGNDPluginManager sharedManager] 
+MACINAPluginOutput *output = [[MACINAPluginManager sharedManager] 
     processDocument:@"/path/to/document.html"];
 
 if (output.success) {
@@ -152,36 +152,36 @@ if (output.success) {
 
 ```objc
 // Serialize results to JSON
-NSString *metadataJSON = [FGNDJSONSerializer serializeMetadata:output.metadata];
-NSString *outlineJSON = [FGNDJSONSerializer serializeOutline:output.outline];
-NSString *pagesJSON = [FGNDJSONSerializer serializePages:output.pages];
+NSString *metadataJSON = [MACINAJSONSerializer serializeMetadata:output.metadata];
+NSString *outlineJSON = [MACINAJSONSerializer serializeOutline:output.outline];
+NSString *pagesJSON = [MACINAJSONSerializer serializePages:output.pages];
 
 // Full output serialization
-NSString *outputJSON = [FGNDJSONSerializer serializePluginOutput:output];
+NSString *outputJSON = [MACINAJSONSerializer serializePluginOutput:output];
 ```
 
 ## Architecture
 
 ### Core Classes
 
-- **`FGNDDocumentMetadata`**: Document metadata (conforms to `file-metadata.json` schema)
-- **`FGNDDocumentOutline`**: Document outline (conforms to `document-outline.json` schema)  
-- **`FGNDDisboundPage`**: Single page with text content (output is NSArray of these, conforms to `disbound-page.json` schema)
-- **`FGNDPluginOutput`**: Combined output from document processing
-- **`FGNDPluginManager`**: Central plugin registration and management
+- **`MACINADocumentMetadata`**: Document metadata (conforms to `file-metadata.json` schema)
+- **`MACINADocumentOutline`**: Document outline (conforms to `document-outline.json` schema)  
+- **`MACINADisboundPage`**: Single page with text content (output is NSArray of these, conforms to `disbound-page.json` schema)
+- **`MACINAPluginOutput`**: Combined output from document processing
+- **`MACINAPluginManager`**: Central plugin registration and management
 
 ### Protocol
 
-- **`FGNDDocumentHandler`**: Main protocol that document handlers must implement
+- **`MACINADocumentHandler`**: Main protocol that document handlers must implement
 
 ### Helpers
 
-- **`FGNDJSONSerializer`**: JSON serialization utilities
-- **`FGNDExtractionInfo`**: Metadata about the extraction process
+- **`MACINAJSONSerializer`**: JSON serialization utilities
+- **`MACINAExtractionInfo`**: Metadata about the extraction process
 
 ## Document Handler Protocol
 
-All document handlers must implement the `FGNDDocumentHandler` protocol:
+All document handlers must implement the `MACINADocumentHandler` protocol:
 
 ### Required Methods
 
@@ -192,11 +192,11 @@ All document handlers must implement the `FGNDDocumentHandler` protocol:
 - (NSArray<NSString *> *)supportedExtensions;
 
 // Core functionality
-- (void)extractMetadata:(NSString *)filePath completion:(void (^)(FGNDDocumentMetadata *, NSError *))completion;
-- (void)extractOutline:(NSString *)filePath completion:(void (^)(FGNDDocumentOutline *, NSError *))completion;
-- (void)disbind:(NSString *)filePath completion:(void (^)(NSArray<FGNDDisboundPage *> *, NSError *))completion;
+- (void)extractMetadata:(NSString *)filePath completion:(void (^)(MACINADocumentMetadata *, NSError *))completion;
+- (void)extractOutline:(NSString *)filePath completion:(void (^)(MACINADocumentOutline *, NSError *))completion;
+- (void)disbind:(NSString *)filePath completion:(void (^)(NSArray<MACINADisboundPage *> *, NSError *))completion;
 - (void)validateFile:(NSString *)filePath completion:(void (^)(BOOL, NSError *))completion;
-- (void)getFileInfo:(NSString *)filePath completion:(void (^)(FGNDFileInfo *, NSError *))completion;
+- (void)getFileInfo:(NSString *)filePath completion:(void (^)(MACINAFileInfo *, NSError *))completion;
 - (void)generateThumbnail:(NSString *)filePath width:(NSUInteger)width height:(NSUInteger)height completion:(void (^)(NSData *, NSError *))completion;
 ```
 
@@ -205,12 +205,12 @@ All document handlers must implement the `FGNDDocumentHandler` protocol:
 ```objc
 // Default implementations provided
 - (BOOL)canHandle:(NSString *)filePath;
-- (FGNDPluginCaps *)getCaps;
+- (MACINAPluginCaps *)getCaps;
 ```
 
 ## Schema Compliance
 
-This SDK fully conforms to the FGND plugin schemas:
+This SDK fully conforms to the MACINA plugin schemas:
 
 - OK `file-metadata.json` - Document metadata structure
 - OK `document-outline.json` - Document outline structure  

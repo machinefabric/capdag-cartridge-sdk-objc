@@ -1,6 +1,6 @@
 //
-//  FGNDSchemaValidation.m
-//  Schema validation extensions for FGND Plugin SDK
+//  MACINASchemaValidation.m
+//  Schema validation extensions for MACINA Plugin SDK
 //
 //  Provides convenience methods for creating schema-enabled capabilities
 //  and standard schemas for document processing.
@@ -9,7 +9,7 @@
 //  Schema validation now resolves spec IDs through the cap's mediaSpecs table.
 //
 
-#import "FGNDPluginSDK.h"
+#import "MACINAPluginSDK.h"
 
 // Well-known spec IDs
 static NSString * const kSpecIdStr = @"media:string";
@@ -17,7 +17,7 @@ static NSString * const kSpecIdInt = @"media:integer";
 static NSString * const kSpecIdObj = @"media:object";
 static NSString * const kSpecIdObjArray = @"media:object-array";
 
-@implementation CSCapArg (FGNDPluginSDK)
+@implementation CSCapArg (MACINAPluginSDK)
 
 + (instancetype)documentMetadataArgWithMediaUrn:(NSString *)mediaUrn
                                         required:(BOOL)required
@@ -43,7 +43,7 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
 
 @end
 
-@implementation CSCapOutput (FGNDPluginSDK)
+@implementation CSCapOutput (MACINAPluginSDK)
 
 + (instancetype)documentMetadataOutputWithMediaUrn:(NSString *)mediaUrn
                                        description:(NSString *)description {
@@ -65,7 +65,7 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
 
 @end
 
-@implementation FGNDSchemaValidationHelper
+@implementation MACINASchemaValidationHelper
 
 + (CSJSONSchemaValidator *)sharedValidator {
     static CSJSONSchemaValidator *_sharedValidator = nil;
@@ -76,10 +76,10 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
     return _sharedValidator;
 }
 
-+ (BOOL)validatePluginManifest:(FGNDPluginManifest *)manifest error:(NSError **)error {
++ (BOOL)validatePluginManifest:(MACINAPluginManifest *)manifest error:(NSError **)error {
     if (!manifest) {
         if (error) {
-            *error = [NSError errorWithDomain:@"FGNDSchemaValidationError"
+            *error = [NSError errorWithDomain:@"MACINASchemaValidationError"
                                          code:1001
                                      userInfo:@{NSLocalizedDescriptionKey: @"Plugin manifest is nil"}];
         }
@@ -148,7 +148,7 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
         if (error) {
             NSString *message = [NSString stringWithFormat:@"Argument uses media URN '%@' which is not declared in mediaSpecs",
                                specId];
-            *error = [NSError errorWithDomain:@"FGNDSchemaValidationError"
+            *error = [NSError errorWithDomain:@"MACINASchemaValidationError"
                                          code:1002
                                      userInfo:@{NSLocalizedDescriptionKey: message}];
         }
@@ -178,7 +178,7 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
         if (error) {
             NSString *message = [NSString stringWithFormat:@"Output uses spec ID '%@' which is not declared in mediaSpecs",
                                specId];
-            *error = [NSError errorWithDomain:@"FGNDSchemaValidationError"
+            *error = [NSError errorWithDomain:@"MACINASchemaValidationError"
                                          code:1003
                                      userInfo:@{NSLocalizedDescriptionKey: message}];
         }

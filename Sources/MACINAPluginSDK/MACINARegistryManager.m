@@ -1,18 +1,18 @@
 //
-//  FGNDRegistryManager.m
-//  FGNDPluginSDK
+//  MACINARegistryManager.m
+//  MACINAPluginSDK
 //
 //  Registry integration for plugin cap validation
 //
 
-#import "FGNDRegistryManager.h"
-#import "FGNDStandardCaps.h"
+#import "MACINARegistryManager.h"
+#import "MACINAStandardCaps.h"
 
-@interface FGNDRegistryManager ()
+@interface MACINARegistryManager ()
 @property (nonatomic, strong) CSCapRegistry *registry;
 @end
 
-@implementation FGNDRegistryManager
+@implementation MACINARegistryManager
 
 + (instancetype)manager {
     return [[self alloc] init];
@@ -60,7 +60,7 @@
 
 @end
 
-@implementation FGNDStandardCaps (Registry)
+@implementation MACINAStandardCaps (Registry)
 
 + (void)standardCapWithUrnCanonical:(NSString *)urnString completion:(void (^)(CSCap * _Nullable, NSError * _Nullable))completion {
     // First try to get from local standard caps
@@ -68,7 +68,7 @@
     
     if (localCap) {
         // Validate against registry if available
-        FGNDRegistryManager *manager = [FGNDRegistryManager manager];
+        MACINARegistryManager *manager = [MACINARegistryManager manager];
         [manager.registry validateCap:localCap completion:^(NSError *error) {
             if (error) {
                 NSLog(@"Warning: Local cap validation failed: %@", error);
@@ -80,12 +80,12 @@
     }
     
     // Try to get from registry
-    FGNDRegistryManager *manager = [FGNDRegistryManager manager];
+    MACINARegistryManager *manager = [MACINARegistryManager manager];
     [manager createCanonicalCap:urnString completion:completion];
 }
 
 + (void)validateStandardCaps:(void (^)(NSError * _Nullable))completion {
-    FGNDRegistryManager *manager = [FGNDRegistryManager manager];
+    MACINARegistryManager *manager = [MACINARegistryManager manager];
     
     NSArray<NSString *> *standardUrns = @[
         @"cap:op=extract;target=metadata;",
@@ -105,7 +105,7 @@
     
     [manager validatePluginCaps:caps completion:^(NSArray<NSError *> *errors) {
         if (errors.count > 0) {
-            NSError *combinedError = [NSError errorWithDomain:@"FGNDStandardCapsValidationError"
+            NSError *combinedError = [NSError errorWithDomain:@"MACINAStandardCapsValidationError"
                                                          code:4001
                                                      userInfo:@{
                                                          NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Standard caps validation failed with %lu errors", (unsigned long)errors.count],

@@ -1,5 +1,5 @@
 //
-//  FGNDStandardCaps.m
+//  MACINAStandardCaps.m
 //  Standard cap definitions implementation
 //
 //  Updated to use spec ID-based mediaSpec system per capns modernization.
@@ -7,7 +7,7 @@
 //  via the mediaSpecs table.
 //
 
-#import "include/FGNDStandardCaps.h"
+#import "include/MACINAStandardCaps.h"
 
 // Well-known spec IDs (built-in primitives)
 static NSString * const kSpecIdStr = @"media:string";
@@ -23,7 +23,7 @@ static NSString * const kSpecIdThumbnailImage = @"media:thumbnail-image";
 static NSString * const kSpecIdDocumentOutline = @"media:document-outline";
 static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
 
-@implementation FGNDStandardCaps
+@implementation MACINAStandardCaps
 
 #pragma mark - Spec ID Helper Functions
 

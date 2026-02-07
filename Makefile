@@ -1,4 +1,4 @@
-# Makefile for FGND Plugin SDK Objective-C
+# Makefile for MACINA Plugin SDK Objective-C
 # This SDK now depends on capns-objc for formal cap management
 
 # Directories
@@ -8,7 +8,7 @@ DIST_DIR = dist
 
 help:
 	@echo "Usage: make <target>\n\n\
-	  build\t\tBuild the FGND Plugin SDK with cap SDK integration\n\
+	  build\t\tBuild the MACINA Plugin SDK with cap SDK integration\n\
 	  build-capns\tBuild only the cap SDK\n\
 	  clean\t\tRemove built artifacts\n\
 	  install\tInstall the library to system paths\n\
@@ -27,7 +27,7 @@ build-capns:
 
 .PHONY: build-plugin-sdk
 build-plugin-sdk: build-capns
-	@echo "Building fgnd-plugin-sdk-objc..."
+	@echo "Building macina-plugin-sdk-objc..."
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(DIST_DIR)
 	
@@ -35,30 +35,30 @@ build-plugin-sdk: build-capns
 	@cp -r $(CAP_SDK_DIR)/Sources/CapNs/include/* $(DIST_DIR)/
 	
 	# Compile our plugin SDK with cap SDK integration (now from Sources directory)
-	/usr/bin/clang -c -o $(BUILD_DIR)/FGNDPluginSDK.o Sources/FGNDPluginSDK/FGNDPluginSDK.m \
+	/usr/bin/clang -c -o $(BUILD_DIR)/MACINAPluginSDK.o Sources/MACINAPluginSDK/MACINAPluginSDK.m \
 		-I$(DIST_DIR) \
 		-I$(CAP_SDK_DIR)/Sources/CapNs/include \
-		-ISources/FGNDPluginSDK/include \
+		-ISources/MACINAPluginSDK/include \
 		-fobjc-arc -fno-modules
 	
-	/usr/bin/clang -c -o $(BUILD_DIR)/FGNDStandardCaps.o Sources/FGNDPluginSDK/FGNDStandardCaps.m \
+	/usr/bin/clang -c -o $(BUILD_DIR)/MACINAStandardCaps.o Sources/MACINAPluginSDK/MACINAStandardCaps.m \
 		-I$(DIST_DIR) \
 		-I$(CAP_SDK_DIR)/Sources/CapNs/include \
-		-ISources/FGNDPluginSDK/include \
+		-ISources/MACINAPluginSDK/include \
 		-fobjc-arc -fno-modules
 	
-	/usr/bin/clang -c -o $(BUILD_DIR)/CSPluginCaps.o Sources/FGNDPluginSDK/CSPluginCaps.m \
+	/usr/bin/clang -c -o $(BUILD_DIR)/CSPluginCaps.o Sources/MACINAPluginSDK/CSPluginCaps.m \
 		-I$(DIST_DIR) \
 		-I$(CAP_SDK_DIR)/Sources/CapNs/include \
-		-ISources/FGNDPluginSDK/include \
+		-ISources/MACINAPluginSDK/include \
 		-fobjc-arc -fno-modules
 	
 	# Create static library with all object files including CapNs
-	ar rcs $(DIST_DIR)/libFGNDPluginSDK.a $(BUILD_DIR)/*.o $(CAP_SDK_DIR)/.build/release/CapNs.build/*.o
+	ar rcs $(DIST_DIR)/libMACINAPluginSDK.a $(BUILD_DIR)/*.o $(CAP_SDK_DIR)/.build/release/CapNs.build/*.o
 	
 	# Copy plugin SDK headers
-	@cp Sources/FGNDPluginSDK/include/*.h $(DIST_DIR)/
-	@echo "OK FGND Plugin SDK built successfully with cap SDK integration in $(DIST_DIR)/"
+	@cp Sources/MACINAPluginSDK/include/*.h $(DIST_DIR)/
+	@echo "OK MACINA Plugin SDK built successfully with cap SDK integration in $(DIST_DIR)/"
 
 .PHONY: clean
 clean:
@@ -68,10 +68,10 @@ clean:
 
 .PHONY: install
 install: build
-	@echo "Installing FGND Plugin SDK with cap SDK..."
-	sudo cp $(DIST_DIR)/libFGNDPluginSDK.a /usr/local/lib/
+	@echo "Installing MACINA Plugin SDK with cap SDK..."
+	sudo cp $(DIST_DIR)/libMACINAPluginSDK.a /usr/local/lib/
 	sudo cp $(DIST_DIR)/*.h /usr/local/include/
-	@echo "OK FGND Plugin SDK installed to system paths"
+	@echo "OK MACINA Plugin SDK installed to system paths"
 
 .PHONY: test
 test: build
@@ -85,7 +85,7 @@ example:
 	@echo ""
 	@echo "1. Add both SDKs to your project:"
 	@echo "   #import \"CapNs.h\""
-	@echo "   #import \"FGNDPluginSDK.h\""
+	@echo "   #import \"MACINAPluginSDK.h\""
 	@echo ""
 	@echo "2. Create formal cap definitions:"
 	@echo "   NSError *error;"
@@ -97,7 +97,7 @@ example:
 	@echo "   [caps addCap:cap];"
 	@echo ""
 	@echo "4. Create plugin manifest with formal caps:"
-	@echo "   FGNDPluginManifest *pluginManifest = [[FGNDPluginManifest alloc]"
+	@echo "   MACINAPluginManifest *pluginManifest = [[MACINAPluginManifest alloc]"
 	@echo "       initWithName:@\"MyPlugin\""
 	@echo "       version:@\"1.0.0\""
 	@echo "       pluginDescription:@\"Example plugin\""

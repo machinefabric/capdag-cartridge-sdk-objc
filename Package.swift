@@ -5,7 +5,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "FGNDPluginSDK",
+    name: "MACINAPluginSDK",
     platforms: [
         .macOS(.v11),
         .iOS(.v14)
@@ -13,8 +13,8 @@ let package = Package(
     products: [
         // The main plugin SDK library
         .library(
-            name: "FGNDPluginSDK",
-            targets: ["FGNDPluginSDK"]),
+            name: "MACINAPluginSDK",
+            targets: ["MACINAPluginSDK"]),
     ],
     dependencies: [
         // Depend on the cap definition package
@@ -23,12 +23,12 @@ let package = Package(
     targets: [
         // The main plugin SDK target
         .target(
-            name: "FGNDPluginSDK",
+            name: "MACINAPluginSDK",
             dependencies: [
                 .product(name: "CapNs", package: "capns-objc"),
                 .product(name: "CapNsCbor", package: "capns-objc"),
             ],
-            path: "Sources/FGNDPluginSDK",
+            path: "Sources/MACINAPluginSDK",
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("include"),
@@ -41,9 +41,9 @@ let package = Package(
 
         // Tests target
         .testTarget(
-            name: "FGNDPluginSDKTests",
-            dependencies: ["FGNDPluginSDK"],
-            path: "Tests/FGNDPluginSDKTests"
+            name: "MACINAPluginSDKTests",
+            dependencies: ["MACINAPluginSDK"],
+            path: "Tests/MACINAPluginSDKTests"
         ),
     ]
 )
