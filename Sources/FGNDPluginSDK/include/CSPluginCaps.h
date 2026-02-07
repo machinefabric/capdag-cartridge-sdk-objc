@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param capRequest The cap request string
  * @return YES if the plugin can handle the cap request
  */
-- (BOOL)canHandleCap:(NSString *)capRequest;
+- (BOOL)acceptsCap:(NSString *)capRequest;
 
 /**
  * Get all cap URNs as strings

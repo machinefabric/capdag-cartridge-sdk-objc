@@ -67,9 +67,9 @@
     [self.mutableCaps removeObject:cap];
 }
 
-- (BOOL)canHandleCap:(NSString *)capRequest {
+- (BOOL)acceptsCap:(NSString *)capRequest {
     for (CSCap *cap in self.mutableCaps) {
-        if ([cap matchesRequest:capRequest]) {
+        if ([cap acceptsRequest:capRequest]) {
             return YES;
         }
     }
