@@ -26,7 +26,7 @@ let package = Package(
             name: "MACINAPluginSDK",
             dependencies: [
                 .product(name: "CapNs", package: "capns-objc"),
-                .product(name: "CapNsCbor", package: "capns-objc"),
+                .product(name: "Bifaci", package: "capns-objc"),
             ],
             path: "Sources/MACINAPluginSDK",
             publicHeadersPath: "include",
