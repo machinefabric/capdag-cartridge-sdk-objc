@@ -7,7 +7,7 @@ import PackageDescription
 let package = Package(
     name: "MACINAPluginSDK",
     platforms: [
-        .macOS(.v11),
+        .macOS(.v13),
         .iOS(.v14)
     ],
     products: [

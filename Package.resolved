@@ -1,6 +1,15 @@
 {
-  "originHash" : "d9492b966228916df1425e0f4d434e335caab3a881ff771108ab5700e927215c",
+  "originHash" : "1ace0d08e8bf50840538381dd344d7db71b771b6fa46fe48077f8aaf8ff631b0",
   "pins" : [
+    {
+      "identity" : "glob",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Bouke/Glob.git",
+      "state" : {
+        "revision" : "deda6e163d2ff2a8d7e138e2c3326dbd71157faf",
+        "version" : "1.0.5"
+      }
+    },
     {
       "identity" : "swiftcbor",
       "kind" : "remoteSourceControl",
