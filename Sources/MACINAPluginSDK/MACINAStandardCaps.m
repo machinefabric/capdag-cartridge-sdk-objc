@@ -28,7 +28,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
 #pragma mark - Spec ID Helper Functions
 
 /// Get the input spec ID for a given file extension
-/// - PDF files: media:bytes
+/// - PDF files: media:
 /// - Text files (md, rst, log, txt): media:string
 + (NSString *)inputSpecIdForExt:(NSString *)ext {
     if ([ext isEqualToString:@"pdf"]) {
@@ -165,7 +165,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
 
 + (CSCap *)generateThumbnailCap {
     NSError *error;
-    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:in=media:void;op=generate;out=media:bytes;target=thumbnail" error:&error];
+    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:in=media:void;op=generate;out=media:;target=thumbnail" error:&error];
     if (!capUrn) {
         @throw [NSException exceptionWithName:@"InvalidCapUrn"
                                        reason:@"Failed to create cap URN for generate-thumbnail"
