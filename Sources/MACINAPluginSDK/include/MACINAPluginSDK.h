@@ -313,7 +313,7 @@ typedef CSCapManifest MACINAPluginManifest;
 
 /**
  * Create a document metadata argument using the new args+sources model
- * @param mediaUrn Media URN identifier (e.g., media:file-metadata;textable;form=map)
+ * @param mediaUrn Media URN identifier (e.g., media:file-metadata;textable;record)
  * @param required Whether the argument is required
  * @param sources Array of CSArgSource specifying how the argument can be provided
  * @param description Human-readable description
@@ -325,7 +325,7 @@ typedef CSCapManifest MACINAPluginManifest;
 
 /**
  * Create a disbound page argument using the new args+sources model
- * @param mediaUrn Media URN identifier (e.g., media:disbound-page;textable;form=list)
+ * @param mediaUrn Media URN identifier (e.g., media:disbound-page;textable;list)
  * @param required Whether the argument is required
  * @param sources Array of CSArgSource specifying how the argument can be provided
  * @param description Human-readable description

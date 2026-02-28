@@ -117,7 +117,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
 
 + (CSCap *)extractMetadataCap {
     NSError *error;
-    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:in=\"media:textable;form=scalar\";op=extract;out=\"media:form=map;textable\";target=metadata" error:&error];
+    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:in=\"media:textable\";op=extract;out=\"media:record;textable\";target=metadata" error:&error];
     if (!capUrn) {
         @throw [NSException exceptionWithName:@"InvalidCapUrn"
                                        reason:@"Failed to create cap URN for extract-metadata"
@@ -193,7 +193,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
 
 + (CSCap *)extractOutlineCap {
     NSError *error;
-    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:in=\"media:textable;form=scalar\";op=extract;out=\"media:form=map;textable\";target=outline" error:&error];
+    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:in=\"media:textable\";op=extract;out=\"media:record;textable\";target=outline" error:&error];
     if (!capUrn) {
         @throw [NSException exceptionWithName:@"InvalidCapUrn"
                                        reason:@"Failed to create cap URN for extract-outline"
@@ -258,7 +258,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
 
 + (CSCap *)disbindCap {
     NSError *error;
-    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:in=\"media:textable;form=scalar\";op=extract;out=\"media:form=list;textable\";target=pages" error:&error];
+    CSCapUrn *capUrn = [CSCapUrn fromString:@"cap:in=\"media:textable\";op=extract;out=\"media:list;textable\";target=pages" error:&error];
     if (!capUrn) {
         @throw [NSException exceptionWithName:@"InvalidCapUrn"
                                        reason:@"Failed to create cap URN for grind"
