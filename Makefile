@@ -27,7 +27,7 @@ build-capns:
 
 .PHONY: build-plugin-sdk
 build-plugin-sdk: build-capns
-	@echo "Building macina-plugin-sdk-objc..."
+	@echo "Building machfab-plugin-sdk-objc..."
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(DIST_DIR)
 	

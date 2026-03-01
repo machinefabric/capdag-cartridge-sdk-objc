@@ -21,8 +21,8 @@ The MACINA Plugin SDK for Objective-C provides a complete framework for building
 
 1. Clone or download the SDK:
 ```bash
-git clone https://github.com/your-org/macina-plugin-sdk-objc.git
-cd macina-plugin-sdk-objc
+git clone https://github.com/your-org/machfab-plugin-sdk-objc.git
+cd machfab-plugin-sdk-objc
 ```
 
 2. Build the SDK:
