@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CapNs.h"
+#import "CapDAG.h"
 #import "MACINAStandardCaps.h"
 
 @class CSCap;

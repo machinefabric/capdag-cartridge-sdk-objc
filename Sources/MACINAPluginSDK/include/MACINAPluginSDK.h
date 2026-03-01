@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CapNs.h"
+#import "CapDAG.h"
 #import "CSPluginCaps.h"
 #import "CSStandardCaps.h"
 #import "MACINAStandardCaps.h"
@@ -52,7 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 // MARK: - Plugin Caps (now using formal cap SDK)
-// Use CSPluginCaps from CapNs instead of the old string-based system
+// Use CSPluginCaps from CapDAG instead of the old string-based system
 
 // MARK: - Plugin Manifest (for --manifest output)
 // Re-export CSCapManifest as MACINAPluginManifest for backward compatibility

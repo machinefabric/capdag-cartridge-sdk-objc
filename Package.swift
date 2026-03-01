@@ -1,4 +1,4 @@
-// version: 0.83.12936
+// version: 0.84.12946
 // swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
@@ -18,15 +18,15 @@ let package = Package(
     ],
     dependencies: [
         // Depend on the cap definition package
-        .package(path: "../capns-objc"),
+        .package(path: "../capdag-objc"),
     ],
     targets: [
         // The main plugin SDK target
         .target(
             name: "MACINAPluginSDK",
             dependencies: [
-                .product(name: "CapNs", package: "capns-objc"),
-                .product(name: "Bifaci", package: "capns-objc"),
+                .product(name: "CapDAG", package: "capdag-objc"),
+                .product(name: "Bifaci", package: "capdag-objc"),
             ],
             path: "Sources/MACINAPluginSDK",
             publicHeadersPath: "include",

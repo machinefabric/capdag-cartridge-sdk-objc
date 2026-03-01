@@ -1,15 +1,15 @@
 # Makefile for MACINA Plugin SDK Objective-C
-# This SDK now depends on capns-objc for formal cap management
+# This SDK now depends on capdag-objc for formal cap management
 
 # Directories
-CAP_SDK_DIR = ../capns-objc
+CAP_SDK_DIR = ../capdag-objc
 BUILD_DIR = build
 DIST_DIR = dist
 
 help:
 	@echo "Usage: make <target>\n\n\
 	  build\t\tBuild the MACINA Plugin SDK with cap SDK integration\n\
-	  build-capns\tBuild only the cap SDK\n\
+	  build-capdag\tBuild only the cap SDK\n\
 	  clean\t\tRemove built artifacts\n\
 	  install\tInstall the library to system paths\n\
 	  test\t\tRun tests for both SDKs\n\
@@ -18,43 +18,43 @@ help:
 
 # Build both the cap SDK and the plugin SDK
 .PHONY: build
-build: build-capns build-plugin-sdk
+build: build-capdag build-plugin-sdk
 
-.PHONY: build-capns
-build-capns:
-	@echo "Building capns-objc..."
+.PHONY: build-capdag
+build-capdag:
+	@echo "Building capdag-objc..."
 	cd $(CAP_SDK_DIR) && swift build -c release
 
 .PHONY: build-plugin-sdk
-build-plugin-sdk: build-capns
+build-plugin-sdk: build-capdag
 	@echo "Building machfab-plugin-sdk-objc..."
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(DIST_DIR)
 	
 	# Copy cap SDK headers
-	@cp -r $(CAP_SDK_DIR)/Sources/CapNs/include/* $(DIST_DIR)/
+	@cp -r $(CAP_SDK_DIR)/Sources/CapDAG/include/* $(DIST_DIR)/
 	
 	# Compile our plugin SDK with cap SDK integration (now from Sources directory)
 	/usr/bin/clang -c -o $(BUILD_DIR)/MACINAPluginSDK.o Sources/MACINAPluginSDK/MACINAPluginSDK.m \
 		-I$(DIST_DIR) \
-		-I$(CAP_SDK_DIR)/Sources/CapNs/include \
+		-I$(CAP_SDK_DIR)/Sources/CapDAG/include \
 		-ISources/MACINAPluginSDK/include \
 		-fobjc-arc -fno-modules
 	
 	/usr/bin/clang -c -o $(BUILD_DIR)/MACINAStandardCaps.o Sources/MACINAPluginSDK/MACINAStandardCaps.m \
 		-I$(DIST_DIR) \
-		-I$(CAP_SDK_DIR)/Sources/CapNs/include \
+		-I$(CAP_SDK_DIR)/Sources/CapDAG/include \
 		-ISources/MACINAPluginSDK/include \
 		-fobjc-arc -fno-modules
 	
 	/usr/bin/clang -c -o $(BUILD_DIR)/CSPluginCaps.o Sources/MACINAPluginSDK/CSPluginCaps.m \
 		-I$(DIST_DIR) \
-		-I$(CAP_SDK_DIR)/Sources/CapNs/include \
+		-I$(CAP_SDK_DIR)/Sources/CapDAG/include \
 		-ISources/MACINAPluginSDK/include \
 		-fobjc-arc -fno-modules
 	
-	# Create static library with all object files including CapNs
-	ar rcs $(DIST_DIR)/libMACINAPluginSDK.a $(BUILD_DIR)/*.o $(CAP_SDK_DIR)/.build/release/CapNs.build/*.o
+	# Create static library with all object files including CapDAG
+	ar rcs $(DIST_DIR)/libMACINAPluginSDK.a $(BUILD_DIR)/*.o $(CAP_SDK_DIR)/.build/release/CapDAG.build/*.o
 	
 	# Copy plugin SDK headers
 	@cp Sources/MACINAPluginSDK/include/*.h $(DIST_DIR)/
@@ -84,7 +84,7 @@ example:
 	@echo "Example plugin integration with formal cap SDK:"
 	@echo ""
 	@echo "1. Add both SDKs to your project:"
-	@echo "   #import \"CapNs.h\""
+	@echo "   #import \"CapDAG.h\""
 	@echo "   #import \"MACINAPluginSDK.h\""
 	@echo ""
 	@echo "2. Create formal cap definitions:"

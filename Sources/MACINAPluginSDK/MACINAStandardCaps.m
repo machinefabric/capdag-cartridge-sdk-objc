@@ -2,7 +2,7 @@
 //  MACINAStandardCaps.m
 //  Standard cap definitions implementation
 //
-//  Updated to use spec ID-based mediaSpec system per capns modernization.
+//  Updated to use spec ID-based mediaSpec system per capdag modernization.
 //  All types are expressed via spec IDs (e.g., "media:string") which resolve
 //  via the mediaSpecs table.
 //
@@ -75,7 +75,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
         @{
             @"urn": kSpecIdFileMetadata,
             @"media_type": @"application/json",
-            @"profile_uri": @"https://capns.org/schema/file-metadata"
+            @"profile_uri": @"https://capdag.com/schema/file-metadata"
         }
     ];
 }
@@ -86,7 +86,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
         @{
             @"urn": kSpecIdThumbnailImage,
             @"media_type": @"image/png",
-            @"profile_uri": @"https://capns.org/schema/thumbnail-image"
+            @"profile_uri": @"https://capdag.com/schema/thumbnail-image"
         }
     ];
 }
@@ -97,7 +97,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
         @{
             @"urn": kSpecIdDocumentOutline,
             @"media_type": @"application/json",
-            @"profile_uri": @"https://capns.org/schema/document-outline"
+            @"profile_uri": @"https://capdag.com/schema/document-outline"
         }
     ];
 }
@@ -108,7 +108,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
         @{
             @"urn": kSpecIdDisboundPage,
             @"media_type": @"application/json",
-            @"profile_uri": @"https://capns.org/schema/disbound-page"
+            @"profile_uri": @"https://capdag.com/schema/disbound-page"
         }
     ];
 }

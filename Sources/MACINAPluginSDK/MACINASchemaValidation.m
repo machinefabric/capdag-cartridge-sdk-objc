@@ -5,7 +5,7 @@
 //  Provides convenience methods for creating schema-enabled capabilities
 //  and standard schemas for document processing.
 //
-//  Updated to use spec ID-based mediaSpec system per capns modernization.
+//  Updated to use spec ID-based mediaSpec system per capdag modernization.
 //  Schema validation now resolves spec IDs through the cap's mediaSpecs table.
 //
 
@@ -106,7 +106,7 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
 
 /// Check if a spec ID is a well-known built-in (std:* namespace) that doesn't need declaration in mediaSpecs
 + (BOOL)isBuiltinSpecId:(NSString *)specId {
-    // The "std:" namespace is reserved for well-known spec IDs defined by capns
+    // The "std:" namespace is reserved for well-known spec IDs defined by capdag
     // These don't need to be declared in the cap's mediaSpecs table
     static NSSet<NSString *> *wellKnownSpecIds = nil;
     static dispatch_once_t onceToken;

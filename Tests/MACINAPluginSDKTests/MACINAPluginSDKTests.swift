@@ -1,6 +1,6 @@
 import XCTest
 @testable import MACINAPluginSDK
-@testable import CapNs
+@testable import CapDAG
 
 final class MACINAPluginSDKTests: XCTestCase {
     func testStandardCaps() throws {
@@ -47,8 +47,8 @@ final class MACINAPluginSDKTests: XCTestCase {
         XCTAssertEqual(failureResult.error, "test error")
     }
     
-    func testCapNsIntegration() throws {
-        // Test that we can use CSCapCaller and CSResponseWrapper from capns-objc
+    func testCapDAGIntegration() throws {
+        // Test that we can use CSCapCaller and CSResponseWrapper from capdag-objc
         let registry = MACINAPluginRegistry.shared()
         
         // Register a dummy plugin for testing
