@@ -156,6 +156,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
         title:@"Extract Document Metadata"
         command:command
         description:@"Extract document metadata including title, author, creation date, file size, and other properties"
+      documentation:nil
         metadata:@{}
         mediaSpecs:[self extractMetadataMediaSpecs]
                 args:args
@@ -184,6 +185,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
         title:@"Generate Thumbnail"
         command:command
         description:@"Generate a thumbnail image preview of the document"
+      documentation:nil
         metadata:@{}
         mediaSpecs:[self generateThumbnailMediaSpecs]
                 args:args
@@ -249,6 +251,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
                         title:@"Extract Document Outline"
                       command:command
                   description:@"Extract document outline/table of contents with hierarchical structure"
+                documentation:nil
                      metadata:@{}
                    mediaSpecs:[self extractOutlineMediaSpecs]
                          args:args
@@ -304,6 +307,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
                         title:@"Extract File Chips"
                       command:command
                   description:@"Extract file chips with text content organized by pages and paragraphs"
+                documentation:nil
                      metadata:@{}
                    mediaSpecs:[self grindMediaSpecs]
                          args:args
@@ -372,6 +376,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
                                   title:baseCap.title
                                 command:baseCap.command
                             description:baseCap.capDescription
+                          documentation:baseCap.documentation
                                metadata:baseCap.metadata
                              mediaSpecs:baseCap.mediaSpecs
                                    args:baseCap.args
@@ -412,6 +417,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
                                   title:baseCap.title
                                 command:baseCap.command
                             description:baseCap.capDescription
+                          documentation:baseCap.documentation
                                metadata:baseCap.metadata
                              mediaSpecs:baseCap.mediaSpecs
                                    args:baseCap.args
@@ -452,6 +458,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
                                   title:baseCap.title
                                 command:baseCap.command
                             description:baseCap.capDescription
+                          documentation:baseCap.documentation
                                metadata:baseCap.metadata
                              mediaSpecs:baseCap.mediaSpecs
                                    args:baseCap.args
@@ -492,6 +499,7 @@ static NSString * const kSpecIdDisboundPage = @"media:disbound-page";
                                   title:baseCap.title
                                 command:baseCap.command
                             description:baseCap.capDescription
+                          documentation:baseCap.documentation
                                metadata:baseCap.metadata
                              mediaSpecs:baseCap.mediaSpecs
                                    args:baseCap.args
