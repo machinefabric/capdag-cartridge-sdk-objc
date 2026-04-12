@@ -5,30 +5,30 @@
 import PackageDescription
 
 let package = Package(
-    name: "MACINAPluginSDK",
+    name: "MACINACartridgeSDK",
     platforms: [
         .macOS(.v13),
         .iOS(.v14)
     ],
     products: [
-        // The main plugin SDK library
+        // The main cartridge SDK library
         .library(
-            name: "MACINAPluginSDK",
-            targets: ["MACINAPluginSDK"]),
+            name: "MACINACartridgeSDK",
+            targets: ["MACINACartridgeSDK"]),
     ],
     dependencies: [
         // Depend on the cap definition package
         .package(path: "../capdag-objc"),
     ],
     targets: [
-        // The main plugin SDK target
+        // The main cartridge SDK target
         .target(
-            name: "MACINAPluginSDK",
+            name: "MACINACartridgeSDK",
             dependencies: [
                 .product(name: "CapDAG", package: "capdag-objc"),
                 .product(name: "Bifaci", package: "capdag-objc"),
             ],
-            path: "Sources/MACINAPluginSDK",
+            path: "Sources/MACINACartridgeSDK",
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("include"),
@@ -41,9 +41,9 @@ let package = Package(
 
         // Tests target
         .testTarget(
-            name: "MACINAPluginSDKTests",
-            dependencies: ["MACINAPluginSDK"],
-            path: "Tests/MACINAPluginSDKTests"
+            name: "MACINACartridgeSDKTests",
+            dependencies: ["MACINACartridgeSDK"],
+            path: "Tests/MACINACartridgeSDKTests"
         ),
     ]
 )

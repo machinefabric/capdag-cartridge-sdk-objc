@@ -1,6 +1,6 @@
 //
-//  CSPluginCaps.h
-//  Plugin caps collection
+//  CSCartridgeCaps.h
+//  Cartridge caps collection
 //
 //  Manages a collection of caps with searching, matching, and querying functionality.
 //
@@ -11,23 +11,23 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- * Plugin caps collection
+ * Cartridge caps collection
  */
-@interface CSPluginCaps : NSObject <NSCopying, NSCoding>
+@interface CSCartridgeCaps : NSObject <NSCopying, NSCoding>
 
 /// Array of caps
 @property (nonatomic, readonly) NSArray<CSCap *> *caps;
 
 /**
  * Create a new empty caps collection
- * @return A new CSPluginCaps instance
+ * @return A new CSCartridgeCaps instance
  */
 + (instancetype)new;
 
 /**
  * Create caps collection with an array of caps
  * @param caps Array of caps
- * @return A new CSPluginCaps instance
+ * @return A new CSCartridgeCaps instance
  */
 + (instancetype)capsWithArray:(NSArray<CSCap *> *)caps;
 
@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
  * Create caps collection from a dictionary representation
  * @param dictionary The dictionary containing caps data
  * @param error Pointer to NSError for error reporting
- * @return A new CSPluginCaps instance, or nil if parsing fails
+ * @return A new CSCartridgeCaps instance, or nil if parsing fails
  */
 + (instancetype)capsWithDictionary:(NSDictionary * _Nonnull)dictionary error:(NSError * _Nullable * _Nullable)error NS_SWIFT_NAME(init(dictionary:error:));
 
@@ -52,9 +52,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeCap:(CSCap *)cap;
 
 /**
- * Check if the plugin has a specific cap
+ * Check if the cartridge has a specific cap
  * @param capRequest The cap request string
- * @return YES if the plugin can handle the cap request
+ * @return YES if the cartridge can handle the cap request
  */
 - (BOOL)acceptsCap:(NSString *)capRequest;
 

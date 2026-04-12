@@ -1,24 +1,24 @@
 //
-//  MACINAPluginSDK.m
-//  MACINA Plugin SDK for Objective-C
+//  MACINACartridgeSDK.m
+//  MACINA Cartridge SDK for Objective-C
 //
-//  Unified cap-based plugin interface with standardized command-line calling
+//  Unified cap-based cartridge interface with standardized command-line calling
 //
 
-#import "include/MACINAPluginSDK.h"
+#import "include/MACINACartridgeSDK.h"
 
-// MARK: - Unified Plugin Registry
+// MARK: - Unified Cartridge Registry
 
-@implementation MACINAPluginRegistry {
-    NSMutableDictionary<NSString *, MACINAPluginEntry *> *_plugins;
+@implementation MACINACartridgeRegistry {
+    NSMutableDictionary<NSString *, MACINACartridgeEntry *> *_cartridges;
     NSMutableDictionary<NSString *, NSMutableArray<NSString *> *> *_capIndex;
 }
 
 + (instancetype)sharedRegistry {
-    static MACINAPluginRegistry *sharedInstance = nil;
+    static MACINACartridgeRegistry *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[MACINAPluginRegistry alloc] init];
+        sharedInstance = [[MACINACartridgeRegistry alloc] init];
     });
     return sharedInstance;
 }
@@ -26,59 +26,59 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _plugins = [[NSMutableDictionary alloc] init];
+        _cartridges = [[NSMutableDictionary alloc] init];
         _capIndex = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
 
-- (void)registerPlugin:(NSString *)name
+- (void)registerCartridge:(NSString *)name
             binaryPath:(NSString *)binaryPath
           caps:(NSArray<NSString *> *)caps {
-    
-    MACINAPluginEntry *entry = [[MACINAPluginEntry alloc] initWithBinaryPath:binaryPath
+
+    MACINACartridgeEntry *entry = [[MACINACartridgeEntry alloc] initWithBinaryPath:binaryPath
                                                             caps:caps];
-    
+
     // Update cap index
     for (NSString *cap in caps) {
-        NSMutableArray<NSString *> *plugins = _capIndex[cap];
-        if (!plugins) {
-            plugins = [[NSMutableArray alloc] init];
-            _capIndex[cap] = plugins;
+        NSMutableArray<NSString *> *cartridges = _capIndex[cap];
+        if (!cartridges) {
+            cartridges = [[NSMutableArray alloc] init];
+            _capIndex[cap] = cartridges;
         }
-        [plugins addObject:name];
+        [cartridges addObject:name];
     }
-    
-    _plugins[name] = entry;
+
+    _cartridges[name] = entry;
 }
 
 - (CSCapCaller *)can:(NSString *)cap error:(NSError **)error {
-    NSString *bestPlugin = [self findBestPluginForCap:cap];
-    if (!bestPlugin) {
+    NSString *bestCartridge = [self findBestCartridgeForCap:cap];
+    if (!bestCartridge) {
         if (error) {
-            *error = [NSError errorWithDomain:@"MACINAPluginSDK"
+            *error = [NSError errorWithDomain:@"MACINACartridgeSDK"
                                          code:1001
-                                     userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Cap '%@' is not available in any registered plugin", cap]}];
+                                     userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Cap '%@' is not available in any registered cartridge", cap]}];
         }
         return nil;
     }
-    
-    MACINAPluginEntry *plugin = _plugins[bestPlugin];
-    if (!plugin) {
+
+    MACINACartridgeEntry *cartridge = _cartridges[bestCartridge];
+    if (!cartridge) {
         if (error) {
-            *error = [NSError errorWithDomain:@"MACINAPluginSDK"
+            *error = [NSError errorWithDomain:@"MACINACartridgeSDK"
                                          code:1002
-                                     userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Plugin '%@' not found in registry", bestPlugin]}];
+                                     userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Cartridge '%@' not found in registry", bestCartridge]}];
         }
         return nil;
     }
-    
-    // Create a cap host adapter for the plugin binary
-    MACINAPluginCapSet *capSet = [[MACINAPluginCapSet alloc] initWithBinaryPath:plugin.binaryPath];
-    
+
+    // Create a cap host adapter for the cartridge binary
+    MACINACartridgeCapSet *capSet = [[MACINACartridgeCapSet alloc] initWithBinaryPath:cartridge.binaryPath];
+
     // Get cap definition (for now, create a basic one - in production this would come from registry)
     CSCap *capDefinition = [self createBasicCapDefinitionForCap:cap];
-    
+
     return [CSCapCaller callerWithCap:cap capSet:capSet capDefinition:capDefinition];
 }
 
@@ -90,58 +90,58 @@
     return [_capIndex allKeys];
 }
 
-- (NSString *)findBestPluginForCap:(NSString *)cap {
+- (NSString *)findBestCartridgeForCap:(NSString *)cap {
     NSArray<NSString *> *candidates = [self getCapCandidates:cap];
     if (candidates.count == 0) {
         return nil;
     }
-    
-    NSString *bestPlugin = nil;
+
+    NSString *bestCartridge = nil;
     NSInteger bestScore = -1;
-    
-    for (NSString *pluginName in candidates) {
-        MACINAPluginEntry *plugin = _plugins[pluginName];
-        NSInteger score = [self calculateCapScore:plugin forCap:cap];
+
+    for (NSString *cartridgeName in candidates) {
+        MACINACartridgeEntry *cartridge = _cartridges[cartridgeName];
+        NSInteger score = [self calculateCapScore:cartridge forCap:cap];
         if (score > bestScore) {
-            bestPlugin = pluginName;
+            bestCartridge = cartridgeName;
             bestScore = score;
         }
     }
-    
-    return bestPlugin;
+
+    return bestCartridge;
 }
 
 - (NSArray<NSString *> *)getCapCandidates:(NSString *)cap {
     // Direct match
-    NSArray<NSString *> *plugins = _capIndex[cap];
-    if (plugins) {
-        return plugins;
+    NSArray<NSString *> *cartridges = _capIndex[cap];
+    if (cartridges) {
+        return cartridges;
     }
-    
+
     // Try wildcard variations
     if ([cap containsString:@":"]) {
         NSArray<NSString *> *parts = [cap componentsSeparatedByString:@":"];
         if (parts.count == 2) {
             NSString *wildcardCap = [NSString stringWithFormat:@"%@:*", parts[0]];
-            NSArray<NSString *> *wildcardPlugins = _capIndex[wildcardCap];
-            if (wildcardPlugins) {
-                return wildcardPlugins;
+            NSArray<NSString *> *wildcardCartridges = _capIndex[wildcardCap];
+            if (wildcardCartridges) {
+                return wildcardCartridges;
             }
         }
     }
-    
+
     return @[];
 }
 
-- (NSInteger)calculateCapScore:(MACINAPluginEntry *)plugin forCap:(NSString *)cap {
+- (NSInteger)calculateCapScore:(MACINACartridgeEntry *)cartridge forCap:(NSString *)cap {
     NSInteger score = 0;
-    
+
     // Add specificity score
-    for (NSString *pluginCap in plugin.caps) {
-        if ([pluginCap isEqualToString:cap]) {
-            if ([pluginCap containsString:@":"] && ![pluginCap hasSuffix:@":*"]) {
+    for (NSString *cartridgeCap in cartridge.caps) {
+        if ([cartridgeCap isEqualToString:cap]) {
+            if ([cartridgeCap containsString:@":"] && ![cartridgeCap hasSuffix:@":*"]) {
                 score += 20; // Exact file type match
-            } else if ([pluginCap hasSuffix:@":*"]) {
+            } else if ([cartridgeCap hasSuffix:@":*"]) {
                 score += 10; // Wildcard match
             } else {
                 score += 5; // Operation-only match
@@ -149,7 +149,7 @@
             break;
         }
     }
-    
+
     return score;
 }
 
@@ -167,12 +167,12 @@
 
     // Use media URN for output - media:object is a well-known built-in
     CSCapOutput *output = [CSCapOutput outputWithMediaUrn:@"media:object"
-                                        outputDescription:@"Generic plugin output"];
+                                        outputDescription:@"Generic cartridge output"];
 
     return [CSCap capWithUrn:capUrn
-                       title:@"Generic Plugin Capability"
+                       title:@"Generic Cartridge Capability"
                      command:[cap componentsSeparatedByString:@":"][0]
-                 description:@"Generic plugin capability"
+                 description:@"Generic cartridge capability"
                documentation:nil
                     metadata:@{}
                   mediaSpecs:@[]  // Built-in media URNs don't need declaration
@@ -183,9 +183,9 @@
 
 @end
 
-// MARK: - Plugin Cap Host Implementation
+// MARK: - Cartridge Cap Host Implementation
 
-@implementation MACINAPluginCapSet
+@implementation MACINACartridgeCapSet
 
 - (instancetype)initWithBinaryPath:(NSString *)binaryPath {
     self = [super init];
@@ -200,38 +200,38 @@
          namedArgs:(NSArray *)namedArgs
          stdinData:(NSData * _Nullable)stdinData
         completion:(void (^)(CSResponseWrapper * _Nullable response, NSError * _Nullable error))completion {
-    
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Convert cap to CLI flag
         NSString *operation = [cap componentsSeparatedByString:@":"][0];
         NSString *command = [NSString stringWithFormat:@"--%@", operation];
-        
+
         // Build command arguments
         NSMutableArray<NSString *> *cmdArgs = [[NSMutableArray alloc] initWithObjects:command, nil];
-        
+
         // Add positional args
         for (id arg in positionalArgs) {
             [cmdArgs addObject:[NSString stringWithFormat:@"%@", arg]];
         }
-        
+
         // Add named args (these would typically be formatted as --flag value)
         for (id arg in namedArgs) {
             [cmdArgs addObject:[NSString stringWithFormat:@"%@", arg]];
         }
-        
-        // Execute the plugin
+
+        // Execute the cartridge
         NSTask *task = [[NSTask alloc] init];
         task.launchPath = self.binaryPath;
         task.arguments = cmdArgs;
-        
+
         NSPipe *outputPipe = [NSPipe pipe];
         task.standardOutput = outputPipe;
-        
+
         // Set up stdin if provided
         if (stdinData) {
             NSPipe *inputPipe = [NSPipe pipe];
             task.standardInput = inputPipe;
-            
+
             // Write stdin data in background
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSFileHandle *stdinHandle = [inputPipe fileHandleForWriting];
@@ -239,30 +239,30 @@
                 [stdinHandle closeFile];
             });
         }
-        
+
         @try {
             [task launch];
             [task waitUntilExit];
-            
+
             NSData *outputData = [[outputPipe fileHandleForReading] readDataToEndOfFile];
-            
+
             if (task.terminationStatus == 0) {
                 CSResponseWrapper *response = [CSResponseWrapper responseWithData:outputData];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     completion(response, nil);
                 });
             } else {
-                NSError *error = [NSError errorWithDomain:@"MACINAPluginSDK"
+                NSError *error = [NSError errorWithDomain:@"MACINACartridgeSDK"
                                                      code:1003
-                                                 userInfo:@{NSLocalizedDescriptionKey: @"Plugin execution failed"}];
+                                                 userInfo:@{NSLocalizedDescriptionKey: @"Cartridge execution failed"}];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     completion(nil, error);
                 });
             }
         } @catch (NSException *exception) {
-            NSError *error = [NSError errorWithDomain:@"MACINAPluginSDK"
+            NSError *error = [NSError errorWithDomain:@"MACINACartridgeSDK"
                                                  code:1004
-                                             userInfo:@{NSLocalizedDescriptionKey: exception.reason ?: @"Plugin execution exception"}];
+                                             userInfo:@{NSLocalizedDescriptionKey: exception.reason ?: @"Cartridge execution exception"}];
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(nil, error);
             });
@@ -274,9 +274,9 @@
 
 
 
-// MARK: - Plugin Entry
+// MARK: - Cartridge Entry
 
-@implementation MACINAPluginEntry
+@implementation MACINACartridgeEntry
 
 - (instancetype)initWithBinaryPath:(NSString *)binaryPath
                       caps:(NSArray<NSString *> *)caps {
@@ -290,11 +290,11 @@
 
 @end
 
-// MARK: - Plugin Manifest Category
+// MARK: - Cartridge Manifest Category
 
-@implementation CSCapManifest (MACINAPluginSDK)
+@implementation CSCapManifest (MACINACartridgeSDK)
 
-+ (instancetype)pluginWithName:(NSString *)name
++ (instancetype)cartridgeWithName:(NSString *)name
                    description:(NSString *)description
                   caps:(NSArray<CSCap *> *)caps {
     return [CSCapManifest manifestWithName:name
@@ -342,52 +342,52 @@
 
 + (NSArray<NSString *> *)buildCommandArgs:(NSString *)cap args:(NSArray *)args {
     NSMutableArray<NSString *> *cmdArgs = [[NSMutableArray alloc] init];
-    
+
     [cmdArgs addObject:[self capToFlag:cap]];
-    
+
     for (id arg in args) {
         [cmdArgs addObject:[NSString stringWithFormat:@"%@", arg]];
     }
-    
-    
-    
+
+
+
     return [cmdArgs copy];
 }
 
-+ (void)executePlugin:(NSString *)binaryPath
++ (void)executeCartridge:(NSString *)binaryPath
                  args:(NSArray<NSString *> *)args
            completion:(void (^)(NSData * _Nullable, NSError * _Nullable))completion {
-    
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSTask *task = [[NSTask alloc] init];
         task.launchPath = binaryPath;
         task.arguments = args;
-        
+
         NSPipe *outputPipe = [NSPipe pipe];
         task.standardOutput = outputPipe;
-        
+
         @try {
             [task launch];
             [task waitUntilExit];
-            
+
             NSData *outputData = [[outputPipe fileHandleForReading] readDataToEndOfFile];
-            
+
             if (task.terminationStatus == 0) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     completion(outputData, nil);
                 });
             } else {
-                NSError *error = [NSError errorWithDomain:@"MACINAPluginSDK"
+                NSError *error = [NSError errorWithDomain:@"MACINACartridgeSDK"
                                                      code:1003
-                                                 userInfo:@{NSLocalizedDescriptionKey: @"Plugin execution failed"}];
+                                                 userInfo:@{NSLocalizedDescriptionKey: @"Cartridge execution failed"}];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     completion(nil, error);
                 });
             }
         } @catch (NSException *exception) {
-            NSError *error = [NSError errorWithDomain:@"MACINAPluginSDK"
+            NSError *error = [NSError errorWithDomain:@"MACINACartridgeSDK"
                                                  code:1004
-                                             userInfo:@{NSLocalizedDescriptionKey: exception.reason ?: @"Plugin execution exception"}];
+                                             userInfo:@{NSLocalizedDescriptionKey: exception.reason ?: @"Cartridge execution exception"}];
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(nil, error);
             });

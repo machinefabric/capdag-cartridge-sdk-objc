@@ -1,8 +1,8 @@
 //
 //  MACINARegistryManager.h
-//  MACINAPluginSDK
+//  MACINACartridgeSDK
 //
-//  Registry integration for plugin cap validation
+//  Registry integration for cartridge cap validation
 //
 
 #import <Foundation/Foundation.h>
@@ -14,7 +14,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- * Registry manager for plugin cap validation against canonical definitions
+ * Registry manager for cartridge cap validation against canonical definitions
  */
 @interface MACINARegistryManager : NSObject
 
@@ -24,11 +24,11 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)manager;
 
 /**
- * Validate all caps in a plugin against canonical definitions
+ * Validate all caps in a cartridge against canonical definitions
  * @param caps Array of caps to validate
  * @param completion Completion handler with array of validation errors (empty if all valid)
  */
-- (void)validatePluginCaps:(NSArray<CSCap *> *)caps completion:(void (^)(NSArray<NSError *> *errors))completion;
+- (void)validateCartridgeCaps:(NSArray<CSCap *> *)caps completion:(void (^)(NSArray<NSError *> *errors))completion;
 
 /**
  * Create a cap from its canonical registry definition

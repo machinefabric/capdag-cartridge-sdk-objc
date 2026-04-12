@@ -1,28 +1,28 @@
 //
-//  MACINAPluginSDK.h
-//  MACINA Plugin SDK for Objective-C
+//  MACINACartridgeSDK.h
+//  MACINA Cartridge SDK for Objective-C
 //
-//  Unified cap-based plugin interface with standardized command-line calling
+//  Unified cap-based cartridge interface with standardized command-line calling
 //
 
 #import <Foundation/Foundation.h>
 #import "CapDAG.h"
-#import "CSPluginCaps.h"
+#import "CSCartridgeCaps.h"
 #import "CSStandardCaps.h"
 #import "MACINAStandardCaps.h"
 #import "MACINARegistryManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-// MARK: - Unified Plugin Registry
+// MARK: - Unified Cartridge Registry
 
-@class MACINAPluginEntry;
-@class MACINAPluginCapSet;
+@class MACINACartridgeEntry;
+@class MACINACartridgeCapSet;
 
-@interface MACINAPluginRegistry : NSObject
+@interface MACINACartridgeRegistry : NSObject
 
 + (instancetype)sharedRegistry;
-- (void)registerPlugin:(NSString *)name
+- (void)registerCartridge:(NSString *)name
             binaryPath:(NSString *)binaryPath
           caps:(NSArray<NSString *> *)caps;
 
@@ -32,16 +32,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-// MARK: - Plugin Cap Host
+// MARK: - Cartridge Cap Host
 
-@interface MACINAPluginCapSet : NSObject <CSCapSet>
+@interface MACINACartridgeCapSet : NSObject <CSCapSet>
 @property (nonatomic, strong) NSString *binaryPath;
 - (instancetype)initWithBinaryPath:(NSString *)binaryPath;
 @end
 
-// MARK: - Plugin Entry
+// MARK: - Cartridge Entry
 
-@interface MACINAPluginEntry : NSObject
+@interface MACINACartridgeEntry : NSObject
 
 @property (nonatomic, strong) NSString *binaryPath;
 @property (nonatomic, strong) NSArray<NSString *> *caps;
@@ -51,18 +51,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-// MARK: - Plugin Caps (now using formal cap SDK)
-// Use CSPluginCaps from CapDAG instead of the old string-based system
+// MARK: - Cartridge Caps (now using formal cap SDK)
+// Use CSCartridgeCaps from CapDAG instead of the old string-based system
 
-// MARK: - Plugin Manifest (for --manifest output)
-// Re-export CSCapManifest as MACINAPluginManifest for backward compatibility
+// MARK: - Cartridge Manifest (for --manifest output)
+// Re-export CSCapManifest as MACINACartridgeManifest for backward compatibility
 
-typedef CSCapManifest MACINAPluginManifest;
+typedef CSCapManifest MACINACartridgeManifest;
 
-// Convenience constructors for plugins
-@interface CSCapManifest (MACINAPluginSDK)
+// Convenience constructors for cartridges
+@interface CSCapManifest (MACINACartridgeSDK)
 
-+ (instancetype)pluginWithName:(NSString *)name
++ (instancetype)cartridgeWithName:(NSString *)name
                    description:(NSString *)description
                   caps:(NSArray<CSCap *> *)caps;
 
@@ -221,15 +221,15 @@ typedef CSCapManifest MACINAPluginManifest;
 @class MACINAProcessingResult;
 
 /**
- * Document handler protocol that defines the contract for document processing plugins
+ * Document handler protocol that defines the contract for document processing cartridges
  */
 @protocol MACINADocumentHandler <NSObject>
 
 /**
- * Get plugin manifest including caps
- * @return Plugin manifest
+ * Get cartridge manifest including caps
+ * @return Cartridge manifest
  */
-- (MACINAPluginManifest *)getPluginManifest;
+- (MACINACartridgeManifest *)getCartridgeManifest;
 
 /**
  * Extract metadata from a document
@@ -298,7 +298,7 @@ typedef CSCapManifest MACINAPluginManifest;
 
 + (NSString *)capToFlag:(NSString *)cap;
 + (NSArray<NSString *> *)buildCommandArgs:(NSString *)cap args:(NSArray *)args;
-+ (void)executePlugin:(NSString *)binaryPath 
++ (void)executeCartridge:(NSString *)binaryPath 
                  args:(NSArray<NSString *> *)args
            completion:(void (^)(NSData * _Nullable output, NSError * _Nullable error))completion;
 
@@ -307,9 +307,9 @@ typedef CSCapManifest MACINAPluginManifest;
 // MARK: - Schema-Enabled Cap Constructors
 
 /**
- * Extension to CSCapArg for plugin-specific helpers
+ * Extension to CSCapArg for cartridge-specific helpers
  */
-@interface CSCapArg (MACINAPluginSDK)
+@interface CSCapArg (MACINACartridgeSDK)
 
 /**
  * Create a document metadata argument using the new args+sources model
@@ -340,7 +340,7 @@ typedef CSCapManifest MACINAPluginManifest;
 /**
  * Extension to CSCapOutput helpers with media URN
  */
-@interface CSCapOutput (MACINAPluginSDK)
+@interface CSCapOutput (MACINACartridgeSDK)
 
 /**
  * Create an object output with embedded JSON schema for document metadata
@@ -372,7 +372,7 @@ typedef CSCapManifest MACINAPluginManifest;
 @end
 
 /**
- * Schema validation utility for plugins
+ * Schema validation utility for cartridges
  */
 @interface MACINASchemaValidationHelper : NSObject
 
@@ -382,12 +382,12 @@ typedef CSCapManifest MACINAPluginManifest;
 + (CSJSONSchemaValidator *)sharedValidator;
 
 /**
- * Validate plugin manifest against cap schema requirements
- * @param manifest The plugin manifest to validate
+ * Validate cartridge manifest against cap schema requirements
+ * @param manifest The cartridge manifest to validate
  * @param error Pointer to NSError for error reporting
  * @return YES if validation succeeds, NO if it fails
  */
-+ (BOOL)validatePluginManifest:(MACINAPluginManifest *)manifest error:(NSError **)error;
++ (BOOL)validateCartridgeManifest:(MACINACartridgeManifest *)manifest error:(NSError **)error;
 
 /**
  * Get standard document metadata schema

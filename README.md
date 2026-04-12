@@ -1,18 +1,18 @@
-# MACINA Plugin SDK for Objective-C
+# MACINA Cartridge SDK for Objective-C
 
-A native Objective-C framework for building document processing plugins for the MACINA system.
+A native Objective-C framework for building document processing cartridges for the MACINA system.
 
 ## Overview
 
-The MACINA Plugin SDK for Objective-C provides a complete framework for building document handlers that can extract metadata, outlines, pages, and generate thumbnails from various document formats. It conforms to the MACINA plugin schemas and provides full compatibility with the MACINA ecosystem.
+The MACINA Cartridge SDK for Objective-C provides a complete framework for building document handlers that can extract metadata, outlines, pages, and generate thumbnails from various document formats. It conforms to the MACINA cartridge schemas and provides full compatibility with the MACINA ecosystem.
 
 ## Features
 
-- OK **Schema Compliant**: Fully conforms to MACINA plugin schemas
+- OK **Schema Compliant**: Fully conforms to MACINA cartridge schemas
 - OK **Async/Await Support**: Modern completion-handler based API
 - OK **JSON Serialization**: Built-in JSON serialization for all data types
 - OK **Type Safety**: Full Objective-C type safety with nullability annotations
-- OK **Plugin Management**: Built-in plugin registration and discovery
+- OK **Cartridge Management**: Built-in cartridge registration and discovery
 - OK **Extensible**: Easy to extend for new document formats
 
 ## Installation
@@ -21,8 +21,8 @@ The MACINA Plugin SDK for Objective-C provides a complete framework for building
 
 1. Clone or download the SDK:
 ```bash
-git clone https://github.com/your-org/machfab-plugin-sdk-objc.git
-cd machfab-plugin-sdk-objc
+git clone https://github.com/your-org/machfab-cartridge-sdk-objc.git
+cd machfab-cartridge-sdk-objc
 ```
 
 2. Build the SDK:
@@ -40,8 +40,8 @@ make install
 Add the header and link the static library:
 
 ```objc
-#import "MACINAPluginSDK.h"
-// Link with: -lMACINAPluginSDK -framework Foundation
+#import "MACINACartridgeSDK.h"
+// Link with: -lMACINACartridgeSDK -framework Foundation
 ```
 
 ## Quick Start
@@ -49,7 +49,7 @@ Add the header and link the static library:
 ### 1. Implement a Document Handler
 
 ```objc
-#import "MACINAPluginSDK.h"
+#import "MACINACartridgeSDK.h"
 
 @interface HTMLDocumentHandler : NSObject <MACINADocumentHandler>
 @end
@@ -133,11 +133,11 @@ Add the header and link the static library:
 ```objc
 // Register the handler
 HTMLDocumentHandler *htmlHandler = [[HTMLDocumentHandler alloc] init];
-[[MACINAPluginManager sharedManager] registerHandler:htmlHandler 
+[[MACINACartridgeManager sharedManager] registerHandler:htmlHandler 
                                   forFileExtensions:@[@"html", @"htm"]];
 
 // Process a document
-MACINAPluginOutput *output = [[MACINAPluginManager sharedManager] 
+MACINACartridgeOutput *output = [[MACINACartridgeManager sharedManager] 
     processDocument:@"/path/to/document.html"];
 
 if (output.success) {
@@ -157,7 +157,7 @@ NSString *outlineJSON = [MACINAJSONSerializer serializeOutline:output.outline];
 NSString *pagesJSON = [MACINAJSONSerializer serializePages:output.pages];
 
 // Full output serialization
-NSString *outputJSON = [MACINAJSONSerializer serializePluginOutput:output];
+NSString *outputJSON = [MACINAJSONSerializer serializeCartridgeOutput:output];
 ```
 
 ## Architecture
@@ -167,8 +167,8 @@ NSString *outputJSON = [MACINAJSONSerializer serializePluginOutput:output];
 - **`MACINADocumentMetadata`**: Document metadata (conforms to `file-metadata.json` schema)
 - **`MACINADocumentOutline`**: Document outline (conforms to `document-outline.json` schema)  
 - **`MACINADisboundPage`**: Single page with text content (output is NSArray of these, conforms to `disbound-page.json` schema)
-- **`MACINAPluginOutput`**: Combined output from document processing
-- **`MACINAPluginManager`**: Central plugin registration and management
+- **`MACINACartridgeOutput`**: Combined output from document processing
+- **`MACINACartridgeManager`**: Central cartridge registration and management
 
 ### Protocol
 
@@ -205,12 +205,12 @@ All document handlers must implement the `MACINADocumentHandler` protocol:
 ```objc
 // Default implementations provided
 - (BOOL)canHandle:(NSString *)filePath;
-- (MACINAPluginCaps *)getCaps;
+- (MACINACartridgeCaps *)getCaps;
 ```
 
 ## Schema Compliance
 
-This SDK fully conforms to the MACINA plugin schemas:
+This SDK fully conforms to the MACINA cartridge schemas:
 
 - OK `file-metadata.json` - Document metadata structure
 - OK `document-outline.json` - Document outline structure  

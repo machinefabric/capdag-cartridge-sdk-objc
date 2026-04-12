@@ -3,7 +3,7 @@
 //  Standard cap definitions with arguments
 //
 //  This provides the standard cap definitions used across
-//  all MACINA plugins, including their formal argument specifications.
+//  all MACINA cartridges, including their formal argument specifications.
 //
 
 #import <Foundation/Foundation.h>

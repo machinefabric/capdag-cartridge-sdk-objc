@@ -1,6 +1,6 @@
 //
 //  MACINASchemaValidation.m
-//  Schema validation extensions for MACINA Plugin SDK
+//  Schema validation extensions for MACINA Cartridge SDK
 //
 //  Provides convenience methods for creating schema-enabled capabilities
 //  and standard schemas for document processing.
@@ -9,7 +9,7 @@
 //  Schema validation now resolves spec IDs through the cap's mediaSpecs table.
 //
 
-#import "MACINAPluginSDK.h"
+#import "MACINACartridgeSDK.h"
 
 // Well-known spec IDs
 static NSString * const kSpecIdStr = @"media:string";
@@ -17,7 +17,7 @@ static NSString * const kSpecIdInt = @"media:integer";
 static NSString * const kSpecIdObj = @"media:object";
 static NSString * const kSpecIdObjArray = @"media:object-array";
 
-@implementation CSCapArg (MACINAPluginSDK)
+@implementation CSCapArg (MACINACartridgeSDK)
 
 + (instancetype)documentMetadataArgWithMediaUrn:(NSString *)mediaUrn
                                         required:(BOOL)required
@@ -43,7 +43,7 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
 
 @end
 
-@implementation CSCapOutput (MACINAPluginSDK)
+@implementation CSCapOutput (MACINACartridgeSDK)
 
 + (instancetype)documentMetadataOutputWithMediaUrn:(NSString *)mediaUrn
                                        description:(NSString *)description {
@@ -76,12 +76,12 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
     return _sharedValidator;
 }
 
-+ (BOOL)validatePluginManifest:(MACINAPluginManifest *)manifest error:(NSError **)error {
++ (BOOL)validateCartridgeManifest:(MACINACartridgeManifest *)manifest error:(NSError **)error {
     if (!manifest) {
         if (error) {
             *error = [NSError errorWithDomain:@"MACINASchemaValidationError"
                                          code:1001
-                                     userInfo:@{NSLocalizedDescriptionKey: @"Plugin manifest is nil"}];
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Cartridge manifest is nil"}];
         }
         return NO;
     }
@@ -376,11 +376,11 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
                 @"properties": @{
                     @"extractorName": @{
                         @"type": @"string",
-                        @"description": @"Name of the extraction plugin"
+                        @"description": @"Name of the extraction cartridge"
                     },
                     @"extractorVersion": @{
                         @"type": @"string",
-                        @"description": @"Version of the extraction plugin"
+                        @"description": @"Version of the extraction cartridge"
                     },
                     @"extractedAt": @{
                         @"type": @"string",

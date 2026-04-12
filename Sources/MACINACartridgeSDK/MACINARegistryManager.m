@@ -1,8 +1,8 @@
 //
 //  MACINARegistryManager.m
-//  MACINAPluginSDK
+//  MACINACartridgeSDK
 //
-//  Registry integration for plugin cap validation
+//  Registry integration for cartridge cap validation
 //
 
 #import "MACINARegistryManager.h"
@@ -26,7 +26,7 @@
     return self;
 }
 
-- (void)validatePluginCaps:(NSArray<CSCap *> *)caps completion:(void (^)(NSArray<NSError *> *))completion {
+- (void)validateCartridgeCaps:(NSArray<CSCap *> *)caps completion:(void (^)(NSArray<NSError *> *))completion {
     dispatch_group_t group = dispatch_group_create();
     NSMutableArray<NSError *> *errors = [NSMutableArray array];
     
@@ -103,7 +103,7 @@
         }
     }
     
-    [manager validatePluginCaps:caps completion:^(NSArray<NSError *> *errors) {
+    [manager validateCartridgeCaps:caps completion:^(NSArray<NSError *> *errors) {
         if (errors.count > 0) {
             NSError *combinedError = [NSError errorWithDomain:@"MACINAStandardCapsValidationError"
                                                          code:4001

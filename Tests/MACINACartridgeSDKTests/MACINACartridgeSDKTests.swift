@@ -1,8 +1,8 @@
 import XCTest
-@testable import MACINAPluginSDK
+@testable import MACINACartridgeSDK
 @testable import CapDAG
 
-final class MACINAPluginSDKTests: XCTestCase {
+final class MACINACartridgeSDKTests: XCTestCase {
     func testStandardCaps() throws {
         // Test that standard caps can be created
         let extractMetadata = MACINAStandardCaps.extractMetadataCap()
@@ -22,9 +22,9 @@ final class MACINAPluginSDKTests: XCTestCase {
         XCTAssertNotNil(disbind.command)
     }
     
-    func testPluginCaps() throws {
-        // Test that plugin caps collection works
-        let caps = CSPluginCaps()
+    func testCartridgeCaps() throws {
+        // Test that cartridge caps collection works
+        let caps = CSCartridgeCaps()
         XCTAssertNotNil(caps)
         XCTAssertTrue(caps.isEmpty())
         
@@ -49,10 +49,10 @@ final class MACINAPluginSDKTests: XCTestCase {
     
     func testCapDAGIntegration() throws {
         // Test that we can use CSCapCaller and CSResponseWrapper from capdag-objc
-        let registry = MACINAPluginRegistry.shared()
+        let registry = MACINACartridgeRegistry.shared()
         
-        // Register a dummy plugin for testing
-        registry.registerPlugin("test-plugin", 
+        // Register a dummy cartridge for testing
+        registry.registerCartridge("test-cartridge", 
                                binaryPath: "/bin/echo", 
                                caps: ["extract-metadata"])
         
@@ -64,14 +64,14 @@ final class MACINAPluginSDKTests: XCTestCase {
     func testManifestWithoutVersion() throws {
         // Test creating manifest without explicit version parameter
         let caps = MACINAStandardCaps.allStandardCaps()
-        let manifest = CSCapManifest.plugin(withName: "test-plugin",
-                                          description: "Test plugin",
+        let manifest = CSCapManifest.cartridge(withName: "test-cartridge",
+                                          description: "Test cartridge",
                                           caps: caps)
         
         XCTAssertNotNil(manifest)
-        XCTAssertEqual(manifest.name, "test-plugin")
+        XCTAssertEqual(manifest.name, "test-cartridge")
         XCTAssertEqual(manifest.version, "1.0.0")  // Should default to 1.0.0
-        XCTAssertEqual(manifest.manifestDescription, "Test plugin")
+        XCTAssertEqual(manifest.manifestDescription, "Test cartridge")
         XCTAssertEqual(manifest.caps.count, caps.count)
     }
 }

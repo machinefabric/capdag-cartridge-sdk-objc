@@ -1,23 +1,23 @@
 //
-//  CSPluginCaps.m
-//  Plugin caps collection implementation
+//  CSCartridgeCaps.m
+//  Cartridge caps collection implementation
 //
 
-#import "include/CSPluginCaps.h"
+#import "include/CSCartridgeCaps.h"
 #import "CSCapMatcher.h"
 
-@interface CSPluginCaps ()
+@interface CSCartridgeCaps ()
 @property (nonatomic, strong) NSMutableArray<CSCap *> *mutableCaps;
 @end
 
-@implementation CSPluginCaps
+@implementation CSCartridgeCaps
 
 + (instancetype)new {
     return [self capsWithArray:@[]];
 }
 
 + (instancetype)capsWithArray:(NSArray<CSCap *> *)caps {
-    CSPluginCaps *instance = [[CSPluginCaps alloc] init];
+    CSCartridgeCaps *instance = [[CSCartridgeCaps alloc] init];
     instance.mutableCaps = [caps mutableCopy];
     return instance;
 }
@@ -26,7 +26,7 @@
     NSArray *capsArray = dictionary[@"caps"];
     if (!capsArray) {
         if (error) {
-            *error = [NSError errorWithDomain:@"CSPluginCapsError"
+            *error = [NSError errorWithDomain:@"CSCartridgeCapsError"
                                          code:1006
                                      userInfo:@{NSLocalizedDescriptionKey: @"Missing caps array in dictionary"}];
         }
@@ -162,15 +162,15 @@
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"CSPluginCaps(count: %lu, caps: %@)", 
+    return [NSString stringWithFormat:@"CSCartridgeCaps(count: %lu, caps: %@)", 
             (unsigned long)self.count, self.caps];
 }
 
 - (BOOL)isEqual:(id)object {
     if (self == object) return YES;
-    if (![object isKindOfClass:[CSPluginCaps class]]) return NO;
+    if (![object isKindOfClass:[CSCartridgeCaps class]]) return NO;
     
-    CSPluginCaps *other = (CSPluginCaps *)object;
+    CSCartridgeCaps *other = (CSCartridgeCaps *)object;
     return [self.caps isEqualToArray:other.caps];
 }
 
@@ -179,7 +179,7 @@
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-    return [CSPluginCaps capsWithArray:self.caps];
+    return [CSCartridgeCaps capsWithArray:self.caps];
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
@@ -190,7 +190,7 @@
     NSArray<CSCap *> *caps = [coder decodeObjectOfClass:[NSArray class] forKey:@"caps"];
     if (!caps) return nil;
     
-    return [CSPluginCaps capsWithArray:caps];
+    return [CSCartridgeCaps capsWithArray:caps];
 }
 
 + (BOOL)supportsSecureCoding {
