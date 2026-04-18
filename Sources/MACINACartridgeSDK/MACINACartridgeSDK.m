@@ -297,10 +297,13 @@
 + (instancetype)cartridgeWithName:(NSString *)name
                    description:(NSString *)description
                   caps:(NSArray<CSCap *> *)caps {
+    CSCapGroup *defaultGroup = [[CSCapGroup alloc] initWithName:@"default"
+                                                          caps:caps
+                                                   adapterUrns:@[]];
     return [CSCapManifest manifestWithName:name
                                    version:@"1.0.0"
                                description:description
-                                      caps:caps];
+                                 capGroups:@[defaultGroup]];
 }
 
 @end

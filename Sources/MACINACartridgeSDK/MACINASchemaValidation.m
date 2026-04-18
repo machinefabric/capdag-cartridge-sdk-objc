@@ -87,7 +87,7 @@ static NSString * const kSpecIdObjArray = @"media:object-array";
     }
 
     // Validate that all caps in the manifest have proper media spec definitions
-    for (CSCap *cap in manifest.caps) {
+    for (CSCap *cap in [manifest allCaps]) {
         // Check arguments - verify media URNs can be resolved
         for (CSCapArg *arg in cap.args) {
             if (![[self class] validateCapArgMediaUrn:arg cap:cap error:error]) {
