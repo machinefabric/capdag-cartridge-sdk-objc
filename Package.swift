@@ -1,34 +1,30 @@
-// version: 0.89.534
+// version: 0.90.544
 // swift-tools-version: 6.0
-// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
-    name: "MACINACartridgeSDK",
+    name: "MachFabCartridgeSDK",
     platforms: [
         .macOS(.v13),
         .iOS(.v14)
     ],
     products: [
-        // The main cartridge SDK library
         .library(
-            name: "MACINACartridgeSDK",
-            targets: ["MACINACartridgeSDK"]),
+            name: "MachFabCartridgeSDK",
+            targets: ["MachFabCartridgeSDK"]),
     ],
     dependencies: [
-        // Depend on the cap definition package
         .package(path: "../capdag-objc"),
     ],
     targets: [
-        // The main cartridge SDK target
         .target(
-            name: "MACINACartridgeSDK",
+            name: "MachFabCartridgeSDK",
             dependencies: [
                 .product(name: "CapDAG", package: "capdag-objc"),
                 .product(name: "Bifaci", package: "capdag-objc"),
             ],
-            path: "Sources/MACINACartridgeSDK",
+            path: "Sources/MachFabCartridgeSDK",
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("include"),
@@ -39,11 +35,10 @@ let package = Package(
             ]
         ),
 
-        // Tests target
         .testTarget(
-            name: "MACINACartridgeSDKTests",
-            dependencies: ["MACINACartridgeSDK"],
-            path: "Tests/MACINACartridgeSDKTests"
+            name: "MachFabCartridgeSDKTests",
+            dependencies: ["MachFabCartridgeSDK"],
+            path: "Tests/MachFabCartridgeSDKTests"
         ),
     ]
 )
