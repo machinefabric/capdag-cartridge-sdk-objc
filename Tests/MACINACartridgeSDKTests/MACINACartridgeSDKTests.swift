@@ -47,20 +47,6 @@ final class MACINACartridgeSDKTests: XCTestCase {
         XCTAssertEqual(failureResult.error, "test error")
     }
     
-    func testCapDAGIntegration() throws {
-        // Test that we can use CSCapCaller and CSResponseWrapper from capdag-objc
-        let registry = MACINACartridgeRegistry.shared()
-        
-        // Register a dummy cartridge for testing
-        registry.registerCartridge("test-cartridge", 
-                               binaryPath: "/bin/echo", 
-                               caps: ["extract-metadata"])
-        
-        // Test that we can get a CSCapCaller
-        let caller = registry.can("extract-metadata")
-        XCTAssertNotNil(caller)
-    }
-    
     func testManifestWithoutVersion() throws {
         // Test creating manifest without explicit version parameter
         let caps = MACINAStandardCaps.allStandardCaps()

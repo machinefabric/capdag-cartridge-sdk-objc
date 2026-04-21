@@ -14,43 +14,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// MARK: - Unified Cartridge Registry
-
-@class MACINACartridgeEntry;
-@class MACINACartridgeCapSet;
-
-@interface MACINACartridgeRegistry : NSObject
-
-+ (instancetype)sharedRegistry;
-- (void)registerCartridge:(NSString *)name
-            binaryPath:(NSString *)binaryPath
-          caps:(NSArray<NSString *> *)caps;
-
-- (CSCapCaller * _Nullable)can:(NSString *)cap error:(NSError **)error;
-- (CSCapCaller * _Nullable)can:(NSString *)cap;
-- (NSArray<NSString *> *)listCaps;
-
-@end
-
-// MARK: - Cartridge Cap Host
-
-@interface MACINACartridgeCapSet : NSObject <CSCapSet>
-@property (nonatomic, strong) NSString *binaryPath;
-- (instancetype)initWithBinaryPath:(NSString *)binaryPath;
-@end
-
-// MARK: - Cartridge Entry
-
-@interface MACINACartridgeEntry : NSObject
-
-@property (nonatomic, strong) NSString *binaryPath;
-@property (nonatomic, strong) NSArray<NSString *> *caps;
-
-- (instancetype)initWithBinaryPath:(NSString *)binaryPath
-                      caps:(NSArray<NSString *> *)caps;
-
-@end
-
 // MARK: - Cartridge Caps (now using formal cap SDK)
 // Use CSCartridgeCaps from CapDAG instead of the old string-based system
 
