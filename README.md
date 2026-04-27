@@ -1,14 +1,14 @@
-# MACINA Cartridge SDK for Objective-C
+# MACHFAB Cartridge SDK for Objective-C
 
-A native Objective-C framework for building document processing cartridges for the MACINA system.
+A native Objective-C framework for building document processing cartridges for the MACHFAB system.
 
 ## Overview
 
-The MACINA Cartridge SDK for Objective-C provides a complete framework for building document handlers that can extract metadata, outlines, pages, and generate thumbnails from various document formats. It conforms to the MACINA cartridge schemas and provides full compatibility with the MACINA ecosystem.
+The MACHFAB Cartridge SDK for Objective-C provides a complete framework for building document handlers that can extract metadata, outlines, pages, and generate thumbnails from various document formats. It conforms to the MACHFAB cartridge schemas and provides full compatibility with the MACHFAB ecosystem.
 
 ## Features
 
-- OK **Schema Compliant**: Fully conforms to MACINA cartridge schemas
+- OK **Schema Compliant**: Fully conforms to MACHFAB cartridge schemas
 - OK **Async/Await Support**: Modern completion-handler based API
 - OK **JSON Serialization**: Built-in JSON serialization for all data types
 - OK **Type Safety**: Full Objective-C type safety with nullability annotations
@@ -40,8 +40,8 @@ make install
 Add the header and link the static library:
 
 ```objc
-#import "MACINACartridgeSDK.h"
-// Link with: -lMACINACartridgeSDK -framework Foundation
+#import "MACHFABCartridgeSDK.h"
+// Link with: -lMACHFABCartridgeSDK -framework Foundation
 ```
 
 ## Quick Start
@@ -49,9 +49,9 @@ Add the header and link the static library:
 ### 1. Implement a Document Handler
 
 ```objc
-#import "MACINACartridgeSDK.h"
+#import "MACHFABCartridgeSDK.h"
 
-@interface HTMLDocumentHandler : NSObject <MACINADocumentHandler>
+@interface HTMLDocumentHandler : NSObject <MACHFABDocumentHandler>
 @end
 
 @implementation HTMLDocumentHandler
@@ -68,9 +68,9 @@ Add the header and link the static library:
     return @[@"html", @"htm"];
 }
 
-- (void)extractMetadata:(NSString *)filePath completion:(void (^)(MACINADocumentMetadata * _Nullable, NSError * _Nullable))completion {
+- (void)extractMetadata:(NSString *)filePath completion:(void (^)(MACHFABDocumentMetadata * _Nullable, NSError * _Nullable))completion {
     // Create extraction info
-    MACINAExtractionInfo *extractionInfo = [[MACINAExtractionInfo alloc] 
+    MACHFABExtractionInfo *extractionInfo = [[MACHFABExtractionInfo alloc] 
         initWithExtractorName:@"HTML Handler" 
              extractorVersion:@"1.0.0"];
     
@@ -87,7 +87,7 @@ Add the header and link the static library:
     long long fileSize = [[fileAttributes objectForKey:NSFileSize] longLongValue];
     
     // Create metadata
-    MACINADocumentMetadata *metadata = [[MACINADocumentMetadata alloc] 
+    MACHFABDocumentMetadata *metadata = [[MACHFABDocumentMetadata alloc] 
         initWithFilePath:filePath 
            fileSizeBytes:fileSize 
            contentLength:0 
@@ -133,11 +133,11 @@ Add the header and link the static library:
 ```objc
 // Register the handler
 HTMLDocumentHandler *htmlHandler = [[HTMLDocumentHandler alloc] init];
-[[MACINACartridgeManager sharedManager] registerHandler:htmlHandler 
+[[MACHFABCartridgeManager sharedManager] registerHandler:htmlHandler 
                                   forFileExtensions:@[@"html", @"htm"]];
 
 // Process a document
-MACINACartridgeOutput *output = [[MACINACartridgeManager sharedManager] 
+MACHFABCartridgeOutput *output = [[MACHFABCartridgeManager sharedManager] 
     processDocument:@"/path/to/document.html"];
 
 if (output.success) {
@@ -152,36 +152,36 @@ if (output.success) {
 
 ```objc
 // Serialize results to JSON
-NSString *metadataJSON = [MACINAJSONSerializer serializeMetadata:output.metadata];
-NSString *outlineJSON = [MACINAJSONSerializer serializeOutline:output.outline];
-NSString *pagesJSON = [MACINAJSONSerializer serializePages:output.pages];
+NSString *metadataJSON = [MACHFABJSONSerializer serializeMetadata:output.metadata];
+NSString *outlineJSON = [MACHFABJSONSerializer serializeOutline:output.outline];
+NSString *pagesJSON = [MACHFABJSONSerializer serializePages:output.pages];
 
 // Full output serialization
-NSString *outputJSON = [MACINAJSONSerializer serializeCartridgeOutput:output];
+NSString *outputJSON = [MACHFABJSONSerializer serializeCartridgeOutput:output];
 ```
 
 ## Architecture
 
 ### Core Classes
 
-- **`MACINADocumentMetadata`**: Document metadata (conforms to `file-metadata.json` schema)
-- **`MACINADocumentOutline`**: Document outline (conforms to `document-outline.json` schema)  
-- **`MACINADisboundPage`**: Single page with text content (output is NSArray of these, conforms to `disbound-page.json` schema)
-- **`MACINACartridgeOutput`**: Combined output from document processing
-- **`MACINACartridgeManager`**: Central cartridge registration and management
+- **`MACHFABDocumentMetadata`**: Document metadata (conforms to `file-metadata.json` schema)
+- **`MACHFABDocumentOutline`**: Document outline (conforms to `document-outline.json` schema)  
+- **`MACHFABDisboundPage`**: Single page with text content (output is NSArray of these, conforms to `disbound-page.json` schema)
+- **`MACHFABCartridgeOutput`**: Combined output from document processing
+- **`MACHFABCartridgeManager`**: Central cartridge registration and management
 
 ### Protocol
 
-- **`MACINADocumentHandler`**: Main protocol that document handlers must implement
+- **`MACHFABDocumentHandler`**: Main protocol that document handlers must implement
 
 ### Helpers
 
-- **`MACINAJSONSerializer`**: JSON serialization utilities
-- **`MACINAExtractionInfo`**: Metadata about the extraction process
+- **`MACHFABJSONSerializer`**: JSON serialization utilities
+- **`MACHFABExtractionInfo`**: Metadata about the extraction process
 
 ## Document Handler Protocol
 
-All document handlers must implement the `MACINADocumentHandler` protocol:
+All document handlers must implement the `MACHFABDocumentHandler` protocol:
 
 ### Required Methods
 
@@ -192,11 +192,11 @@ All document handlers must implement the `MACINADocumentHandler` protocol:
 - (NSArray<NSString *> *)supportedExtensions;
 
 // Core functionality
-- (void)extractMetadata:(NSString *)filePath completion:(void (^)(MACINADocumentMetadata *, NSError *))completion;
-- (void)extractOutline:(NSString *)filePath completion:(void (^)(MACINADocumentOutline *, NSError *))completion;
-- (void)disbind:(NSString *)filePath completion:(void (^)(NSArray<MACINADisboundPage *> *, NSError *))completion;
+- (void)extractMetadata:(NSString *)filePath completion:(void (^)(MACHFABDocumentMetadata *, NSError *))completion;
+- (void)extractOutline:(NSString *)filePath completion:(void (^)(MACHFABDocumentOutline *, NSError *))completion;
+- (void)disbind:(NSString *)filePath completion:(void (^)(NSArray<MACHFABDisboundPage *> *, NSError *))completion;
 - (void)validateFile:(NSString *)filePath completion:(void (^)(BOOL, NSError *))completion;
-- (void)getFileInfo:(NSString *)filePath completion:(void (^)(MACINAFileInfo *, NSError *))completion;
+- (void)getFileInfo:(NSString *)filePath completion:(void (^)(MACHFABFileInfo *, NSError *))completion;
 - (void)generateThumbnail:(NSString *)filePath width:(NSUInteger)width height:(NSUInteger)height completion:(void (^)(NSData *, NSError *))completion;
 ```
 
@@ -205,12 +205,12 @@ All document handlers must implement the `MACINADocumentHandler` protocol:
 ```objc
 // Default implementations provided
 - (BOOL)canHandle:(NSString *)filePath;
-- (MACINACartridgeCaps *)getCaps;
+- (MACHFABCartridgeCaps *)getCaps;
 ```
 
 ## Schema Compliance
 
-This SDK fully conforms to the MACINA cartridge schemas:
+This SDK fully conforms to the MACHFAB cartridge schemas:
 
 - OK `file-metadata.json` - Document metadata structure
 - OK `document-outline.json` - Document outline structure  

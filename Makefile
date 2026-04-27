@@ -1,4 +1,4 @@
-# Makefile for MACINA Cartridge SDK Objective-C
+# Makefile for MACHFAB Cartridge SDK Objective-C
 # This SDK now depends on capdag-objc for formal cap management
 
 # Directories
@@ -8,7 +8,7 @@ DIST_DIR = dist
 
 help:
 	@echo "Usage: make <target>\n\n\
-	  build\t\tBuild the MACINA Cartridge SDK with cap SDK integration\n\
+	  build\t\tBuild the MACHFAB Cartridge SDK with cap SDK integration\n\
 	  build-capdag\tBuild only the cap SDK\n\
 	  clean\t\tRemove built artifacts\n\
 	  install\tInstall the library to system paths\n\
@@ -35,30 +35,30 @@ build-cartridge-sdk: build-capdag
 	@cp -r $(CAP_SDK_DIR)/Sources/CapDAG/include/* $(DIST_DIR)/
 	
 	# Compile our cartridge SDK with cap SDK integration (now from Sources directory)
-	/usr/bin/clang -c -o $(BUILD_DIR)/MACINACartridgeSDK.o Sources/MACINACartridgeSDK/MACINACartridgeSDK.m \
+	/usr/bin/clang -c -o $(BUILD_DIR)/MACHFABCartridgeSDK.o Sources/MACHFABCartridgeSDK/MACHFABCartridgeSDK.m \
 		-I$(DIST_DIR) \
 		-I$(CAP_SDK_DIR)/Sources/CapDAG/include \
-		-ISources/MACINACartridgeSDK/include \
+		-ISources/MACHFABCartridgeSDK/include \
 		-fobjc-arc -fno-modules
 	
-	/usr/bin/clang -c -o $(BUILD_DIR)/MACINAStandardCaps.o Sources/MACINACartridgeSDK/MACINAStandardCaps.m \
+	/usr/bin/clang -c -o $(BUILD_DIR)/MACHFABStandardCaps.o Sources/MACHFABCartridgeSDK/MACHFABStandardCaps.m \
 		-I$(DIST_DIR) \
 		-I$(CAP_SDK_DIR)/Sources/CapDAG/include \
-		-ISources/MACINACartridgeSDK/include \
+		-ISources/MACHFABCartridgeSDK/include \
 		-fobjc-arc -fno-modules
 	
-	/usr/bin/clang -c -o $(BUILD_DIR)/CSCartridgeCaps.o Sources/MACINACartridgeSDK/CSCartridgeCaps.m \
+	/usr/bin/clang -c -o $(BUILD_DIR)/CSCartridgeCaps.o Sources/MACHFABCartridgeSDK/CSCartridgeCaps.m \
 		-I$(DIST_DIR) \
 		-I$(CAP_SDK_DIR)/Sources/CapDAG/include \
-		-ISources/MACINACartridgeSDK/include \
+		-ISources/MACHFABCartridgeSDK/include \
 		-fobjc-arc -fno-modules
 	
 	# Create static library with all object files including CapDAG
-	ar rcs $(DIST_DIR)/libMACINACartridgeSDK.a $(BUILD_DIR)/*.o $(CAP_SDK_DIR)/.build/release/CapDAG.build/*.o
+	ar rcs $(DIST_DIR)/libMACHFABCartridgeSDK.a $(BUILD_DIR)/*.o $(CAP_SDK_DIR)/.build/release/CapDAG.build/*.o
 	
 	# Copy cartridge SDK headers
-	@cp Sources/MACINACartridgeSDK/include/*.h $(DIST_DIR)/
-	@echo "OK MACINA Cartridge SDK built successfully with cap SDK integration in $(DIST_DIR)/"
+	@cp Sources/MACHFABCartridgeSDK/include/*.h $(DIST_DIR)/
+	@echo "OK MACHFAB Cartridge SDK built successfully with cap SDK integration in $(DIST_DIR)/"
 
 .PHONY: clean
 clean:
@@ -68,10 +68,10 @@ clean:
 
 .PHONY: install
 install: build
-	@echo "Installing MACINA Cartridge SDK with cap SDK..."
-	sudo cp $(DIST_DIR)/libMACINACartridgeSDK.a /usr/local/lib/
+	@echo "Installing MACHFAB Cartridge SDK with cap SDK..."
+	sudo cp $(DIST_DIR)/libMACHFABCartridgeSDK.a /usr/local/lib/
 	sudo cp $(DIST_DIR)/*.h /usr/local/include/
-	@echo "OK MACINA Cartridge SDK installed to system paths"
+	@echo "OK MACHFAB Cartridge SDK installed to system paths"
 
 .PHONY: test
 test: build
@@ -85,7 +85,7 @@ example:
 	@echo ""
 	@echo "1. Add both SDKs to your project:"
 	@echo "   #import \"CapDAG.h\""
-	@echo "   #import \"MACINACartridgeSDK.h\""
+	@echo "   #import \"MACHFABCartridgeSDK.h\""
 	@echo ""
 	@echo "2. Create formal cap definitions:"
 	@echo "   NSError *error;"
@@ -97,7 +97,7 @@ example:
 	@echo "   [caps addCap:cap];"
 	@echo ""
 	@echo "4. Create cartridge manifest with formal caps:"
-	@echo "   MACINACartridgeManifest *cartridgeManifest = [[MACINACartridgeManifest alloc]"
+	@echo "   MACHFABCartridgeManifest *cartridgeManifest = [[MACHFABCartridgeManifest alloc]"
 	@echo "       initWithName:@\"MyCartridge\""
 	@echo "       version:@\"1.0.0\""
 	@echo "       cartridgeDescription:@\"Example cartridge\""
