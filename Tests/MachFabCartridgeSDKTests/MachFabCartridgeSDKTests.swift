@@ -16,7 +16,6 @@ final class MachFabCartridgeSDKTests: XCTestCase {
                      description: nil,
                      documentation: nil,
                      metadata: [:],
-                     mediaSpecs: [],
                      args: [],
                      output: nil,
                      metadataJSON: nil)

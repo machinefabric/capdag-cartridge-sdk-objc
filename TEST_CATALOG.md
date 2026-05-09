@@ -17,18 +17,18 @@ This catalog lists all tests in the Swift/ObjC codebase.
 | Test # | Function Name | Description | File |
 |--------|---------------|-------------|------|
 | | | | |
-| unnumbered | `testAddCapRoundTripUrnViaTaggedPredicates` | / Round-trip: adding a CSCap produces a urn string that parses back to a / CSCapUrn whose `accepts(_:)` predicate holds against itself / (reflexivity of the accepts relation). | Tests/MachFabCartridgeSDKTests/MachFabCartridgeSDKTests.swift:28 |
-| unnumbered | `testCopyIsIndependent` | / Copy is independent: mutating the original must not affect the copy. / Regression-guards against a shared mutable backing array. | Tests/MachFabCartridgeSDKTests/MachFabCartridgeSDKTests.swift:71 |
-| unnumbered | `testInsertionOrderPreserved` | / Insertion order is preserved in both `caps` and `capUrns`. | Tests/MachFabCartridgeSDKTests/MachFabCartridgeSDKTests.swift:47 |
+| unnumbered | `testAddCapRoundTripUrnViaTaggedPredicates` | / Round-trip: adding a CSCap produces a urn string that parses back to a / CSCapUrn whose `accepts(_:)` predicate holds against itself / (reflexivity of the accepts relation). | Tests/MachFabCartridgeSDKTests/MachFabCartridgeSDKTests.swift:27 |
+| unnumbered | `testCopyIsIndependent` | / Copy is independent: mutating the original must not affect the copy. / Regression-guards against a shared mutable backing array. | Tests/MachFabCartridgeSDKTests/MachFabCartridgeSDKTests.swift:70 |
+| unnumbered | `testInsertionOrderPreserved` | / Insertion order is preserved in both `caps` and `capUrns`. | Tests/MachFabCartridgeSDKTests/MachFabCartridgeSDKTests.swift:46 |
 ---
 
 ## Unnumbered Tests
 
 The following tests are cataloged but do not currently participate in numeric test indexing.
 
-- `testAddCapRoundTripUrnViaTaggedPredicates` — Tests/MachFabCartridgeSDKTests/MachFabCartridgeSDKTests.swift:28
-- `testCopyIsIndependent` — Tests/MachFabCartridgeSDKTests/MachFabCartridgeSDKTests.swift:71
-- `testInsertionOrderPreserved` — Tests/MachFabCartridgeSDKTests/MachFabCartridgeSDKTests.swift:47
+- `testAddCapRoundTripUrnViaTaggedPredicates` — Tests/MachFabCartridgeSDKTests/MachFabCartridgeSDKTests.swift:27
+- `testCopyIsIndependent` — Tests/MachFabCartridgeSDKTests/MachFabCartridgeSDKTests.swift:70
+- `testInsertionOrderPreserved` — Tests/MachFabCartridgeSDKTests/MachFabCartridgeSDKTests.swift:46
 
 ---
 
