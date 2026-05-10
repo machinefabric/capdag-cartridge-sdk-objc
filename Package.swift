@@ -1,4 +1,4 @@
-// version: 0.94.579
+// version: 0.95.585
 // swift-tools-version: 6.0
 
 import PackageDescription
@@ -13,6 +13,15 @@ let package = Package(
         .library(
             name: "MachFabCartridgeSDK",
             targets: ["MachFabCartridgeSDK"]),
+        // Swift-only utilities (PromptStrategy, classifyPrompt, …)
+        // shipped as a sibling of the ObjC core. SwiftPM does not
+        // support mixed ObjC + Swift sources in a single target,
+        // so these live in their own target that depends on the
+        // ObjC core where it needs to. Cartridges that want both
+        // import both products.
+        .library(
+            name: "MachFabCartridgeSDKSwift",
+            targets: ["MachFabCartridgeSDKSwift"]),
     ],
     dependencies: [
         .package(path: "../capdag-objc"),
@@ -35,9 +44,15 @@ let package = Package(
             ]
         ),
 
+        .target(
+            name: "MachFabCartridgeSDKSwift",
+            dependencies: [],
+            path: "Sources/MachFabCartridgeSDKSwift"
+        ),
+
         .testTarget(
             name: "MachFabCartridgeSDKTests",
-            dependencies: ["MachFabCartridgeSDK"],
+            dependencies: ["MachFabCartridgeSDK", "MachFabCartridgeSDKSwift"],
             path: "Tests/MachFabCartridgeSDKTests"
         ),
     ]
