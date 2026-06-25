@@ -17,7 +17,8 @@ final class PromptTests: XCTestCase {
         RefinedDims(chatTemplate: chatTemplate, family: "", modelTask: "")
     }
 
-    func testJinjaTemplateRoutesToChatTemplated() {
+    // TEST0004: Jinja template routes to chat templated
+    func test0004_JinjaTemplateRoutesToChatTemplated() {
         let s = classifyPrompt(
             dims: dims(chatTemplate: "chat-template-jinja"),
             user: "summarise this",
@@ -31,7 +32,8 @@ final class PromptTests: XCTestCase {
         }
     }
 
-    func testShortNameTemplateRoutesToChatTemplated() {
+    // TEST0005: Short name template routes to chat templated
+    func test0005_ShortNameTemplateRoutesToChatTemplated() {
         let s = classifyPrompt(
             dims: dims(chatTemplate: "chat-template-short"),
             user: "input",
@@ -49,7 +51,7 @@ final class PromptTests: XCTestCase {
     /// base / completion model — the cartridge MUST NOT
     /// chat-template the input. Routing the other way (raw model
     /// into chat-template rendering) would corrupt the completion.
-    func testAbsentTemplateRoutesToRaw() {
+    func test0006_AbsentTemplateRoutesToRaw() {
         let s = classifyPrompt(
             dims: dims(chatTemplate: ""),
             user: "the rest of the story is",
@@ -62,7 +64,8 @@ final class PromptTests: XCTestCase {
         }
     }
 
-    func testWhitespaceOnlySystemPromptDropped() {
+    // TEST0007: Whitespace only system prompt dropped
+    func test0007_WhitespaceOnlySystemPromptDropped() {
         for sysIn in ["", "   ", "\n\t\n"] {
             let s = classifyPrompt(
                 dims: dims(chatTemplate: "chat-template-jinja"),
@@ -80,7 +83,8 @@ final class PromptTests: XCTestCase {
         }
     }
 
-    func testUnknownChatTemplateTagRoutesToRaw() {
+    // TEST0008: Unknown chat template tag routes to raw
+    func test0008_UnknownChatTemplateTagRoutesToRaw() {
         let s = classifyPrompt(
             dims: dims(chatTemplate: "chat-template-some-future-tag"),
             user: "u",
@@ -97,7 +101,7 @@ final class PromptTests: XCTestCase {
     /// toward code / summarisation / translation would silently
     /// derail unrelated downstream uses. Mirrors the parallel test
     /// in the Rust SDK so drift between the two literals is caught.
-    func testDefaultSystemPromptIsTaskAgnostic() {
+    func test0009_DefaultSystemPromptIsTaskAgnostic() {
         XCTAssertTrue(DEFAULT_SYSTEM_PROMPT.contains("helpful"))
         XCTAssertTrue(DEFAULT_SYSTEM_PROMPT.contains("respond"))
         let lower = DEFAULT_SYSTEM_PROMPT.lowercased()

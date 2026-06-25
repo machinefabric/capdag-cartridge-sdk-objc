@@ -1,4 +1,4 @@
-// version: 1.98.597-nightly
+// version: 1.99.599
 // swift-tools-version: 6.0
 
 import PackageDescription

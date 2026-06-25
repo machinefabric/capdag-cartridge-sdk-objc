@@ -32,7 +32,7 @@ import Foundation
 /// Kept in sync with `machfab_cartridge_sdk::prompt::DEFAULT_SYSTEM_PROMPT`
 /// on the Rust side. Swift cartridges can't depend on the Rust SDK
 /// so the constant is duplicated as a literal — the Swift SDK
-/// `PromptTests.testDefaultSystemPromptIsTaskAgnostic` and the Rust
+/// `PromptTests.test0009_DefaultSystemPromptIsTaskAgnostic` and the Rust
 /// SDK test of the same name catch drift.
 public let DEFAULT_SYSTEM_PROMPT =
     "You are a helpful assistant. Respond to the user's input with a useful, accurate, " +

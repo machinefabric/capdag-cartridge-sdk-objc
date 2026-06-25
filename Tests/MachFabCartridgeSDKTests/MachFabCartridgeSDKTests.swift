@@ -24,7 +24,7 @@ final class MachFabCartridgeSDKTests: XCTestCase {
     /// Round-trip: adding a CSCap produces a urn string that parses back to a
     /// CSCapUrn whose `accepts(_:)` predicate holds against itself
     /// (reflexivity of the accepts relation).
-    func testAddCapRoundTripUrnViaTaggedPredicates() throws {
+    func test0001_AddCapRoundTripUrnViaTaggedPredicates() throws {
         let cap = try makeCap(op: "search")
 
         let caps = CSCartridgeCaps()
@@ -43,7 +43,7 @@ final class MachFabCartridgeSDKTests: XCTestCase {
     }
 
     /// Insertion order is preserved in both `caps` and `capUrns`.
-    func testInsertionOrderPreserved() throws {
+    func test0002_InsertionOrderPreserved() throws {
         let caps = CSCartridgeCaps()
         try caps.addCap(makeCap(op: "alpha"))
         try caps.addCap(makeCap(op: "beta"))
@@ -67,7 +67,7 @@ final class MachFabCartridgeSDKTests: XCTestCase {
 
     /// Copy is independent: mutating the original must not affect the copy.
     /// Regression-guards against a shared mutable backing array.
-    func testCopyIsIndependent() throws {
+    func test0003_CopyIsIndependent() throws {
         let original = CSCartridgeCaps()
         try original.addCap(makeCap(op: "first"))
 
