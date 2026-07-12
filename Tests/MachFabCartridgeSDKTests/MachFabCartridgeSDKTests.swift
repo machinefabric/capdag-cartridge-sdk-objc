@@ -12,7 +12,7 @@ final class MachFabCartridgeSDKTests: XCTestCase {
         let urn = try builder.build()
         return CSCap(urn: urn,
                      title: op,
-                     command: op,
+                     aliases: [op],
                      description: nil,
                      documentation: nil,
                      metadata: [:],
@@ -50,9 +50,9 @@ final class MachFabCartridgeSDKTests: XCTestCase {
         try caps.addCap(makeCap(op: "gamma"))
 
         XCTAssertEqual(caps.caps.count, 3)
-        XCTAssertEqual(caps.caps[0].command, "alpha")
-        XCTAssertEqual(caps.caps[1].command, "beta")
-        XCTAssertEqual(caps.caps[2].command, "gamma")
+        XCTAssertEqual(caps.caps[0].primaryAlias, "alpha")
+        XCTAssertEqual(caps.caps[1].primaryAlias, "beta")
+        XCTAssertEqual(caps.caps[2].primaryAlias, "gamma")
 
         let urns = caps.capUrns()
         XCTAssertEqual(urns.count, 3)
