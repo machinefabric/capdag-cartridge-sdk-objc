@@ -24,7 +24,7 @@ let package = Package(
             targets: ["MachFabCartridgeSDKSwift"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/machinefabric/capdag-objc.git", from: "1.416.18"),
+        .package(url: "https://github.com/machinefabric/capdag-objc.git", from: "1.417.0"),
     ],
     targets: [
         .target(
