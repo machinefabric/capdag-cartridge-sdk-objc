@@ -1,13 +1,13 @@
 {
-  "originHash" : "b887d30beb91051345ec910836b767b548b04ae9fbd08c07e10dd26fbaebb945",
+  "originHash" : "d3e097180d6bcb7746aba31d6ae71285afeb1f3b8a1301957554eec11c310636",
   "pins" : [
     {
       "identity" : "capdag-objc",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/machinefabric/capdag-objc.git",
       "state" : {
-        "revision" : "2f267a455377d2b47625258c0c015e0299e8b732",
-        "version" : "1.411.3"
+        "revision" : "6aa7954aaeddba3ba101603a9672f7167541a16d",
+        "version" : "1.417.0"
       }
     },
     {
