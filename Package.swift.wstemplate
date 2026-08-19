@@ -24,7 +24,13 @@ let package = Package(
             targets: ["MachFabCartridgeSDKSwift"]),
     ],
     dependencies: [
+        {%- if env.MFR_LOCAL_LIBS %}
+        // MFR_LOCAL_LIBS: the working copy in this workspace rather than a
+        // published tag. Re-render without it before committing or releasing.
+        .package(path: "{{ projects.capdag_objc.path_from_here }}"),
+        {%- else %}
         .package(url: "https://github.com/machinefabric/capdag-objc.git", from: "{{ projects.capdag_objc.latest_remote_version }}"),
+        {%- endif %}
     ],
     targets: [
         .target(
