@@ -38,4 +38,4 @@ import MachFabCartridgeSDKSwift
 swift test
 ```
 
-Changes to mirrored prompt behavior must be applied to the Rust SDK and pinned by the corresponding substantive numbered tests. Language-neutral runtime behavior belongs to the [CapDAG specification](../capdag/docs/01-overview.md).
+Changes to mirrored prompt behavior must be applied to the Rust SDK and pinned by the corresponding substantive numbered tests. Language-neutral runtime behavior belongs to the [CapDAG specification](../../capdag/docs/01-overview.md).
