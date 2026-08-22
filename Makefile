@@ -2,7 +2,13 @@
 # This SDK now depends on capdag-objc for formal cap management
 
 # Directories
-CAP_SDK_DIR = ../capdag-objc
+#
+# capdag-objc is in the capdag family, not this one: both used to sit directly
+# under the workspace, so it was one level up. The SDKs moved into
+# `cartridge-sdks/` and capdag's mirrors into `capdag/`, so the way across is
+# now out of this family and into that one. Overridable, so a checkout laid
+# out differently can say so rather than being wrong silently.
+CAP_SDK_DIR ?= ../../capdag/capdag-objc
 BUILD_DIR = build
 DIST_DIR = dist
 
