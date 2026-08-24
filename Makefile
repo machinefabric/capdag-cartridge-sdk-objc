@@ -33,7 +33,7 @@ build-capdag:
 
 .PHONY: build-cartridge-sdk
 build-cartridge-sdk: build-capdag
-	@echo "Building machfab-cartridge-sdk-objc..."
+	@echo "Building capdag-cartridge-sdk-objc..."
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(DIST_DIR)
 	

@@ -7,7 +7,7 @@ This public Swift package contains the Apple-platform mirrors of MachineFabric c
 ```swift
 dependencies: [
     .package(
-        url: "https://github.com/machinefabric/machfab-cartridge-sdk-objc.git",
+        url: "https://github.com/machinefabric/capdag-cartridge-sdk-objc.git",
         from: "1.115.647"
     )
 ]
