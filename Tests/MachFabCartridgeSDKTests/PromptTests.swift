@@ -2,7 +2,7 @@ import XCTest
 @testable import MachFabCartridgeSDKSwift
 
 /// Pin the prompt-classification contract. Mirror of
-/// `machfab_cartridge_sdk::prompt::tests` on the Rust side.
+/// `capdag_cartridge_sdk::prompt::tests` on the Rust side.
 /// Misclassification produces seed-locked degenerate output:
 ///   - templated-as-raw → instruct model collapses to its high-prior
 ///     continuation (PDF-page summarisation produced math-problem

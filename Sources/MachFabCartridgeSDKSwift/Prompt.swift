@@ -2,7 +2,7 @@
 // prompt surface (LLMs, vision-language models, OCR models that accept
 // chat-formatted directives).
 //
-// Mirror of the Rust SDK's `machfab_cartridge_sdk::prompt` module.
+// Mirror of the Rust SDK's `capdag_cartridge_sdk::prompt` module.
 // Every change here MUST be reflected on the Rust side and
 // vice-versa — drift between the two implementations re-opens the
 // gibberish-output bug class (instruct model fed raw text falling
@@ -29,7 +29,7 @@ import Foundation
 /// (summarise, translate, explain, transcribe) belong in the
 /// user-message turn.
 ///
-/// Kept in sync with `machfab_cartridge_sdk::prompt::DEFAULT_SYSTEM_PROMPT`
+/// Kept in sync with `capdag_cartridge_sdk::prompt::DEFAULT_SYSTEM_PROMPT`
 /// on the Rust side. Swift cartridges can't depend on the Rust SDK
 /// so the constant is duplicated as a literal — the Swift SDK
 /// `PromptTests.test0009_DefaultSystemPromptIsTaskAgnostic` and the Rust
@@ -95,7 +95,7 @@ public enum PromptStrategy: Sendable {
 
 /// Classify how to prepare a user prompt given the model's detected
 /// dims and an optional system prompt. Mirrors
-/// `machfab_cartridge_sdk::prompt::classify_prompt`.
+/// `capdag_cartridge_sdk::prompt::classify_prompt`.
 ///
 /// `system` is the system prompt to use:
 ///   - non-nil and non-whitespace — render as the system turn

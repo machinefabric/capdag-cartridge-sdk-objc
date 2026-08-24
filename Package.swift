@@ -1,4 +1,4 @@
-// version: 1.125.7
+// version: 1.126.10
 // swift-tools-version: 6.0
 
 import PackageDescription
