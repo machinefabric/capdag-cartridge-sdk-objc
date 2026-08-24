@@ -1,4 +1,4 @@
-# MachineFabric cartridge SDK for Swift and Objective-C
+# CapDAG Cartridge SDK for Swift and Objective-C
 
 This public Swift package contains the Apple-platform mirrors of MachineFabric cartridge helpers. It is intentionally small: CapDAG supplies the URN and Bifaci runtime APIs, while this package supplies product-specific collections and prompt preparation shared with the Rust SDK.
 
