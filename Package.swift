@@ -1,18 +1,18 @@
-// version: 1.127.18
+// version: 1.128.21
 // swift-tools-version: 6.0
 
 import PackageDescription
 
 let package = Package(
-    name: "MachFabCartridgeSDK",
+    name: "CapDAGCartridgeSDK",
     platforms: [
         .macOS(.v13),
         .iOS(.v14)
     ],
     products: [
         .library(
-            name: "MachFabCartridgeSDK",
-            targets: ["MachFabCartridgeSDK"]),
+            name: "CapDAGCartridgeSDK",
+            targets: ["CapDAGCartridgeSDK"]),
         // Swift-only utilities (PromptStrategy, classifyPrompt, …)
         // shipped as a sibling of the ObjC core. SwiftPM does not
         // support mixed ObjC + Swift sources in a single target,
@@ -20,20 +20,20 @@ let package = Package(
         // ObjC core where it needs to. Cartridges that want both
         // import both products.
         .library(
-            name: "MachFabCartridgeSDKSwift",
-            targets: ["MachFabCartridgeSDKSwift"]),
+            name: "CapDAGCartridgeSDKSwift",
+            targets: ["CapDAGCartridgeSDKSwift"]),
     ],
     dependencies: [
         .package(url: "https://github.com/machinefabric/capdag-objc.git", from: "1.438.20"),
     ],
     targets: [
         .target(
-            name: "MachFabCartridgeSDK",
+            name: "CapDAGCartridgeSDK",
             dependencies: [
                 .product(name: "CapDAG", package: "capdag-objc"),
                 .product(name: "Bifaci", package: "capdag-objc"),
             ],
-            path: "Sources/MachFabCartridgeSDK",
+            path: "Sources/CapDAGCartridgeSDK",
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("include"),
@@ -45,15 +45,15 @@ let package = Package(
         ),
 
         .target(
-            name: "MachFabCartridgeSDKSwift",
+            name: "CapDAGCartridgeSDKSwift",
             dependencies: [],
-            path: "Sources/MachFabCartridgeSDKSwift"
+            path: "Sources/CapDAGCartridgeSDKSwift"
         ),
 
         .testTarget(
-            name: "MachFabCartridgeSDKTests",
-            dependencies: ["MachFabCartridgeSDK", "MachFabCartridgeSDKSwift"],
-            path: "Tests/MachFabCartridgeSDKTests"
+            name: "CapDAGCartridgeSDKTests",
+            dependencies: ["CapDAGCartridgeSDK", "CapDAGCartridgeSDKSwift"],
+            path: "Tests/CapDAGCartridgeSDKTests"
         ),
     ]
 )

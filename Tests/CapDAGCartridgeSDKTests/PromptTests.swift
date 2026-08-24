@@ -1,5 +1,5 @@
 import XCTest
-@testable import MachFabCartridgeSDKSwift
+@testable import CapDAGCartridgeSDKSwift
 
 /// Pin the prompt-classification contract. Mirror of
 /// `capdag_cartridge_sdk::prompt::tests` on the Rust side.

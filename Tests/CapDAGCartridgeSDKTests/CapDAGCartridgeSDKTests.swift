@@ -1,8 +1,8 @@
 import XCTest
 import CapDAG
-@testable import MachFabCartridgeSDK
+@testable import CapDAGCartridgeSDK
 
-final class MachFabCartridgeSDKTests: XCTestCase {
+final class CapDAGCartridgeSDKTests: XCTestCase {
 
     private func makeCap(op: String) throws -> CSCap {
         let builder = CSCapUrnBuilder()

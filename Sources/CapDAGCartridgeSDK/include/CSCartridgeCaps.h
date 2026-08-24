@@ -1,8 +1,8 @@
 //
 //  CSCartridgeCaps.h
-//  MachFab Cartridge SDK
+//  CapDAG Cartridge SDK
 //
-//  A small ordered collection of CSCap values. The MachFab host exposes this
+//  A small ordered collection of CSCap values. The CapDAG host exposes this
 //  to surface a cartridge's own caps for display — nothing more.
 //
 

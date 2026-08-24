@@ -16,11 +16,11 @@ dependencies: [
 Import the product you need:
 
 ```swift
-import MachFabCartridgeSDK
-import MachFabCartridgeSDKSwift
+import CapDAGCartridgeSDK
+import CapDAGCartridgeSDKSwift
 ```
 
-`MachFabCartridgeSDK` depends on the `CapDAG` and `Bifaci` products from `capdag-objc`. `MachFabCartridgeSDKSwift` contains Swift-only prompt helpers.
+`CapDAGCartridgeSDK` depends on the `CapDAG` and `Bifaci` products from `capdag-objc`. `CapDAGCartridgeSDKSwift` contains Swift-only prompt helpers.
 
 ## API reference
 
