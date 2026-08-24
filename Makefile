@@ -1,4 +1,4 @@
-# Makefile for MACHFAB Cartridge SDK Objective-C
+# Makefile for FLOOM_ENGINE Cartridge SDK Objective-C
 # This SDK now depends on capdag-objc for formal cap management
 
 # Directories
@@ -14,7 +14,7 @@ DIST_DIR = dist
 
 help:
 	@echo "Usage: make <target>\n\n\
-	  build\t\tBuild the MACHFAB Cartridge SDK with cap SDK integration\n\
+	  build\t\tBuild the FLOOM_ENGINE Cartridge SDK with cap SDK integration\n\
 	  build-capdag\tBuild only the cap SDK\n\
 	  clean\t\tRemove built artifacts\n\
 	  install\tInstall the library to system paths\n\
@@ -41,30 +41,30 @@ build-cartridge-sdk: build-capdag
 	@cp -r $(CAP_SDK_DIR)/Sources/CapDAG/include/* $(DIST_DIR)/
 	
 	# Compile our cartridge SDK with cap SDK integration (now from Sources directory)
-	/usr/bin/clang -c -o $(BUILD_DIR)/MACHFABCartridgeSDK.o Sources/MACHFABCartridgeSDK/MACHFABCartridgeSDK.m \
+	/usr/bin/clang -c -o $(BUILD_DIR)/FLOOM_ENGINECartridgeSDK.o Sources/FLOOM_ENGINECartridgeSDK/FLOOM_ENGINECartridgeSDK.m \
 		-I$(DIST_DIR) \
 		-I$(CAP_SDK_DIR)/Sources/CapDAG/include \
-		-ISources/MACHFABCartridgeSDK/include \
+		-ISources/FLOOM_ENGINECartridgeSDK/include \
 		-fobjc-arc -fno-modules
 	
-	/usr/bin/clang -c -o $(BUILD_DIR)/MACHFABStandardCaps.o Sources/MACHFABCartridgeSDK/MACHFABStandardCaps.m \
+	/usr/bin/clang -c -o $(BUILD_DIR)/FLOOM_ENGINEStandardCaps.o Sources/FLOOM_ENGINECartridgeSDK/FLOOM_ENGINEStandardCaps.m \
 		-I$(DIST_DIR) \
 		-I$(CAP_SDK_DIR)/Sources/CapDAG/include \
-		-ISources/MACHFABCartridgeSDK/include \
+		-ISources/FLOOM_ENGINECartridgeSDK/include \
 		-fobjc-arc -fno-modules
 	
-	/usr/bin/clang -c -o $(BUILD_DIR)/CSCartridgeCaps.o Sources/MACHFABCartridgeSDK/CSCartridgeCaps.m \
+	/usr/bin/clang -c -o $(BUILD_DIR)/CSCartridgeCaps.o Sources/FLOOM_ENGINECartridgeSDK/CSCartridgeCaps.m \
 		-I$(DIST_DIR) \
 		-I$(CAP_SDK_DIR)/Sources/CapDAG/include \
-		-ISources/MACHFABCartridgeSDK/include \
+		-ISources/FLOOM_ENGINECartridgeSDK/include \
 		-fobjc-arc -fno-modules
 	
 	# Create static library with all object files including CapDAG
-	ar rcs $(DIST_DIR)/libMACHFABCartridgeSDK.a $(BUILD_DIR)/*.o $(CAP_SDK_DIR)/.build/release/CapDAG.build/*.o
+	ar rcs $(DIST_DIR)/libFLOOM_ENGINECartridgeSDK.a $(BUILD_DIR)/*.o $(CAP_SDK_DIR)/.build/release/CapDAG.build/*.o
 	
 	# Copy cartridge SDK headers
-	@cp Sources/MACHFABCartridgeSDK/include/*.h $(DIST_DIR)/
-	@echo "OK MACHFAB Cartridge SDK built successfully with cap SDK integration in $(DIST_DIR)/"
+	@cp Sources/FLOOM_ENGINECartridgeSDK/include/*.h $(DIST_DIR)/
+	@echo "OK FLOOM_ENGINE Cartridge SDK built successfully with cap SDK integration in $(DIST_DIR)/"
 
 .PHONY: clean
 clean:
@@ -74,10 +74,10 @@ clean:
 
 .PHONY: install
 install: build
-	@echo "Installing MACHFAB Cartridge SDK with cap SDK..."
-	sudo cp $(DIST_DIR)/libMACHFABCartridgeSDK.a /usr/local/lib/
+	@echo "Installing FLOOM_ENGINE Cartridge SDK with cap SDK..."
+	sudo cp $(DIST_DIR)/libFLOOM_ENGINECartridgeSDK.a /usr/local/lib/
 	sudo cp $(DIST_DIR)/*.h /usr/local/include/
-	@echo "OK MACHFAB Cartridge SDK installed to system paths"
+	@echo "OK FLOOM_ENGINE Cartridge SDK installed to system paths"
 
 .PHONY: test
 test: build
@@ -91,7 +91,7 @@ example:
 	@echo ""
 	@echo "1. Add both SDKs to your project:"
 	@echo "   #import \"CapDAG.h\""
-	@echo "   #import \"MACHFABCartridgeSDK.h\""
+	@echo "   #import \"FLOOM_ENGINECartridgeSDK.h\""
 	@echo ""
 	@echo "2. Create formal cap definitions:"
 	@echo "   NSError *error;"
@@ -103,7 +103,7 @@ example:
 	@echo "   [caps addCap:cap];"
 	@echo ""
 	@echo "4. Create cartridge manifest with formal caps:"
-	@echo "   MACHFABCartridgeManifest *cartridgeManifest = [[MACHFABCartridgeManifest alloc]"
+	@echo "   FLOOM_ENGINECartridgeManifest *cartridgeManifest = [[FLOOM_ENGINECartridgeManifest alloc]"
 	@echo "       initWithName:@\"MyCartridge\""
 	@echo "       version:@\"1.0.0\""
 	@echo "       cartridgeDescription:@\"Example cartridge\""
