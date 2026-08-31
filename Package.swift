@@ -1,4 +1,4 @@
-// version: 1.147.24
+// version: 1.148.26
 // swift-tools-version: 6.0
 
 import PackageDescription
@@ -24,7 +24,9 @@ let package = Package(
             targets: ["CapDAGCartridgeSDKSwift"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/machinefabric/capdag-objc.git", from: "1.450.2"),
+        // MFR_LOCAL_LIBS: the working copy in this workspace rather than a
+        // published tag. Re-render without it before committing or releasing.
+        .package(path: "../../capdag/capdag-objc"),
     ],
     targets: [
         .target(
